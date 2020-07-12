@@ -1,22 +1,43 @@
-
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:sales_track_nex/pages/app.dart';
+import 'package:sales_track_nex/pages/debug.dart';
 import 'package:sales_track_nex/pages/intro.dart';
 import 'package:sales_track_nex/pages/login.dart';
 import 'package:sales_track_nex/pages/truck.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    // final param = settings.arguments;
-
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => Intro());
+        break;
 
-      case '/trucks':
-        return MaterialPageRoute(builder: (_) => Truck());
+      case '/login':
+        return PageTransition(
+            child: Login(), type: PageTransitionType.fade, settings: settings);
+        break;
+
+      case '/truck':
+        return PageTransition(
+            child: Truck(), type: PageTransitionType.fade, settings: settings);
+        break;
+
+      case '/app':
+        return PageTransition(
+            child: App(), type: PageTransitionType.fade, settings: settings);
+        break;
+
+      case '/debug':
+        return PageTransition(
+            child: DebugPage(),
+            type: PageTransitionType.fade,
+            settings: settings);
+        break;
 
       default:
-        return MaterialPageRoute(builder: (_) => Login());
+        return PageTransition(
+            child: Login(), type: PageTransitionType.fade, settings: settings);
     }
   }
 }

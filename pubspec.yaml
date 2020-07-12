@@ -29,8 +29,12 @@ dependencies:
   barcode_scan: ^3.0.0
   flutter_image_compress: ^0.6.7
   device_info: ^0.4.2+4
-  bloc: ^4.0.0
-  flutter_bloc: ^4.0.0
+  bloc: ^5.0.1
+  flutter_bloc: ^5.0.1
+  equatable: ^1.2.0
+  page_transition: "^1.1.5"
+  moor: ^3.2.0
+  moor_flutter: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -39,6 +43,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^1.10.0
+  moor_generator: ^3.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,23 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
+import 'package:sales_track_nex/database/nex_database.dart';
 
-class Login extends StatefulWidget {
-  @override
-  _LoginState createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
+class Login extends StatelessWidget {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,23 +67,85 @@ class _LoginState extends State<Login> {
               width: double.infinity,
               height: 45.0,
               margin: EdgeInsets.only(left: 20.0, right: 20.0),
-              child: FlatButton(
-                color: Colors.blue[400],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.grey[100],
-                  ),
-                ),
-                onPressed: () {},
+              child: BlocConsumer<AuthenticateBloc, AuthenticateState>(
+                listener: (context, state) {
+                  print(state);
+
+                  if (state is LoginRemoteCompleted) {
+                    //validate user ke local server
+                    BlocProvider.of<AuthenticateBloc>(context)
+                        .add(ValidateUserLocal(_username.text));
+                  } else if (state is ValidateUserLocalCompleted) {
+                    //validate user ke remote server
+                    BlocProvider.of<AuthenticateBloc>(context)
+                        .add(ValidateUserRemote(_username.text));
+                  } else if (state is ValidateUserRemoteCompleted) {
+                    //route user berdasarkan type user (sales, driver)
+                    _routeUserType(state.user, context);
+                  } else if (state is DeleteAllUserLocalCompleted) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text("Semua user lokal berhasil dihapus"),
+                    ));
+                  } else if (state is AuthenticateError) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(state.message),
+                    ));
+                  }
+                },
+                builder: (context, state) {
+                  return _authButtonState(state, context);
+                },
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _authButtonState(AuthenticateState state, BuildContext context) {
+    return FlatButton(
+      color: Colors.blue[400],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: (state is AuthenticateLoading)
+          ? Container(
+              width: 28.0,
+              height: 28.0,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.blue[100],
+                strokeWidth: 3.0,
+              ),
+            )
+          : Text(
+              'Login',
+              style: TextStyle(
+                color: Colors.grey[100],
+              ),
+            ),
+      onPressed: () {
+        if (state is! AuthenticateLoading) {
+          if (_username.text != "" && _password.text != "") {
+            BlocProvider.of<AuthenticateBloc>(context)
+                .add(LoginRemote(_username.text, _password.text));
+          } else {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('Username dan password tidak boleh kosong'),
+            ));
+          }
+        }
+      },
+    );
+  }
+
+  _routeUserType(User user, BuildContext context) {
+    if (user.type == "Driver")
+      //navigasi ke halaman pilih truck
+      Navigator.of(context).pushNamed('/trucks');
+    else
+      //navigasi ke dashboard
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sales_track_nex/data/truck_data.dart';
+import 'package:sales_track_nex/database/nex_database.dart';
 
 class Truck extends StatefulWidget {
   Truck({Key key}) : super(key: key);
@@ -9,24 +9,6 @@ class Truck extends StatefulWidget {
 }
 
 class _TruckState extends State<Truck> {
-  int _id;
-  List<TruckData> trucks = [];
-
-  @override
-  void initState() {
-    //populate list with data
-    for (int i = 0; i <= 20; i++) {
-      trucks.add(TruckData(id: i, brand: 'Brand $i', plat: 'Plat $i'));
-    }
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,31 +16,27 @@ class _TruckState extends State<Truck> {
         title: Text('Pilih mobil'),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.only(bottom: 50.0),
-        itemCount: trucks.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              onTap: () {
-                setState(() {
-                  _id = trucks[index].id;
-                });
-              },
-              leading: Icon(
-                Icons.directions_car,
-                size: 45.0,
-              ),
-              title: Text(trucks[index].brand),
-              subtitle: Text(trucks[index].plat),
-              selected: _id == trucks[index].id ? true : false,
-              trailing: _id == trucks[index].id
-                  ? Icon(Icons.radio_button_checked)
-                  : Icon(Icons.radio_button_unchecked),
-            ),
-          );
-        },
-      ),
+      // body: ListView.builder(
+      //   padding: EdgeInsets.only(bottom: 50.0),
+      //   itemCount: 0,
+      //   itemBuilder: (context, index) {
+      //     return Card(
+      //       child: ListTile(
+      //         onTap: () {},
+      //         leading: Icon(
+      //           Icons.directions_car,
+      //           size: 45.0,
+      //         ),
+      //         title: Text(trucks[index].brand),
+      //         subtitle: Text(trucks[index].plat),
+      //         selected: _id == trucks[index].id ? true : false,
+      //         trailing: _id == trucks[index].id
+      //             ? Icon(Icons.radio_button_checked)
+      //             : Icon(Icons.radio_button_unchecked),20
+      //       ),
+      //     );
+      //   },
+      // ),
       bottomSheet: Container(
         width: double.infinity,
         height: 45.0,
@@ -73,7 +51,10 @@ class _TruckState extends State<Truck> {
               color: Colors.grey[100],
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/debug', (Route<dynamic> route) => false);
+          },
         ),
       ),
     );
