@@ -4,7 +4,7 @@ import 'package:sales_track_nex/pages/app.dart';
 import 'package:sales_track_nex/pages/debug.dart';
 import 'package:sales_track_nex/pages/intro.dart';
 import 'package:sales_track_nex/pages/login.dart';
-import 'package:sales_track_nex/pages/truck.dart';
+import 'package:sales_track_nex/pages/sync.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -18,9 +18,9 @@ class RouteGenerator {
             child: Login(), type: PageTransitionType.fade, settings: settings);
         break;
 
-      case '/truck':
+      case '/sync':
         return PageTransition(
-            child: Truck(), type: PageTransitionType.fade, settings: settings);
+            child: SyncPage(), type: PageTransitionType.fade, settings: settings);
         break;
 
       case '/app':

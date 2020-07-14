@@ -4,9 +4,8 @@ import 'package:sales_track_nex/bloc/navigation_bloc.dart';
 import 'package:sales_track_nex/pages/dashboard.dart';
 import 'package:sales_track_nex/pages/debug.dart';
 import 'package:sales_track_nex/pages/inbox.dart';
-import 'package:sales_track_nex/pages/outlet.dart';
-import 'package:sales_track_nex/pages/user.dart';
 import 'package:sales_track_nex/pages/order.dart';
+import 'package:sales_track_nex/pages/outlet.dart';
 
 class App extends StatelessWidget {
   @override

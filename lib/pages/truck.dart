@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sales_track_nex/database/nex_database.dart';
 
 class Truck extends StatefulWidget {
   Truck({Key key}) : super(key: key);

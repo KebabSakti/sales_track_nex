@@ -3,38 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
 import 'package:sales_track_nex/bloc/navigation_bloc.dart';
-import 'package:sales_track_nex/bloc/singleton_bloc.dart';
+import 'package:sales_track_nex/bloc/sync_outlet_bloc.dart';
 import 'package:sales_track_nex/database/nex_database.dart';
-import 'package:sales_track_nex/repository/authenticate_repository.dart';
+import 'package:sales_track_nex/repository/repository.dart';
 import 'package:sales_track_nex/utils/route.dart';
 
 void main() {
   final NexDatabase database = NexDatabase();
   final Dio dio = Dio();
 
-  runApp(MyApp(database, dio));
+  runApp(MyApp(Repository(database, dio)));
 }
 
 class MyApp extends StatelessWidget {
-  final NexDatabase database;
-  final Dio dio;
+  final Repository repository;
 
-  MyApp(this.database, this.dio);
+  MyApp(this.repository);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SingletonBloc>(
-          create: (context) => SingletonBloc(database, dio),
-        ),
         BlocProvider<AuthenticateBloc>(
-          create: (context) =>
-              AuthenticateBloc(AuthenticateRepository(database, dio)),
+          create: (context) => AuthenticateBloc(repository),
         ),
         BlocProvider<NavigationBloc>(
-          create: (context) =>
-              NavigationBloc(AuthenticateRepository(database, dio)),
+          create: (context) => NavigationBloc(repository),
+        ),
+        BlocProvider<SyncOutletBloc>(
+          create: (context) => SyncOutletBloc(repository),
         ),
       ],
       child: MaterialApp(

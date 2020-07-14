@@ -9,7 +9,7 @@ part of 'nex_database.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class User extends DataClass implements Insertable<User> {
   final int id;
-  final String nomor_plat;
+  final String nomorPlat;
   final String username;
   final String password;
   final String type;
@@ -17,7 +17,7 @@ class User extends DataClass implements Insertable<User> {
   final String hid;
   User(
       {@required this.id,
-      this.nomor_plat,
+      this.nomorPlat,
       @required this.username,
       this.password,
       @required this.type,
@@ -30,7 +30,7 @@ class User extends DataClass implements Insertable<User> {
     final stringType = db.typeSystem.forDartType<String>();
     return User(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      nomor_plat: stringType
+      nomorPlat: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}nomor_plat']),
       username: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}username']),
@@ -48,8 +48,8 @@ class User extends DataClass implements Insertable<User> {
     if (!nullToAbsent || id != null) {
       map['id'] = Variable<int>(id);
     }
-    if (!nullToAbsent || nomor_plat != null) {
-      map['nomor_plat'] = Variable<String>(nomor_plat);
+    if (!nullToAbsent || nomorPlat != null) {
+      map['nomor_plat'] = Variable<String>(nomorPlat);
     }
     if (!nullToAbsent || username != null) {
       map['username'] = Variable<String>(username);
@@ -72,9 +72,9 @@ class User extends DataClass implements Insertable<User> {
   UsersCompanion toCompanion(bool nullToAbsent) {
     return UsersCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      nomor_plat: nomor_plat == null && nullToAbsent
+      nomorPlat: nomorPlat == null && nullToAbsent
           ? const Value.absent()
-          : Value(nomor_plat),
+          : Value(nomorPlat),
       username: username == null && nullToAbsent
           ? const Value.absent()
           : Value(username),
@@ -93,7 +93,7 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return User(
       id: serializer.fromJson<int>(json['id']),
-      nomor_plat: serializer.fromJson<String>(json['nomor_plat']),
+      nomorPlat: serializer.fromJson<String>(json['nomorPlat']),
       username: serializer.fromJson<String>(json['username']),
       password: serializer.fromJson<String>(json['password']),
       type: serializer.fromJson<String>(json['type']),
@@ -106,7 +106,7 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'nomor_plat': serializer.toJson<String>(nomor_plat),
+      'nomorPlat': serializer.toJson<String>(nomorPlat),
       'username': serializer.toJson<String>(username),
       'password': serializer.toJson<String>(password),
       'type': serializer.toJson<String>(type),
@@ -117,7 +117,7 @@ class User extends DataClass implements Insertable<User> {
 
   User copyWith(
           {int id,
-          String nomor_plat,
+          String nomorPlat,
           String username,
           String password,
           String type,
@@ -125,7 +125,7 @@ class User extends DataClass implements Insertable<User> {
           String hid}) =>
       User(
         id: id ?? this.id,
-        nomor_plat: nomor_plat ?? this.nomor_plat,
+        nomorPlat: nomorPlat ?? this.nomorPlat,
         username: username ?? this.username,
         password: password ?? this.password,
         type: type ?? this.type,
@@ -136,7 +136,7 @@ class User extends DataClass implements Insertable<User> {
   String toString() {
     return (StringBuffer('User(')
           ..write('id: $id, ')
-          ..write('nomor_plat: $nomor_plat, ')
+          ..write('nomorPlat: $nomorPlat, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('type: $type, ')
@@ -150,7 +150,7 @@ class User extends DataClass implements Insertable<User> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          nomor_plat.hashCode,
+          nomorPlat.hashCode,
           $mrjc(
               username.hashCode,
               $mrjc(
@@ -162,7 +162,7 @@ class User extends DataClass implements Insertable<User> {
       identical(this, other) ||
       (other is User &&
           other.id == this.id &&
-          other.nomor_plat == this.nomor_plat &&
+          other.nomorPlat == this.nomorPlat &&
           other.username == this.username &&
           other.password == this.password &&
           other.type == this.type &&
@@ -172,7 +172,7 @@ class User extends DataClass implements Insertable<User> {
 
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
-  final Value<String> nomor_plat;
+  final Value<String> nomorPlat;
   final Value<String> username;
   final Value<String> password;
   final Value<String> type;
@@ -180,7 +180,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> hid;
   const UsersCompanion({
     this.id = const Value.absent(),
-    this.nomor_plat = const Value.absent(),
+    this.nomorPlat = const Value.absent(),
     this.username = const Value.absent(),
     this.password = const Value.absent(),
     this.type = const Value.absent(),
@@ -189,7 +189,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   });
   UsersCompanion.insert({
     @required int id,
-    this.nomor_plat = const Value.absent(),
+    this.nomorPlat = const Value.absent(),
     @required String username,
     this.password = const Value.absent(),
     @required String type,
@@ -202,7 +202,7 @@ class UsersCompanion extends UpdateCompanion<User> {
         hid = Value(hid);
   static Insertable<User> custom({
     Expression<int> id,
-    Expression<String> nomor_plat,
+    Expression<String> nomorPlat,
     Expression<String> username,
     Expression<String> password,
     Expression<String> type,
@@ -211,7 +211,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (nomor_plat != null) 'nomor_plat': nomor_plat,
+      if (nomorPlat != null) 'nomor_plat': nomorPlat,
       if (username != null) 'username': username,
       if (password != null) 'password': password,
       if (type != null) 'type': type,
@@ -222,7 +222,7 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   UsersCompanion copyWith(
       {Value<int> id,
-      Value<String> nomor_plat,
+      Value<String> nomorPlat,
       Value<String> username,
       Value<String> password,
       Value<String> type,
@@ -230,7 +230,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       Value<String> hid}) {
     return UsersCompanion(
       id: id ?? this.id,
-      nomor_plat: nomor_plat ?? this.nomor_plat,
+      nomorPlat: nomorPlat ?? this.nomorPlat,
       username: username ?? this.username,
       password: password ?? this.password,
       type: type ?? this.type,
@@ -245,8 +245,8 @@ class UsersCompanion extends UpdateCompanion<User> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (nomor_plat.present) {
-      map['nomor_plat'] = Variable<String>(nomor_plat.value);
+    if (nomorPlat.present) {
+      map['nomor_plat'] = Variable<String>(nomorPlat.value);
     }
     if (username.present) {
       map['username'] = Variable<String>(username.value);
@@ -270,7 +270,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   String toString() {
     return (StringBuffer('UsersCompanion(')
           ..write('id: $id, ')
-          ..write('nomor_plat: $nomor_plat, ')
+          ..write('nomorPlat: $nomorPlat, ')
           ..write('username: $username, ')
           ..write('password: $password, ')
           ..write('type: $type, ')
@@ -297,10 +297,10 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     );
   }
 
-  final VerificationMeta _nomor_platMeta = const VerificationMeta('nomor_plat');
-  GeneratedTextColumn _nomor_plat;
+  final VerificationMeta _nomorPlatMeta = const VerificationMeta('nomorPlat');
+  GeneratedTextColumn _nomorPlat;
   @override
-  GeneratedTextColumn get nomor_plat => _nomor_plat ??= _constructNomorPlat();
+  GeneratedTextColumn get nomorPlat => _nomorPlat ??= _constructNomorPlat();
   GeneratedTextColumn _constructNomorPlat() {
     return GeneratedTextColumn(
       'nomor_plat',
@@ -371,7 +371,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, nomor_plat, username, password, type, token, hid];
+      [id, nomorPlat, username, password, type, token, hid];
   @override
   $UsersTable get asDslTable => this;
   @override
@@ -389,10 +389,8 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       context.missing(_idMeta);
     }
     if (data.containsKey('nomor_plat')) {
-      context.handle(
-          _nomor_platMeta,
-          nomor_plat.isAcceptableOrUnknown(
-              data['nomor_plat'], _nomor_platMeta));
+      context.handle(_nomorPlatMeta,
+          nomorPlat.isAcceptableOrUnknown(data['nomor_plat'], _nomorPlatMeta));
     }
     if (data.containsKey('username')) {
       context.handle(_usernameMeta,
@@ -445,18 +443,18 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
   final String nama;
   final String harga;
   final bool aktif;
-  final DateTime sync_date;
-  final DateTime created_at;
-  final DateTime updated_at;
+  final DateTime syncDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   ProdukData(
       {@required this.id,
       @required this.kode,
       @required this.nama,
       @required this.harga,
       @required this.aktif,
-      this.sync_date,
-      @required this.created_at,
-      @required this.updated_at});
+      this.syncDate,
+      @required this.createdAt,
+      @required this.updatedAt});
   factory ProdukData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -471,11 +469,11 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
       harga:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}harga']),
       aktif: boolType.mapFromDatabaseResponse(data['${effectivePrefix}aktif']),
-      sync_date: dateTimeType
+      syncDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}sync_date']),
-      created_at: dateTimeType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updated_at: dateTimeType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -497,14 +495,14 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
     if (!nullToAbsent || aktif != null) {
       map['aktif'] = Variable<bool>(aktif);
     }
-    if (!nullToAbsent || sync_date != null) {
-      map['sync_date'] = Variable<DateTime>(sync_date);
+    if (!nullToAbsent || syncDate != null) {
+      map['sync_date'] = Variable<DateTime>(syncDate);
     }
-    if (!nullToAbsent || created_at != null) {
-      map['created_at'] = Variable<DateTime>(created_at);
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
-    if (!nullToAbsent || updated_at != null) {
-      map['updated_at'] = Variable<DateTime>(updated_at);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -518,15 +516,15 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
           harga == null && nullToAbsent ? const Value.absent() : Value(harga),
       aktif:
           aktif == null && nullToAbsent ? const Value.absent() : Value(aktif),
-      sync_date: sync_date == null && nullToAbsent
+      syncDate: syncDate == null && nullToAbsent
           ? const Value.absent()
-          : Value(sync_date),
-      created_at: created_at == null && nullToAbsent
+          : Value(syncDate),
+      createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(created_at),
-      updated_at: updated_at == null && nullToAbsent
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(updated_at),
+          : Value(updatedAt),
     );
   }
 
@@ -539,9 +537,9 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
       nama: serializer.fromJson<String>(json['nama']),
       harga: serializer.fromJson<String>(json['harga']),
       aktif: serializer.fromJson<bool>(json['aktif']),
-      sync_date: serializer.fromJson<DateTime>(json['sync_date']),
-      created_at: serializer.fromJson<DateTime>(json['created_at']),
-      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+      syncDate: serializer.fromJson<DateTime>(json['syncDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -553,9 +551,9 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
       'nama': serializer.toJson<String>(nama),
       'harga': serializer.toJson<String>(harga),
       'aktif': serializer.toJson<bool>(aktif),
-      'sync_date': serializer.toJson<DateTime>(sync_date),
-      'created_at': serializer.toJson<DateTime>(created_at),
-      'updated_at': serializer.toJson<DateTime>(updated_at),
+      'syncDate': serializer.toJson<DateTime>(syncDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -565,18 +563,18 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
           String nama,
           String harga,
           bool aktif,
-          DateTime sync_date,
-          DateTime created_at,
-          DateTime updated_at}) =>
+          DateTime syncDate,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       ProdukData(
         id: id ?? this.id,
         kode: kode ?? this.kode,
         nama: nama ?? this.nama,
         harga: harga ?? this.harga,
         aktif: aktif ?? this.aktif,
-        sync_date: sync_date ?? this.sync_date,
-        created_at: created_at ?? this.created_at,
-        updated_at: updated_at ?? this.updated_at,
+        syncDate: syncDate ?? this.syncDate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
   @override
   String toString() {
@@ -586,9 +584,9 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
           ..write('nama: $nama, ')
           ..write('harga: $harga, ')
           ..write('aktif: $aktif, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -604,10 +602,8 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
                   harga.hashCode,
                   $mrjc(
                       aktif.hashCode,
-                      $mrjc(
-                          sync_date.hashCode,
-                          $mrjc(
-                              created_at.hashCode, updated_at.hashCode))))))));
+                      $mrjc(syncDate.hashCode,
+                          $mrjc(createdAt.hashCode, updatedAt.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -617,9 +613,9 @@ class ProdukData extends DataClass implements Insertable<ProdukData> {
           other.nama == this.nama &&
           other.harga == this.harga &&
           other.aktif == this.aktif &&
-          other.sync_date == this.sync_date &&
-          other.created_at == this.created_at &&
-          other.updated_at == this.updated_at);
+          other.syncDate == this.syncDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class ProdukCompanion extends UpdateCompanion<ProdukData> {
@@ -628,18 +624,18 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
   final Value<String> nama;
   final Value<String> harga;
   final Value<bool> aktif;
-  final Value<DateTime> sync_date;
-  final Value<DateTime> created_at;
-  final Value<DateTime> updated_at;
+  final Value<DateTime> syncDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const ProdukCompanion({
     this.id = const Value.absent(),
     this.kode = const Value.absent(),
     this.nama = const Value.absent(),
     this.harga = const Value.absent(),
     this.aktif = const Value.absent(),
-    this.sync_date = const Value.absent(),
-    this.created_at = const Value.absent(),
-    this.updated_at = const Value.absent(),
+    this.syncDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   ProdukCompanion.insert({
     @required int id,
@@ -647,24 +643,24 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
     @required String nama,
     @required String harga,
     this.aktif = const Value.absent(),
-    this.sync_date = const Value.absent(),
-    @required DateTime created_at,
-    @required DateTime updated_at,
+    this.syncDate = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : id = Value(id),
         kode = Value(kode),
         nama = Value(nama),
         harga = Value(harga),
-        created_at = Value(created_at),
-        updated_at = Value(updated_at);
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
   static Insertable<ProdukData> custom({
     Expression<int> id,
     Expression<String> kode,
     Expression<String> nama,
     Expression<String> harga,
     Expression<bool> aktif,
-    Expression<DateTime> sync_date,
-    Expression<DateTime> created_at,
-    Expression<DateTime> updated_at,
+    Expression<DateTime> syncDate,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -672,9 +668,9 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
       if (nama != null) 'nama': nama,
       if (harga != null) 'harga': harga,
       if (aktif != null) 'aktif': aktif,
-      if (sync_date != null) 'sync_date': sync_date,
-      if (created_at != null) 'created_at': created_at,
-      if (updated_at != null) 'updated_at': updated_at,
+      if (syncDate != null) 'sync_date': syncDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
@@ -684,18 +680,18 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
       Value<String> nama,
       Value<String> harga,
       Value<bool> aktif,
-      Value<DateTime> sync_date,
-      Value<DateTime> created_at,
-      Value<DateTime> updated_at}) {
+      Value<DateTime> syncDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return ProdukCompanion(
       id: id ?? this.id,
       kode: kode ?? this.kode,
       nama: nama ?? this.nama,
       harga: harga ?? this.harga,
       aktif: aktif ?? this.aktif,
-      sync_date: sync_date ?? this.sync_date,
-      created_at: created_at ?? this.created_at,
-      updated_at: updated_at ?? this.updated_at,
+      syncDate: syncDate ?? this.syncDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -717,14 +713,14 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
     if (aktif.present) {
       map['aktif'] = Variable<bool>(aktif.value);
     }
-    if (sync_date.present) {
-      map['sync_date'] = Variable<DateTime>(sync_date.value);
+    if (syncDate.present) {
+      map['sync_date'] = Variable<DateTime>(syncDate.value);
     }
-    if (created_at.present) {
-      map['created_at'] = Variable<DateTime>(created_at.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (updated_at.present) {
-      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -737,9 +733,9 @@ class ProdukCompanion extends UpdateCompanion<ProdukData> {
           ..write('nama: $nama, ')
           ..write('harga: $harga, ')
           ..write('aktif: $aktif, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -806,10 +802,10 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
         defaultValue: Constant(false));
   }
 
-  final VerificationMeta _sync_dateMeta = const VerificationMeta('sync_date');
-  GeneratedDateTimeColumn _sync_date;
+  final VerificationMeta _syncDateMeta = const VerificationMeta('syncDate');
+  GeneratedDateTimeColumn _syncDate;
   @override
-  GeneratedDateTimeColumn get sync_date => _sync_date ??= _constructSyncDate();
+  GeneratedDateTimeColumn get syncDate => _syncDate ??= _constructSyncDate();
   GeneratedDateTimeColumn _constructSyncDate() {
     return GeneratedDateTimeColumn(
       'sync_date',
@@ -818,11 +814,10 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
     );
   }
 
-  final VerificationMeta _created_atMeta = const VerificationMeta('created_at');
-  GeneratedDateTimeColumn _created_at;
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get created_at =>
-      _created_at ??= _constructCreatedAt();
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
   GeneratedDateTimeColumn _constructCreatedAt() {
     return GeneratedDateTimeColumn(
       'created_at',
@@ -831,11 +826,10 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
     );
   }
 
-  final VerificationMeta _updated_atMeta = const VerificationMeta('updated_at');
-  GeneratedDateTimeColumn _updated_at;
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updated_at =>
-      _updated_at ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
   GeneratedDateTimeColumn _constructUpdatedAt() {
     return GeneratedDateTimeColumn(
       'updated_at',
@@ -846,7 +840,7 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, kode, nama, harga, aktif, sync_date, created_at, updated_at];
+      [id, kode, nama, harga, aktif, syncDate, createdAt, updatedAt];
   @override
   $ProdukTable get asDslTable => this;
   @override
@@ -886,24 +880,20 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
           _aktifMeta, aktif.isAcceptableOrUnknown(data['aktif'], _aktifMeta));
     }
     if (data.containsKey('sync_date')) {
-      context.handle(_sync_dateMeta,
-          sync_date.isAcceptableOrUnknown(data['sync_date'], _sync_dateMeta));
+      context.handle(_syncDateMeta,
+          syncDate.isAcceptableOrUnknown(data['sync_date'], _syncDateMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-          _created_atMeta,
-          created_at.isAcceptableOrUnknown(
-              data['created_at'], _created_atMeta));
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
     } else if (isInserting) {
-      context.missing(_created_atMeta);
+      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
-      context.handle(
-          _updated_atMeta,
-          updated_at.isAcceptableOrUnknown(
-              data['updated_at'], _updated_atMeta));
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
     } else if (isInserting) {
-      context.missing(_updated_atMeta);
+      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -924,18 +914,18 @@ class $ProdukTable extends Produk with TableInfo<$ProdukTable, ProdukData> {
 
 class TrukData extends DataClass implements Insertable<TrukData> {
   final int id;
-  final String nomor_plat;
+  final String nomorPlat;
   final String brand;
-  final DateTime sync_date;
-  final DateTime created_at;
-  final DateTime updated_at;
+  final DateTime syncDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   TrukData(
       {@required this.id,
-      @required this.nomor_plat,
+      @required this.nomorPlat,
       @required this.brand,
-      this.sync_date,
-      @required this.created_at,
-      @required this.updated_at});
+      this.syncDate,
+      @required this.createdAt,
+      @required this.updatedAt});
   factory TrukData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -944,15 +934,15 @@ class TrukData extends DataClass implements Insertable<TrukData> {
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return TrukData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      nomor_plat: stringType
+      nomorPlat: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}nomor_plat']),
       brand:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}brand']),
-      sync_date: dateTimeType
+      syncDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}sync_date']),
-      created_at: dateTimeType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updated_at: dateTimeType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -962,20 +952,20 @@ class TrukData extends DataClass implements Insertable<TrukData> {
     if (!nullToAbsent || id != null) {
       map['id'] = Variable<int>(id);
     }
-    if (!nullToAbsent || nomor_plat != null) {
-      map['nomor_plat'] = Variable<String>(nomor_plat);
+    if (!nullToAbsent || nomorPlat != null) {
+      map['nomor_plat'] = Variable<String>(nomorPlat);
     }
     if (!nullToAbsent || brand != null) {
       map['brand'] = Variable<String>(brand);
     }
-    if (!nullToAbsent || sync_date != null) {
-      map['sync_date'] = Variable<DateTime>(sync_date);
+    if (!nullToAbsent || syncDate != null) {
+      map['sync_date'] = Variable<DateTime>(syncDate);
     }
-    if (!nullToAbsent || created_at != null) {
-      map['created_at'] = Variable<DateTime>(created_at);
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
-    if (!nullToAbsent || updated_at != null) {
-      map['updated_at'] = Variable<DateTime>(updated_at);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -983,20 +973,20 @@ class TrukData extends DataClass implements Insertable<TrukData> {
   TrukCompanion toCompanion(bool nullToAbsent) {
     return TrukCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      nomor_plat: nomor_plat == null && nullToAbsent
+      nomorPlat: nomorPlat == null && nullToAbsent
           ? const Value.absent()
-          : Value(nomor_plat),
+          : Value(nomorPlat),
       brand:
           brand == null && nullToAbsent ? const Value.absent() : Value(brand),
-      sync_date: sync_date == null && nullToAbsent
+      syncDate: syncDate == null && nullToAbsent
           ? const Value.absent()
-          : Value(sync_date),
-      created_at: created_at == null && nullToAbsent
+          : Value(syncDate),
+      createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(created_at),
-      updated_at: updated_at == null && nullToAbsent
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(updated_at),
+          : Value(updatedAt),
     );
   }
 
@@ -1005,11 +995,11 @@ class TrukData extends DataClass implements Insertable<TrukData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return TrukData(
       id: serializer.fromJson<int>(json['id']),
-      nomor_plat: serializer.fromJson<String>(json['nomor_plat']),
+      nomorPlat: serializer.fromJson<String>(json['nomorPlat']),
       brand: serializer.fromJson<String>(json['brand']),
-      sync_date: serializer.fromJson<DateTime>(json['sync_date']),
-      created_at: serializer.fromJson<DateTime>(json['created_at']),
-      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+      syncDate: serializer.fromJson<DateTime>(json['syncDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -1017,38 +1007,38 @@ class TrukData extends DataClass implements Insertable<TrukData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'nomor_plat': serializer.toJson<String>(nomor_plat),
+      'nomorPlat': serializer.toJson<String>(nomorPlat),
       'brand': serializer.toJson<String>(brand),
-      'sync_date': serializer.toJson<DateTime>(sync_date),
-      'created_at': serializer.toJson<DateTime>(created_at),
-      'updated_at': serializer.toJson<DateTime>(updated_at),
+      'syncDate': serializer.toJson<DateTime>(syncDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   TrukData copyWith(
           {int id,
-          String nomor_plat,
+          String nomorPlat,
           String brand,
-          DateTime sync_date,
-          DateTime created_at,
-          DateTime updated_at}) =>
+          DateTime syncDate,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       TrukData(
         id: id ?? this.id,
-        nomor_plat: nomor_plat ?? this.nomor_plat,
+        nomorPlat: nomorPlat ?? this.nomorPlat,
         brand: brand ?? this.brand,
-        sync_date: sync_date ?? this.sync_date,
-        created_at: created_at ?? this.created_at,
-        updated_at: updated_at ?? this.updated_at,
+        syncDate: syncDate ?? this.syncDate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
   @override
   String toString() {
     return (StringBuffer('TrukData(')
           ..write('id: $id, ')
-          ..write('nomor_plat: $nomor_plat, ')
+          ..write('nomorPlat: $nomorPlat, ')
           ..write('brand: $brand, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1057,81 +1047,81 @@ class TrukData extends DataClass implements Insertable<TrukData> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          nomor_plat.hashCode,
+          nomorPlat.hashCode,
           $mrjc(
               brand.hashCode,
-              $mrjc(sync_date.hashCode,
-                  $mrjc(created_at.hashCode, updated_at.hashCode))))));
+              $mrjc(syncDate.hashCode,
+                  $mrjc(createdAt.hashCode, updatedAt.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is TrukData &&
           other.id == this.id &&
-          other.nomor_plat == this.nomor_plat &&
+          other.nomorPlat == this.nomorPlat &&
           other.brand == this.brand &&
-          other.sync_date == this.sync_date &&
-          other.created_at == this.created_at &&
-          other.updated_at == this.updated_at);
+          other.syncDate == this.syncDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class TrukCompanion extends UpdateCompanion<TrukData> {
   final Value<int> id;
-  final Value<String> nomor_plat;
+  final Value<String> nomorPlat;
   final Value<String> brand;
-  final Value<DateTime> sync_date;
-  final Value<DateTime> created_at;
-  final Value<DateTime> updated_at;
+  final Value<DateTime> syncDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const TrukCompanion({
     this.id = const Value.absent(),
-    this.nomor_plat = const Value.absent(),
+    this.nomorPlat = const Value.absent(),
     this.brand = const Value.absent(),
-    this.sync_date = const Value.absent(),
-    this.created_at = const Value.absent(),
-    this.updated_at = const Value.absent(),
+    this.syncDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   TrukCompanion.insert({
     this.id = const Value.absent(),
-    @required String nomor_plat,
+    @required String nomorPlat,
     @required String brand,
-    this.sync_date = const Value.absent(),
-    @required DateTime created_at,
-    @required DateTime updated_at,
-  })  : nomor_plat = Value(nomor_plat),
+    this.syncDate = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
+  })  : nomorPlat = Value(nomorPlat),
         brand = Value(brand),
-        created_at = Value(created_at),
-        updated_at = Value(updated_at);
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
   static Insertable<TrukData> custom({
     Expression<int> id,
-    Expression<String> nomor_plat,
+    Expression<String> nomorPlat,
     Expression<String> brand,
-    Expression<DateTime> sync_date,
-    Expression<DateTime> created_at,
-    Expression<DateTime> updated_at,
+    Expression<DateTime> syncDate,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (nomor_plat != null) 'nomor_plat': nomor_plat,
+      if (nomorPlat != null) 'nomor_plat': nomorPlat,
       if (brand != null) 'brand': brand,
-      if (sync_date != null) 'sync_date': sync_date,
-      if (created_at != null) 'created_at': created_at,
-      if (updated_at != null) 'updated_at': updated_at,
+      if (syncDate != null) 'sync_date': syncDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
   TrukCompanion copyWith(
       {Value<int> id,
-      Value<String> nomor_plat,
+      Value<String> nomorPlat,
       Value<String> brand,
-      Value<DateTime> sync_date,
-      Value<DateTime> created_at,
-      Value<DateTime> updated_at}) {
+      Value<DateTime> syncDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return TrukCompanion(
       id: id ?? this.id,
-      nomor_plat: nomor_plat ?? this.nomor_plat,
+      nomorPlat: nomorPlat ?? this.nomorPlat,
       brand: brand ?? this.brand,
-      sync_date: sync_date ?? this.sync_date,
-      created_at: created_at ?? this.created_at,
-      updated_at: updated_at ?? this.updated_at,
+      syncDate: syncDate ?? this.syncDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -1141,20 +1131,20 @@ class TrukCompanion extends UpdateCompanion<TrukData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (nomor_plat.present) {
-      map['nomor_plat'] = Variable<String>(nomor_plat.value);
+    if (nomorPlat.present) {
+      map['nomor_plat'] = Variable<String>(nomorPlat.value);
     }
     if (brand.present) {
       map['brand'] = Variable<String>(brand.value);
     }
-    if (sync_date.present) {
-      map['sync_date'] = Variable<DateTime>(sync_date.value);
+    if (syncDate.present) {
+      map['sync_date'] = Variable<DateTime>(syncDate.value);
     }
-    if (created_at.present) {
-      map['created_at'] = Variable<DateTime>(created_at.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (updated_at.present) {
-      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -1163,11 +1153,11 @@ class TrukCompanion extends UpdateCompanion<TrukData> {
   String toString() {
     return (StringBuffer('TrukCompanion(')
           ..write('id: $id, ')
-          ..write('nomor_plat: $nomor_plat, ')
+          ..write('nomorPlat: $nomorPlat, ')
           ..write('brand: $brand, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1186,10 +1176,10 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
-  final VerificationMeta _nomor_platMeta = const VerificationMeta('nomor_plat');
-  GeneratedTextColumn _nomor_plat;
+  final VerificationMeta _nomorPlatMeta = const VerificationMeta('nomorPlat');
+  GeneratedTextColumn _nomorPlat;
   @override
-  GeneratedTextColumn get nomor_plat => _nomor_plat ??= _constructNomorPlat();
+  GeneratedTextColumn get nomorPlat => _nomorPlat ??= _constructNomorPlat();
   GeneratedTextColumn _constructNomorPlat() {
     return GeneratedTextColumn(
       'nomor_plat',
@@ -1210,10 +1200,10 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
     );
   }
 
-  final VerificationMeta _sync_dateMeta = const VerificationMeta('sync_date');
-  GeneratedDateTimeColumn _sync_date;
+  final VerificationMeta _syncDateMeta = const VerificationMeta('syncDate');
+  GeneratedDateTimeColumn _syncDate;
   @override
-  GeneratedDateTimeColumn get sync_date => _sync_date ??= _constructSyncDate();
+  GeneratedDateTimeColumn get syncDate => _syncDate ??= _constructSyncDate();
   GeneratedDateTimeColumn _constructSyncDate() {
     return GeneratedDateTimeColumn(
       'sync_date',
@@ -1222,11 +1212,10 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
     );
   }
 
-  final VerificationMeta _created_atMeta = const VerificationMeta('created_at');
-  GeneratedDateTimeColumn _created_at;
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get created_at =>
-      _created_at ??= _constructCreatedAt();
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
   GeneratedDateTimeColumn _constructCreatedAt() {
     return GeneratedDateTimeColumn(
       'created_at',
@@ -1235,11 +1224,10 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
     );
   }
 
-  final VerificationMeta _updated_atMeta = const VerificationMeta('updated_at');
-  GeneratedDateTimeColumn _updated_at;
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updated_at =>
-      _updated_at ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
   GeneratedDateTimeColumn _constructUpdatedAt() {
     return GeneratedDateTimeColumn(
       'updated_at',
@@ -1250,7 +1238,7 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, nomor_plat, brand, sync_date, created_at, updated_at];
+      [id, nomorPlat, brand, syncDate, createdAt, updatedAt];
   @override
   $TrukTable get asDslTable => this;
   @override
@@ -1266,12 +1254,10 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
     if (data.containsKey('nomor_plat')) {
-      context.handle(
-          _nomor_platMeta,
-          nomor_plat.isAcceptableOrUnknown(
-              data['nomor_plat'], _nomor_platMeta));
+      context.handle(_nomorPlatMeta,
+          nomorPlat.isAcceptableOrUnknown(data['nomor_plat'], _nomorPlatMeta));
     } else if (isInserting) {
-      context.missing(_nomor_platMeta);
+      context.missing(_nomorPlatMeta);
     }
     if (data.containsKey('brand')) {
       context.handle(
@@ -1280,24 +1266,20 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
       context.missing(_brandMeta);
     }
     if (data.containsKey('sync_date')) {
-      context.handle(_sync_dateMeta,
-          sync_date.isAcceptableOrUnknown(data['sync_date'], _sync_dateMeta));
+      context.handle(_syncDateMeta,
+          syncDate.isAcceptableOrUnknown(data['sync_date'], _syncDateMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-          _created_atMeta,
-          created_at.isAcceptableOrUnknown(
-              data['created_at'], _created_atMeta));
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
     } else if (isInserting) {
-      context.missing(_created_atMeta);
+      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
-      context.handle(
-          _updated_atMeta,
-          updated_at.isAcceptableOrUnknown(
-              data['updated_at'], _updated_atMeta));
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
     } else if (isInserting) {
-      context.missing(_updated_atMeta);
+      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -1318,22 +1300,22 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
 
 class StokData extends DataClass implements Insertable<StokData> {
   final int id;
-  final int truck_id;
-  final int user_id;
-  final String nama_produk;
+  final int trukId;
+  final int userId;
+  final String namaProduk;
   final int quantity;
-  final DateTime sync_date;
-  final DateTime created_at;
-  final DateTime updated_at;
+  final DateTime syncDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   StokData(
       {@required this.id,
-      @required this.truck_id,
-      @required this.user_id,
-      @required this.nama_produk,
+      @required this.trukId,
+      @required this.userId,
+      @required this.namaProduk,
       @required this.quantity,
-      this.sync_date,
-      @required this.created_at,
-      @required this.updated_at});
+      this.syncDate,
+      @required this.createdAt,
+      @required this.updatedAt});
   factory StokData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1342,19 +1324,19 @@ class StokData extends DataClass implements Insertable<StokData> {
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return StokData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      truck_id:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}truck_id']),
-      user_id:
+      trukId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}truk_id']),
+      userId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
-      nama_produk: stringType
+      namaProduk: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}nama_produk']),
       quantity:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}quantity']),
-      sync_date: dateTimeType
+      syncDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}sync_date']),
-      created_at: dateTimeType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updated_at: dateTimeType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -1364,26 +1346,26 @@ class StokData extends DataClass implements Insertable<StokData> {
     if (!nullToAbsent || id != null) {
       map['id'] = Variable<int>(id);
     }
-    if (!nullToAbsent || truck_id != null) {
-      map['truck_id'] = Variable<int>(truck_id);
+    if (!nullToAbsent || trukId != null) {
+      map['truk_id'] = Variable<int>(trukId);
     }
-    if (!nullToAbsent || user_id != null) {
-      map['user_id'] = Variable<int>(user_id);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
     }
-    if (!nullToAbsent || nama_produk != null) {
-      map['nama_produk'] = Variable<String>(nama_produk);
+    if (!nullToAbsent || namaProduk != null) {
+      map['nama_produk'] = Variable<String>(namaProduk);
     }
     if (!nullToAbsent || quantity != null) {
       map['quantity'] = Variable<int>(quantity);
     }
-    if (!nullToAbsent || sync_date != null) {
-      map['sync_date'] = Variable<DateTime>(sync_date);
+    if (!nullToAbsent || syncDate != null) {
+      map['sync_date'] = Variable<DateTime>(syncDate);
     }
-    if (!nullToAbsent || created_at != null) {
-      map['created_at'] = Variable<DateTime>(created_at);
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
-    if (!nullToAbsent || updated_at != null) {
-      map['updated_at'] = Variable<DateTime>(updated_at);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -1391,27 +1373,25 @@ class StokData extends DataClass implements Insertable<StokData> {
   StokCompanion toCompanion(bool nullToAbsent) {
     return StokCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      truck_id: truck_id == null && nullToAbsent
+      trukId:
+          trukId == null && nullToAbsent ? const Value.absent() : Value(trukId),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      namaProduk: namaProduk == null && nullToAbsent
           ? const Value.absent()
-          : Value(truck_id),
-      user_id: user_id == null && nullToAbsent
-          ? const Value.absent()
-          : Value(user_id),
-      nama_produk: nama_produk == null && nullToAbsent
-          ? const Value.absent()
-          : Value(nama_produk),
+          : Value(namaProduk),
       quantity: quantity == null && nullToAbsent
           ? const Value.absent()
           : Value(quantity),
-      sync_date: sync_date == null && nullToAbsent
+      syncDate: syncDate == null && nullToAbsent
           ? const Value.absent()
-          : Value(sync_date),
-      created_at: created_at == null && nullToAbsent
+          : Value(syncDate),
+      createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(created_at),
-      updated_at: updated_at == null && nullToAbsent
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
-          : Value(updated_at),
+          : Value(updatedAt),
     );
   }
 
@@ -1420,13 +1400,13 @@ class StokData extends DataClass implements Insertable<StokData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return StokData(
       id: serializer.fromJson<int>(json['id']),
-      truck_id: serializer.fromJson<int>(json['truck_id']),
-      user_id: serializer.fromJson<int>(json['user_id']),
-      nama_produk: serializer.fromJson<String>(json['nama_produk']),
+      trukId: serializer.fromJson<int>(json['trukId']),
+      userId: serializer.fromJson<int>(json['userId']),
+      namaProduk: serializer.fromJson<String>(json['namaProduk']),
       quantity: serializer.fromJson<int>(json['quantity']),
-      sync_date: serializer.fromJson<DateTime>(json['sync_date']),
-      created_at: serializer.fromJson<DateTime>(json['created_at']),
-      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+      syncDate: serializer.fromJson<DateTime>(json['syncDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -1434,46 +1414,46 @@ class StokData extends DataClass implements Insertable<StokData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'truck_id': serializer.toJson<int>(truck_id),
-      'user_id': serializer.toJson<int>(user_id),
-      'nama_produk': serializer.toJson<String>(nama_produk),
+      'trukId': serializer.toJson<int>(trukId),
+      'userId': serializer.toJson<int>(userId),
+      'namaProduk': serializer.toJson<String>(namaProduk),
       'quantity': serializer.toJson<int>(quantity),
-      'sync_date': serializer.toJson<DateTime>(sync_date),
-      'created_at': serializer.toJson<DateTime>(created_at),
-      'updated_at': serializer.toJson<DateTime>(updated_at),
+      'syncDate': serializer.toJson<DateTime>(syncDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   StokData copyWith(
           {int id,
-          int truck_id,
-          int user_id,
-          String nama_produk,
+          int trukId,
+          int userId,
+          String namaProduk,
           int quantity,
-          DateTime sync_date,
-          DateTime created_at,
-          DateTime updated_at}) =>
+          DateTime syncDate,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       StokData(
         id: id ?? this.id,
-        truck_id: truck_id ?? this.truck_id,
-        user_id: user_id ?? this.user_id,
-        nama_produk: nama_produk ?? this.nama_produk,
+        trukId: trukId ?? this.trukId,
+        userId: userId ?? this.userId,
+        namaProduk: namaProduk ?? this.namaProduk,
         quantity: quantity ?? this.quantity,
-        sync_date: sync_date ?? this.sync_date,
-        created_at: created_at ?? this.created_at,
-        updated_at: updated_at ?? this.updated_at,
+        syncDate: syncDate ?? this.syncDate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
   @override
   String toString() {
     return (StringBuffer('StokData(')
           ..write('id: $id, ')
-          ..write('truck_id: $truck_id, ')
-          ..write('user_id: $user_id, ')
-          ..write('nama_produk: $nama_produk, ')
+          ..write('trukId: $trukId, ')
+          ..write('userId: $userId, ')
+          ..write('namaProduk: $namaProduk, ')
           ..write('quantity: $quantity, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1482,105 +1462,103 @@ class StokData extends DataClass implements Insertable<StokData> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          truck_id.hashCode,
+          trukId.hashCode,
           $mrjc(
-              user_id.hashCode,
+              userId.hashCode,
               $mrjc(
-                  nama_produk.hashCode,
+                  namaProduk.hashCode,
                   $mrjc(
                       quantity.hashCode,
-                      $mrjc(
-                          sync_date.hashCode,
-                          $mrjc(
-                              created_at.hashCode, updated_at.hashCode))))))));
+                      $mrjc(syncDate.hashCode,
+                          $mrjc(createdAt.hashCode, updatedAt.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is StokData &&
           other.id == this.id &&
-          other.truck_id == this.truck_id &&
-          other.user_id == this.user_id &&
-          other.nama_produk == this.nama_produk &&
+          other.trukId == this.trukId &&
+          other.userId == this.userId &&
+          other.namaProduk == this.namaProduk &&
           other.quantity == this.quantity &&
-          other.sync_date == this.sync_date &&
-          other.created_at == this.created_at &&
-          other.updated_at == this.updated_at);
+          other.syncDate == this.syncDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class StokCompanion extends UpdateCompanion<StokData> {
   final Value<int> id;
-  final Value<int> truck_id;
-  final Value<int> user_id;
-  final Value<String> nama_produk;
+  final Value<int> trukId;
+  final Value<int> userId;
+  final Value<String> namaProduk;
   final Value<int> quantity;
-  final Value<DateTime> sync_date;
-  final Value<DateTime> created_at;
-  final Value<DateTime> updated_at;
+  final Value<DateTime> syncDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const StokCompanion({
     this.id = const Value.absent(),
-    this.truck_id = const Value.absent(),
-    this.user_id = const Value.absent(),
-    this.nama_produk = const Value.absent(),
+    this.trukId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.namaProduk = const Value.absent(),
     this.quantity = const Value.absent(),
-    this.sync_date = const Value.absent(),
-    this.created_at = const Value.absent(),
-    this.updated_at = const Value.absent(),
+    this.syncDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   StokCompanion.insert({
     this.id = const Value.absent(),
-    @required int truck_id,
-    @required int user_id,
-    @required String nama_produk,
+    @required int trukId,
+    @required int userId,
+    @required String namaProduk,
     @required int quantity,
-    this.sync_date = const Value.absent(),
-    @required DateTime created_at,
-    @required DateTime updated_at,
-  })  : truck_id = Value(truck_id),
-        user_id = Value(user_id),
-        nama_produk = Value(nama_produk),
+    this.syncDate = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
+  })  : trukId = Value(trukId),
+        userId = Value(userId),
+        namaProduk = Value(namaProduk),
         quantity = Value(quantity),
-        created_at = Value(created_at),
-        updated_at = Value(updated_at);
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
   static Insertable<StokData> custom({
     Expression<int> id,
-    Expression<int> truck_id,
-    Expression<int> user_id,
-    Expression<String> nama_produk,
+    Expression<int> trukId,
+    Expression<int> userId,
+    Expression<String> namaProduk,
     Expression<int> quantity,
-    Expression<DateTime> sync_date,
-    Expression<DateTime> created_at,
-    Expression<DateTime> updated_at,
+    Expression<DateTime> syncDate,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (truck_id != null) 'truck_id': truck_id,
-      if (user_id != null) 'user_id': user_id,
-      if (nama_produk != null) 'nama_produk': nama_produk,
+      if (trukId != null) 'truk_id': trukId,
+      if (userId != null) 'user_id': userId,
+      if (namaProduk != null) 'nama_produk': namaProduk,
       if (quantity != null) 'quantity': quantity,
-      if (sync_date != null) 'sync_date': sync_date,
-      if (created_at != null) 'created_at': created_at,
-      if (updated_at != null) 'updated_at': updated_at,
+      if (syncDate != null) 'sync_date': syncDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
   StokCompanion copyWith(
       {Value<int> id,
-      Value<int> truck_id,
-      Value<int> user_id,
-      Value<String> nama_produk,
+      Value<int> trukId,
+      Value<int> userId,
+      Value<String> namaProduk,
       Value<int> quantity,
-      Value<DateTime> sync_date,
-      Value<DateTime> created_at,
-      Value<DateTime> updated_at}) {
+      Value<DateTime> syncDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return StokCompanion(
       id: id ?? this.id,
-      truck_id: truck_id ?? this.truck_id,
-      user_id: user_id ?? this.user_id,
-      nama_produk: nama_produk ?? this.nama_produk,
+      trukId: trukId ?? this.trukId,
+      userId: userId ?? this.userId,
+      namaProduk: namaProduk ?? this.namaProduk,
       quantity: quantity ?? this.quantity,
-      sync_date: sync_date ?? this.sync_date,
-      created_at: created_at ?? this.created_at,
-      updated_at: updated_at ?? this.updated_at,
+      syncDate: syncDate ?? this.syncDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -1590,26 +1568,26 @@ class StokCompanion extends UpdateCompanion<StokData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (truck_id.present) {
-      map['truck_id'] = Variable<int>(truck_id.value);
+    if (trukId.present) {
+      map['truk_id'] = Variable<int>(trukId.value);
     }
-    if (user_id.present) {
-      map['user_id'] = Variable<int>(user_id.value);
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
     }
-    if (nama_produk.present) {
-      map['nama_produk'] = Variable<String>(nama_produk.value);
+    if (namaProduk.present) {
+      map['nama_produk'] = Variable<String>(namaProduk.value);
     }
     if (quantity.present) {
       map['quantity'] = Variable<int>(quantity.value);
     }
-    if (sync_date.present) {
-      map['sync_date'] = Variable<DateTime>(sync_date.value);
+    if (syncDate.present) {
+      map['sync_date'] = Variable<DateTime>(syncDate.value);
     }
-    if (created_at.present) {
-      map['created_at'] = Variable<DateTime>(created_at.value);
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (updated_at.present) {
-      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -1618,13 +1596,13 @@ class StokCompanion extends UpdateCompanion<StokData> {
   String toString() {
     return (StringBuffer('StokCompanion(')
           ..write('id: $id, ')
-          ..write('truck_id: $truck_id, ')
-          ..write('user_id: $user_id, ')
-          ..write('nama_produk: $nama_produk, ')
+          ..write('trukId: $trukId, ')
+          ..write('userId: $userId, ')
+          ..write('namaProduk: $namaProduk, ')
           ..write('quantity: $quantity, ')
-          ..write('sync_date: $sync_date, ')
-          ..write('created_at: $created_at, ')
-          ..write('updated_at: $updated_at')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1643,22 +1621,22 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
-  final VerificationMeta _truck_idMeta = const VerificationMeta('truck_id');
-  GeneratedIntColumn _truck_id;
+  final VerificationMeta _trukIdMeta = const VerificationMeta('trukId');
+  GeneratedIntColumn _trukId;
   @override
-  GeneratedIntColumn get truck_id => _truck_id ??= _constructTruckId();
-  GeneratedIntColumn _constructTruckId() {
+  GeneratedIntColumn get trukId => _trukId ??= _constructTrukId();
+  GeneratedIntColumn _constructTrukId() {
     return GeneratedIntColumn(
-      'truck_id',
+      'truk_id',
       $tableName,
       false,
     );
   }
 
-  final VerificationMeta _user_idMeta = const VerificationMeta('user_id');
-  GeneratedIntColumn _user_id;
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  GeneratedIntColumn _userId;
   @override
-  GeneratedIntColumn get user_id => _user_id ??= _constructUserId();
+  GeneratedIntColumn get userId => _userId ??= _constructUserId();
   GeneratedIntColumn _constructUserId() {
     return GeneratedIntColumn(
       'user_id',
@@ -1667,12 +1645,10 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
     );
   }
 
-  final VerificationMeta _nama_produkMeta =
-      const VerificationMeta('nama_produk');
-  GeneratedTextColumn _nama_produk;
+  final VerificationMeta _namaProdukMeta = const VerificationMeta('namaProduk');
+  GeneratedTextColumn _namaProduk;
   @override
-  GeneratedTextColumn get nama_produk =>
-      _nama_produk ??= _constructNamaProduk();
+  GeneratedTextColumn get namaProduk => _namaProduk ??= _constructNamaProduk();
   GeneratedTextColumn _constructNamaProduk() {
     return GeneratedTextColumn(
       'nama_produk',
@@ -1693,10 +1669,10 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
     );
   }
 
-  final VerificationMeta _sync_dateMeta = const VerificationMeta('sync_date');
-  GeneratedDateTimeColumn _sync_date;
+  final VerificationMeta _syncDateMeta = const VerificationMeta('syncDate');
+  GeneratedDateTimeColumn _syncDate;
   @override
-  GeneratedDateTimeColumn get sync_date => _sync_date ??= _constructSyncDate();
+  GeneratedDateTimeColumn get syncDate => _syncDate ??= _constructSyncDate();
   GeneratedDateTimeColumn _constructSyncDate() {
     return GeneratedDateTimeColumn(
       'sync_date',
@@ -1705,11 +1681,10 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
     );
   }
 
-  final VerificationMeta _created_atMeta = const VerificationMeta('created_at');
-  GeneratedDateTimeColumn _created_at;
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get created_at =>
-      _created_at ??= _constructCreatedAt();
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
   GeneratedDateTimeColumn _constructCreatedAt() {
     return GeneratedDateTimeColumn(
       'created_at',
@@ -1718,11 +1693,10 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
     );
   }
 
-  final VerificationMeta _updated_atMeta = const VerificationMeta('updated_at');
-  GeneratedDateTimeColumn _updated_at;
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updated_at =>
-      _updated_at ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
   GeneratedDateTimeColumn _constructUpdatedAt() {
     return GeneratedDateTimeColumn(
       'updated_at',
@@ -1734,13 +1708,13 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        truck_id,
-        user_id,
-        nama_produk,
+        trukId,
+        userId,
+        namaProduk,
         quantity,
-        sync_date,
-        created_at,
-        updated_at
+        syncDate,
+        createdAt,
+        updatedAt
       ];
   @override
   $StokTable get asDslTable => this;
@@ -1756,25 +1730,25 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (data.containsKey('truck_id')) {
-      context.handle(_truck_idMeta,
-          truck_id.isAcceptableOrUnknown(data['truck_id'], _truck_idMeta));
+    if (data.containsKey('truk_id')) {
+      context.handle(_trukIdMeta,
+          trukId.isAcceptableOrUnknown(data['truk_id'], _trukIdMeta));
     } else if (isInserting) {
-      context.missing(_truck_idMeta);
+      context.missing(_trukIdMeta);
     }
     if (data.containsKey('user_id')) {
-      context.handle(_user_idMeta,
-          user_id.isAcceptableOrUnknown(data['user_id'], _user_idMeta));
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id'], _userIdMeta));
     } else if (isInserting) {
-      context.missing(_user_idMeta);
+      context.missing(_userIdMeta);
     }
     if (data.containsKey('nama_produk')) {
       context.handle(
-          _nama_produkMeta,
-          nama_produk.isAcceptableOrUnknown(
-              data['nama_produk'], _nama_produkMeta));
+          _namaProdukMeta,
+          namaProduk.isAcceptableOrUnknown(
+              data['nama_produk'], _namaProdukMeta));
     } else if (isInserting) {
-      context.missing(_nama_produkMeta);
+      context.missing(_namaProdukMeta);
     }
     if (data.containsKey('quantity')) {
       context.handle(_quantityMeta,
@@ -1783,24 +1757,20 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
       context.missing(_quantityMeta);
     }
     if (data.containsKey('sync_date')) {
-      context.handle(_sync_dateMeta,
-          sync_date.isAcceptableOrUnknown(data['sync_date'], _sync_dateMeta));
+      context.handle(_syncDateMeta,
+          syncDate.isAcceptableOrUnknown(data['sync_date'], _syncDateMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-          _created_atMeta,
-          created_at.isAcceptableOrUnknown(
-              data['created_at'], _created_atMeta));
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
     } else if (isInserting) {
-      context.missing(_created_atMeta);
+      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
-      context.handle(
-          _updated_atMeta,
-          updated_at.isAcceptableOrUnknown(
-              data['updated_at'], _updated_atMeta));
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
     } else if (isInserting) {
-      context.missing(_updated_atMeta);
+      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -1819,6 +1789,771 @@ class $StokTable extends Stok with TableInfo<$StokTable, StokData> {
   }
 }
 
+class OutletData extends DataClass implements Insertable<OutletData> {
+  final int id;
+  final String barcode;
+  final String user;
+  final String outletName;
+  final String address;
+  final String phone;
+  final String owner;
+  final String lat;
+  final String lng;
+  final String geofence;
+  final String picture;
+  final DateTime syncDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  OutletData(
+      {@required this.id,
+      @required this.barcode,
+      @required this.user,
+      @required this.outletName,
+      this.address,
+      this.phone,
+      this.owner,
+      @required this.lat,
+      @required this.lng,
+      this.geofence,
+      this.picture,
+      this.syncDate,
+      @required this.createdAt,
+      @required this.updatedAt});
+  factory OutletData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return OutletData(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      barcode:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}barcode']),
+      user: stringType.mapFromDatabaseResponse(data['${effectivePrefix}user']),
+      outletName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}outlet_name']),
+      address:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}address']),
+      phone:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}phone']),
+      owner:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}owner']),
+      lat: stringType.mapFromDatabaseResponse(data['${effectivePrefix}lat']),
+      lng: stringType.mapFromDatabaseResponse(data['${effectivePrefix}lng']),
+      geofence: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}geofence']),
+      picture:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}picture']),
+      syncDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}sync_date']),
+      createdAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      updatedAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || barcode != null) {
+      map['barcode'] = Variable<String>(barcode);
+    }
+    if (!nullToAbsent || user != null) {
+      map['user'] = Variable<String>(user);
+    }
+    if (!nullToAbsent || outletName != null) {
+      map['outlet_name'] = Variable<String>(outletName);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || owner != null) {
+      map['owner'] = Variable<String>(owner);
+    }
+    if (!nullToAbsent || lat != null) {
+      map['lat'] = Variable<String>(lat);
+    }
+    if (!nullToAbsent || lng != null) {
+      map['lng'] = Variable<String>(lng);
+    }
+    if (!nullToAbsent || geofence != null) {
+      map['geofence'] = Variable<String>(geofence);
+    }
+    if (!nullToAbsent || picture != null) {
+      map['picture'] = Variable<String>(picture);
+    }
+    if (!nullToAbsent || syncDate != null) {
+      map['sync_date'] = Variable<DateTime>(syncDate);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  OutletCompanion toCompanion(bool nullToAbsent) {
+    return OutletCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      barcode: barcode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(barcode),
+      user: user == null && nullToAbsent ? const Value.absent() : Value(user),
+      outletName: outletName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(outletName),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
+      owner:
+          owner == null && nullToAbsent ? const Value.absent() : Value(owner),
+      lat: lat == null && nullToAbsent ? const Value.absent() : Value(lat),
+      lng: lng == null && nullToAbsent ? const Value.absent() : Value(lng),
+      geofence: geofence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(geofence),
+      picture: picture == null && nullToAbsent
+          ? const Value.absent()
+          : Value(picture),
+      syncDate: syncDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncDate),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory OutletData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return OutletData(
+      id: serializer.fromJson<int>(json['id']),
+      barcode: serializer.fromJson<String>(json['barcode']),
+      user: serializer.fromJson<String>(json['user']),
+      outletName: serializer.fromJson<String>(json['outletName']),
+      address: serializer.fromJson<String>(json['address']),
+      phone: serializer.fromJson<String>(json['phone']),
+      owner: serializer.fromJson<String>(json['owner']),
+      lat: serializer.fromJson<String>(json['lat']),
+      lng: serializer.fromJson<String>(json['lng']),
+      geofence: serializer.fromJson<String>(json['geofence']),
+      picture: serializer.fromJson<String>(json['picture']),
+      syncDate: serializer.fromJson<DateTime>(json['syncDate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'barcode': serializer.toJson<String>(barcode),
+      'user': serializer.toJson<String>(user),
+      'outletName': serializer.toJson<String>(outletName),
+      'address': serializer.toJson<String>(address),
+      'phone': serializer.toJson<String>(phone),
+      'owner': serializer.toJson<String>(owner),
+      'lat': serializer.toJson<String>(lat),
+      'lng': serializer.toJson<String>(lng),
+      'geofence': serializer.toJson<String>(geofence),
+      'picture': serializer.toJson<String>(picture),
+      'syncDate': serializer.toJson<DateTime>(syncDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  OutletData copyWith(
+          {int id,
+          String barcode,
+          String user,
+          String outletName,
+          String address,
+          String phone,
+          String owner,
+          String lat,
+          String lng,
+          String geofence,
+          String picture,
+          DateTime syncDate,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
+      OutletData(
+        id: id ?? this.id,
+        barcode: barcode ?? this.barcode,
+        user: user ?? this.user,
+        outletName: outletName ?? this.outletName,
+        address: address ?? this.address,
+        phone: phone ?? this.phone,
+        owner: owner ?? this.owner,
+        lat: lat ?? this.lat,
+        lng: lng ?? this.lng,
+        geofence: geofence ?? this.geofence,
+        picture: picture ?? this.picture,
+        syncDate: syncDate ?? this.syncDate,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('OutletData(')
+          ..write('id: $id, ')
+          ..write('barcode: $barcode, ')
+          ..write('user: $user, ')
+          ..write('outletName: $outletName, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('owner: $owner, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
+          ..write('geofence: $geofence, ')
+          ..write('picture: $picture, ')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          barcode.hashCode,
+          $mrjc(
+              user.hashCode,
+              $mrjc(
+                  outletName.hashCode,
+                  $mrjc(
+                      address.hashCode,
+                      $mrjc(
+                          phone.hashCode,
+                          $mrjc(
+                              owner.hashCode,
+                              $mrjc(
+                                  lat.hashCode,
+                                  $mrjc(
+                                      lng.hashCode,
+                                      $mrjc(
+                                          geofence.hashCode,
+                                          $mrjc(
+                                              picture.hashCode,
+                                              $mrjc(
+                                                  syncDate.hashCode,
+                                                  $mrjc(
+                                                      createdAt.hashCode,
+                                                      updatedAt
+                                                          .hashCode))))))))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is OutletData &&
+          other.id == this.id &&
+          other.barcode == this.barcode &&
+          other.user == this.user &&
+          other.outletName == this.outletName &&
+          other.address == this.address &&
+          other.phone == this.phone &&
+          other.owner == this.owner &&
+          other.lat == this.lat &&
+          other.lng == this.lng &&
+          other.geofence == this.geofence &&
+          other.picture == this.picture &&
+          other.syncDate == this.syncDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OutletCompanion extends UpdateCompanion<OutletData> {
+  final Value<int> id;
+  final Value<String> barcode;
+  final Value<String> user;
+  final Value<String> outletName;
+  final Value<String> address;
+  final Value<String> phone;
+  final Value<String> owner;
+  final Value<String> lat;
+  final Value<String> lng;
+  final Value<String> geofence;
+  final Value<String> picture;
+  final Value<DateTime> syncDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const OutletCompanion({
+    this.id = const Value.absent(),
+    this.barcode = const Value.absent(),
+    this.user = const Value.absent(),
+    this.outletName = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.owner = const Value.absent(),
+    this.lat = const Value.absent(),
+    this.lng = const Value.absent(),
+    this.geofence = const Value.absent(),
+    this.picture = const Value.absent(),
+    this.syncDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  OutletCompanion.insert({
+    this.id = const Value.absent(),
+    @required String barcode,
+    @required String user,
+    @required String outletName,
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.owner = const Value.absent(),
+    @required String lat,
+    @required String lng,
+    this.geofence = const Value.absent(),
+    this.picture = const Value.absent(),
+    this.syncDate = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
+  })  : barcode = Value(barcode),
+        user = Value(user),
+        outletName = Value(outletName),
+        lat = Value(lat),
+        lng = Value(lng),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<OutletData> custom({
+    Expression<int> id,
+    Expression<String> barcode,
+    Expression<String> user,
+    Expression<String> outletName,
+    Expression<String> address,
+    Expression<String> phone,
+    Expression<String> owner,
+    Expression<String> lat,
+    Expression<String> lng,
+    Expression<String> geofence,
+    Expression<String> picture,
+    Expression<DateTime> syncDate,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (barcode != null) 'barcode': barcode,
+      if (user != null) 'user': user,
+      if (outletName != null) 'outlet_name': outletName,
+      if (address != null) 'address': address,
+      if (phone != null) 'phone': phone,
+      if (owner != null) 'owner': owner,
+      if (lat != null) 'lat': lat,
+      if (lng != null) 'lng': lng,
+      if (geofence != null) 'geofence': geofence,
+      if (picture != null) 'picture': picture,
+      if (syncDate != null) 'sync_date': syncDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  OutletCompanion copyWith(
+      {Value<int> id,
+      Value<String> barcode,
+      Value<String> user,
+      Value<String> outletName,
+      Value<String> address,
+      Value<String> phone,
+      Value<String> owner,
+      Value<String> lat,
+      Value<String> lng,
+      Value<String> geofence,
+      Value<String> picture,
+      Value<DateTime> syncDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
+    return OutletCompanion(
+      id: id ?? this.id,
+      barcode: barcode ?? this.barcode,
+      user: user ?? this.user,
+      outletName: outletName ?? this.outletName,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      owner: owner ?? this.owner,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      geofence: geofence ?? this.geofence,
+      picture: picture ?? this.picture,
+      syncDate: syncDate ?? this.syncDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (barcode.present) {
+      map['barcode'] = Variable<String>(barcode.value);
+    }
+    if (user.present) {
+      map['user'] = Variable<String>(user.value);
+    }
+    if (outletName.present) {
+      map['outlet_name'] = Variable<String>(outletName.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (owner.present) {
+      map['owner'] = Variable<String>(owner.value);
+    }
+    if (lat.present) {
+      map['lat'] = Variable<String>(lat.value);
+    }
+    if (lng.present) {
+      map['lng'] = Variable<String>(lng.value);
+    }
+    if (geofence.present) {
+      map['geofence'] = Variable<String>(geofence.value);
+    }
+    if (picture.present) {
+      map['picture'] = Variable<String>(picture.value);
+    }
+    if (syncDate.present) {
+      map['sync_date'] = Variable<DateTime>(syncDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OutletCompanion(')
+          ..write('id: $id, ')
+          ..write('barcode: $barcode, ')
+          ..write('user: $user, ')
+          ..write('outletName: $outletName, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('owner: $owner, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
+          ..write('geofence: $geofence, ')
+          ..write('picture: $picture, ')
+          ..write('syncDate: $syncDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OutletTable extends Outlet with TableInfo<$OutletTable, OutletData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $OutletTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _barcodeMeta = const VerificationMeta('barcode');
+  GeneratedTextColumn _barcode;
+  @override
+  GeneratedTextColumn get barcode => _barcode ??= _constructBarcode();
+  GeneratedTextColumn _constructBarcode() {
+    return GeneratedTextColumn(
+      'barcode',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _userMeta = const VerificationMeta('user');
+  GeneratedTextColumn _user;
+  @override
+  GeneratedTextColumn get user => _user ??= _constructUser();
+  GeneratedTextColumn _constructUser() {
+    return GeneratedTextColumn(
+      'user',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _outletNameMeta = const VerificationMeta('outletName');
+  GeneratedTextColumn _outletName;
+  @override
+  GeneratedTextColumn get outletName => _outletName ??= _constructOutletName();
+  GeneratedTextColumn _constructOutletName() {
+    return GeneratedTextColumn(
+      'outlet_name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _addressMeta = const VerificationMeta('address');
+  GeneratedTextColumn _address;
+  @override
+  GeneratedTextColumn get address => _address ??= _constructAddress();
+  GeneratedTextColumn _constructAddress() {
+    return GeneratedTextColumn(
+      'address',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  GeneratedTextColumn _phone;
+  @override
+  GeneratedTextColumn get phone => _phone ??= _constructPhone();
+  GeneratedTextColumn _constructPhone() {
+    return GeneratedTextColumn(
+      'phone',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  GeneratedTextColumn _owner;
+  @override
+  GeneratedTextColumn get owner => _owner ??= _constructOwner();
+  GeneratedTextColumn _constructOwner() {
+    return GeneratedTextColumn(
+      'owner',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _latMeta = const VerificationMeta('lat');
+  GeneratedTextColumn _lat;
+  @override
+  GeneratedTextColumn get lat => _lat ??= _constructLat();
+  GeneratedTextColumn _constructLat() {
+    return GeneratedTextColumn(
+      'lat',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _lngMeta = const VerificationMeta('lng');
+  GeneratedTextColumn _lng;
+  @override
+  GeneratedTextColumn get lng => _lng ??= _constructLng();
+  GeneratedTextColumn _constructLng() {
+    return GeneratedTextColumn(
+      'lng',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _geofenceMeta = const VerificationMeta('geofence');
+  GeneratedTextColumn _geofence;
+  @override
+  GeneratedTextColumn get geofence => _geofence ??= _constructGeofence();
+  GeneratedTextColumn _constructGeofence() {
+    return GeneratedTextColumn(
+      'geofence',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _pictureMeta = const VerificationMeta('picture');
+  GeneratedTextColumn _picture;
+  @override
+  GeneratedTextColumn get picture => _picture ??= _constructPicture();
+  GeneratedTextColumn _constructPicture() {
+    return GeneratedTextColumn(
+      'picture',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _syncDateMeta = const VerificationMeta('syncDate');
+  GeneratedDateTimeColumn _syncDate;
+  @override
+  GeneratedDateTimeColumn get syncDate => _syncDate ??= _constructSyncDate();
+  GeneratedDateTimeColumn _constructSyncDate() {
+    return GeneratedDateTimeColumn(
+      'sync_date',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
+  @override
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
+      'created_at',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
+  @override
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
+      'updated_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        barcode,
+        user,
+        outletName,
+        address,
+        phone,
+        owner,
+        lat,
+        lng,
+        geofence,
+        picture,
+        syncDate,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  $OutletTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'outlet';
+  @override
+  final String actualTableName = 'outlet';
+  @override
+  VerificationContext validateIntegrity(Insertable<OutletData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('barcode')) {
+      context.handle(_barcodeMeta,
+          barcode.isAcceptableOrUnknown(data['barcode'], _barcodeMeta));
+    } else if (isInserting) {
+      context.missing(_barcodeMeta);
+    }
+    if (data.containsKey('user')) {
+      context.handle(
+          _userMeta, user.isAcceptableOrUnknown(data['user'], _userMeta));
+    } else if (isInserting) {
+      context.missing(_userMeta);
+    }
+    if (data.containsKey('outlet_name')) {
+      context.handle(
+          _outletNameMeta,
+          outletName.isAcceptableOrUnknown(
+              data['outlet_name'], _outletNameMeta));
+    } else if (isInserting) {
+      context.missing(_outletNameMeta);
+    }
+    if (data.containsKey('address')) {
+      context.handle(_addressMeta,
+          address.isAcceptableOrUnknown(data['address'], _addressMeta));
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone'], _phoneMeta));
+    }
+    if (data.containsKey('owner')) {
+      context.handle(
+          _ownerMeta, owner.isAcceptableOrUnknown(data['owner'], _ownerMeta));
+    }
+    if (data.containsKey('lat')) {
+      context.handle(
+          _latMeta, lat.isAcceptableOrUnknown(data['lat'], _latMeta));
+    } else if (isInserting) {
+      context.missing(_latMeta);
+    }
+    if (data.containsKey('lng')) {
+      context.handle(
+          _lngMeta, lng.isAcceptableOrUnknown(data['lng'], _lngMeta));
+    } else if (isInserting) {
+      context.missing(_lngMeta);
+    }
+    if (data.containsKey('geofence')) {
+      context.handle(_geofenceMeta,
+          geofence.isAcceptableOrUnknown(data['geofence'], _geofenceMeta));
+    }
+    if (data.containsKey('picture')) {
+      context.handle(_pictureMeta,
+          picture.isAcceptableOrUnknown(data['picture'], _pictureMeta));
+    }
+    if (data.containsKey('sync_date')) {
+      context.handle(_syncDateMeta,
+          syncDate.isAcceptableOrUnknown(data['sync_date'], _syncDateMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OutletData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return OutletData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $OutletTable createAlias(String alias) {
+    return $OutletTable(_db, alias);
+  }
+}
+
 abstract class _$NexDatabase extends GeneratedDatabase {
   _$NexDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UsersTable _users;
@@ -1829,6 +2564,8 @@ abstract class _$NexDatabase extends GeneratedDatabase {
   $TrukTable get truk => _truk ??= $TrukTable(this);
   $StokTable _stok;
   $StokTable get stok => _stok ??= $StokTable(this);
+  $OutletTable _outlet;
+  $OutletTable get outlet => _outlet ??= $OutletTable(this);
   UserDao _userDao;
   UserDao get userDao => _userDao ??= UserDao(this as NexDatabase);
   ProdukDao _produkDao;
@@ -1837,11 +2574,13 @@ abstract class _$NexDatabase extends GeneratedDatabase {
   TrukDao get trukDao => _trukDao ??= TrukDao(this as NexDatabase);
   StokDao _stokDao;
   StokDao get stokDao => _stokDao ??= StokDao(this as NexDatabase);
+  OutletDao _outletDao;
+  OutletDao get outletDao => _outletDao ??= OutletDao(this as NexDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [users, produk, truk, stok];
+      [users, produk, truk, stok, outlet];
 }
 
 // **************************************************************************
@@ -1860,4 +2599,7 @@ mixin _$StokDaoMixin on DatabaseAccessor<NexDatabase> {
 mixin _$TrukDaoMixin on DatabaseAccessor<NexDatabase> {
   $TrukTable get truk => attachedDatabase.truk;
   $StokTable get stok => attachedDatabase.stok;
+}
+mixin _$OutletDaoMixin on DatabaseAccessor<NexDatabase> {
+  $OutletTable get outlet => attachedDatabase.outlet;
 }

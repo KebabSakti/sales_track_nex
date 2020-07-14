@@ -4,14 +4,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:sales_track_nex/database/nex_database.dart';
-import 'package:sales_track_nex/repository/authenticate_repository.dart';
+import 'package:sales_track_nex/repository/repository.dart';
 
 part 'authenticate_event.dart';
 part 'authenticate_state.dart';
 
 class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
-  final AuthenticateRepository repository;
-  
+  final Repository repository;
+
   AuthenticateBloc(this.repository) : super(null);
 
   @override
@@ -24,10 +24,6 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
       yield* _getLoggedInUser(event);
     } else if (event is LoginRemote) {
       yield* _loginRemote(event);
-    } else if (event is ValidateUserLocal) {
-      yield* _validateUserLocal(event);
-    } else if (event is ValidateUserRemote) {
-      yield* _validateUserRemote(event);
     } else if (event is DeleteUserLocal) {
       yield* _deleteUserLocal(event);
     } else if (event is DeleteAllUserLocal) {
@@ -36,47 +32,37 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
   }
 
   Stream<AuthenticateState> _getLoggedInUser(GetLoggedInUser event) async* {
-    var user = await repository.getLoggedInUser();
-    if (user != null)
-      yield GetLoggedInUserCompleted(user);
-    else
-      yield AuthenticateError("");
-  }
-
-  Stream<AuthenticateState> _loginRemote(LoginRemote event) async* {
-    var user = await repository.loginRemote(event.username, event.password);
-    if (user != null) {
-      var localUser = await repository.validateUserLocal(user.username);
-      if (localUser == null) {
-        //simpan data user ke db lokal
-        await repository.insertUserLocal(user);
+    //cek user pada db lokal
+    var localUser = await repository.getLoggedInUser();
+    if (localUser != null) {
+      //validasi user remote
+      var remoteUser = await repository.validateUserRemote(localUser.username);
+      if (remoteUser != null) {
+        //update data user lokal
+        await repository.updateUserLocal(remoteUser);
+        yield GetLoggedInUserCompleted(remoteUser);
       }
-      yield LoginRemoteCompleted(user);
     } else {
-      yield AuthenticateError(
-          "Login gagal, user password salah atau user anda sudah tidak aktif");
+      yield AuthenticateError("");
     }
   }
 
-  Stream<AuthenticateState> _validateUserLocal(ValidateUserLocal event) async* {
-    var user = await repository.validateUserLocal(event.username);
-    if (user != null)
-      yield ValidateUserLocalCompleted(user);
-    else
-      yield AuthenticateError(
-          "Login gagal, anda tidak dapat login pada device ini");
-  }
-
-  Stream<AuthenticateState> _validateUserRemote(
-      ValidateUserRemote event) async* {
-    var user = await repository.validateUserRemote(event.username);
-    if (user != null) {
-      //update info user di db lokal
-      await repository.updateUserLocal(user);
-      yield ValidateUserRemoteCompleted(user);
+  Stream<AuthenticateState> _loginRemote(LoginRemote event) async* {
+    var remoteUser =
+        await repository.loginRemote(event.username, event.password);
+    if (remoteUser != null) {
+      //cek data user pada db lokal
+      var lokalUser = await repository.validateUserLocal(remoteUser.username);
+      if (lokalUser != null) {
+        yield LoginRemoteCompleted(lokalUser);
+      } else {
+        //simpan data login ke db lokal
+        await repository.insertUserLocal(remoteUser);
+        yield LoginRemoteCompleted(remoteUser);
+      }
     } else {
       yield AuthenticateError(
-          "Akun anda sudah di non aktifkan, hubungi supervisor anda untuk mengaktifkan kembali");
+          "Login gagal, user password salah atau user anda sudah tidak aktif");
     }
   }
 

@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:sales_track_nex/repository/authenticate_repository.dart';
+import 'package:sales_track_nex/repository/repository.dart';
 
 part 'navigation_event.dart';
 part 'navigation_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  NavigationBloc(this.authenticateRepository) : super(null);
+  NavigationBloc(this.repository) : super(null);
 
-  final AuthenticateRepository authenticateRepository;
+  final Repository repository;
 
   @override
   Stream<NavigationState> mapEventToState(
@@ -24,7 +24,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     } else if (event is NavigateToPageIndex) {
       yield SetPageIndex(event.index);
     } else if (event is NavigateLogout) {
-      var deleted = await authenticateRepository.deleteUsers();
+      var deleted = await repository.deleteUsers();
       if (deleted > 0)
         yield NavigateLogoutCompleted();
       else

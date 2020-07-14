@@ -9,95 +9,82 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bglogin.jpeg"),
-            fit: BoxFit.cover,
+    return BlocListener<AuthenticateBloc, AuthenticateState>(
+      listener: (context, state) {
+        if (state is LoginRemoteCompleted) {
+          _routeUserType(state.user, context);
+        } else if (state is AuthenticateError) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(state.message),
+          ));
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/bglogin.jpeg"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 50.0,
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[200],
-              ),
-              child: TextFormField(
-                controller: _username,
-                decoration: InputDecoration(
-                  hintText: 'Username',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[600],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                height: 50.0,
+                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200],
+                ),
+                child: TextFormField(
+                  controller: _username,
+                  decoration: InputDecoration(
+                    hintText: 'Username',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    border: InputBorder.none,
                   ),
-                  border: InputBorder.none,
                 ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            Container(
-              width: double.infinity,
-              height: 50.0,
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[200],
-              ),
-              child: TextFormField(
-                controller: _password,
-                decoration: InputDecoration(
-                  hintText: 'Password',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[600],
-                  ),
-                  border: InputBorder.none,
+              SizedBox(height: 10.0),
+              Container(
+                width: double.infinity,
+                height: 50.0,
+                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200],
                 ),
-                obscureText: true,
+                child: TextFormField(
+                  controller: _password,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    border: InputBorder.none,
+                  ),
+                  obscureText: true,
+                ),
               ),
-            ),
-            SizedBox(height: 20.0),
-            Container(
-              width: double.infinity,
-              height: 45.0,
-              margin: EdgeInsets.only(left: 20.0, right: 20.0),
-              child: BlocConsumer<AuthenticateBloc, AuthenticateState>(
-                listener: (context, state) {
-                  print(state);
-
-                  if (state is LoginRemoteCompleted) {
-                    //validate user ke local server
-                    BlocProvider.of<AuthenticateBloc>(context)
-                        .add(ValidateUserLocal(_username.text));
-                  } else if (state is ValidateUserLocalCompleted) {
-                    //validate user ke remote server
-                    BlocProvider.of<AuthenticateBloc>(context)
-                        .add(ValidateUserRemote(_username.text));
-                  } else if (state is ValidateUserRemoteCompleted) {
-                    //route user berdasarkan type user (sales, driver)
-                    _routeUserType(state.user, context);
-                  } else if (state is DeleteAllUserLocalCompleted) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Semua user lokal berhasil dihapus"),
-                    ));
-                  } else if (state is AuthenticateError) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(state.message),
-                    ));
-                  }
-                },
-                builder: (context, state) {
-                  return _authButtonState(state, context);
-                },
+              SizedBox(height: 20.0),
+              Container(
+                width: double.infinity,
+                height: 45.0,
+                margin: EdgeInsets.only(left: 20.0, right: 20.0),
+                child: BlocBuilder<AuthenticateBloc, AuthenticateState>(
+                  builder: (context, state) {
+                    return _authButtonState(state, context);
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -139,13 +126,15 @@ class Login extends StatelessWidget {
     );
   }
 
-  _routeUserType(User user, BuildContext context) {
-    if (user.type == "Driver")
-      //navigasi ke halaman pilih truck
-      Navigator.of(context).pushNamed('/trucks');
-    else
-      //navigasi ke dashboard
+  void _routeUserType(User user, BuildContext context) {
+    if (user.type == "Delivery" && user.nomorPlat == null) {
+      //route pilih truk
       Navigator.of(context)
-          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+          .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
+    } else {
+      //route dashboard
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
+    }
   }
 }

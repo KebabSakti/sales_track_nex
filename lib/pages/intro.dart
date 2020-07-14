@@ -20,6 +20,8 @@ class _IntroState extends State<Intro> {
       backgroundColor: Colors.grey[100],
       body: BlocListener<AuthenticateBloc, AuthenticateState>(
         listener: (context, state) {
+          print(state);
+
           _routeUserToDestination(state);
         },
         child: Container(
@@ -32,15 +34,15 @@ class _IntroState extends State<Intro> {
                 image: AssetImage("assets/images/intro.png"),
                 width: 150.0,
               ),
-              SizedBox(height: 15.0),
-              Container(
-                width: 120.0,
-                child: LinearProgressIndicator(
-                  backgroundColor: Colors.grey[400],
-                ),
-              ),
-              SizedBox(height: 10.0),
-              Text('Loading'),
+              // SizedBox(height: 15.0),
+              // Container(
+              //   width: 120.0,
+              //   child: LinearProgressIndicator(
+              //     backgroundColor: Colors.grey[400],
+              //   ),
+              // ),
+              // SizedBox(height: 10.0),
+              // Text('Loading'),
             ],
           ),
         ),
@@ -52,14 +54,14 @@ class _IntroState extends State<Intro> {
     if (state is GetLoggedInUserCompleted) {
       print(state.user);
 
-      if (state.user.type == "Delivery" && state.user.nomor_plat == null) {
+      if (state.user.type == "Delivery" && state.user.nomorPlat == null) {
         //route delivery
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+            .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
       } else {
         //route sales
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+            .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
       }
     } else if (state is AuthenticateError) {
       //navigate ke halaman login
