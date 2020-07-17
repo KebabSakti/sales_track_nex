@@ -18,7 +18,7 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
   Stream<AuthenticateState> mapEventToState(
     AuthenticateEvent event,
   ) async* {
-    yield AuthenticateLoading();
+    yield AuthenticateLoading(message: "sync data");
 
     if (event is GetLoggedInUser) {
       yield* _getLoggedInUser(event);
@@ -32,6 +32,7 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
   }
 
   Stream<AuthenticateState> _getLoggedInUser(GetLoggedInUser event) async* {
+    yield AuthenticateLoading(message: "otentikasi user");
     //cek user pada db lokal
     var localUser = await repository.getLoggedInUser();
     if (localUser != null) {
@@ -43,7 +44,7 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
         yield GetLoggedInUserCompleted(remoteUser);
       }
     } else {
-      yield AuthenticateError("");
+      yield AuthenticateError();
     }
   }
 
@@ -62,7 +63,8 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
       }
     } else {
       yield AuthenticateError(
-          "Login gagal, user password salah atau user anda sudah tidak aktif");
+          message:
+              "Login gagal, user password salah atau user anda sudah tidak aktif");
     }
   }
 
@@ -72,7 +74,7 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
       yield DeleteUserLocalCompleted();
     else
       yield AuthenticateError(
-          "Terjadi kesalahan, harap coba beberapa saat lagi");
+          message: "Terjadi kesalahan, harap coba beberapa saat lagi");
   }
 
   Stream<AuthenticateState> _deleteAllUserLocal(
@@ -82,6 +84,6 @@ class AuthenticateBloc extends Bloc<AuthenticateEvent, AuthenticateState> {
       yield DeleteAllUserLocalCompleted();
     else
       yield AuthenticateError(
-          "Terjadi kesalahan, harap coba beberapa saat lagi");
+          message: "Terjadi kesalahan, harap coba beberapa saat lagi");
   }
 }

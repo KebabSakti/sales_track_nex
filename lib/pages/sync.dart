@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sales_track_nex/bloc/sync_outlet_bloc.dart';
+import 'package:sales_track_nex/bloc/sync_download_bloc.dart';
 
 class SyncPage extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class _SyncPageState extends State<SyncPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<SyncOutletBloc>(context).add(SyncOutletInit());
+    BlocProvider.of<SyncBloc>(context).add(SyncEventInit());
   }
 
   @override
@@ -21,9 +21,11 @@ class _SyncPageState extends State<SyncPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SyncOutletBloc, SyncOutletState>(
+    return BlocListener<SyncBloc, SyncState>(
       listener: (context, state) {
-        if (state is DownloadOutletComplete) {
+        print(state);
+        
+        if (state is SyncCompleted) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
         }
@@ -32,7 +34,7 @@ class _SyncPageState extends State<SyncPage> {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          padding: EdgeInsets.only(left: 60.0, right: 60.0),
+          padding: EdgeInsets.only(left: 70.0, right: 70.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

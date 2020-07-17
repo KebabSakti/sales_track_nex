@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
+import 'package:sales_track_nex/bloc/sync_download_bloc.dart';
 
 class Intro extends StatefulWidget {
   @override
@@ -11,19 +12,27 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<AuthenticateBloc>(context).add(GetLoggedInUser());
+    BlocProvider.of<SyncBloc>(context).add(SyncEventInit());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: BlocListener<AuthenticateBloc, AuthenticateState>(
-        listener: (context, state) {
-          print(state);
-
-          _routeUserToDestination(state);
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthenticateBloc, AuthenticateState>(
+            listener: (context, state) {
+              print(state);
+              BlocProvider.of<SyncBloc>(context).add(SyncEventInit());
+            },
+          ),
+          BlocListener<SyncBloc, SyncState>(
+            listener: (context, state) {
+              print(state);
+            },
+          ),
+        ],
         child: Container(
           width: double.infinity,
           height: double.infinity,
@@ -34,15 +43,6 @@ class _IntroState extends State<Intro> {
                 image: AssetImage("assets/images/intro.png"),
                 width: 150.0,
               ),
-              // SizedBox(height: 15.0),
-              // Container(
-              //   width: 120.0,
-              //   child: LinearProgressIndicator(
-              //     backgroundColor: Colors.grey[400],
-              //   ),
-              // ),
-              // SizedBox(height: 10.0),
-              // Text('Loading'),
             ],
           ),
         ),

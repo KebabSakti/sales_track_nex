@@ -13,10 +13,11 @@ class AuthenticateInitial extends AuthenticateState {
 }
 
 class AuthenticateLoading extends AuthenticateState {
-  const AuthenticateLoading();
+  final String message;
+  const AuthenticateLoading({this.message});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }
 
 class LoginRemoteCompleted extends AuthenticateState {
@@ -83,7 +84,7 @@ class DeleteAllUserLocalCompleted extends AuthenticateState {
 
 class AuthenticateError extends AuthenticateState {
   final String message;
-  const AuthenticateError(this.message);
+  const AuthenticateError({this.message});
 
   @override
   List<Object> get props => [message];

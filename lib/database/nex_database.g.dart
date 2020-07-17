@@ -1080,13 +1080,14 @@ class TrukCompanion extends UpdateCompanion<TrukData> {
     this.updatedAt = const Value.absent(),
   });
   TrukCompanion.insert({
-    this.id = const Value.absent(),
+    @required int id,
     @required String nomorPlat,
     @required String brand,
     this.syncDate = const Value.absent(),
     @required DateTime createdAt,
     @required DateTime updatedAt,
-  })  : nomorPlat = Value(nomorPlat),
+  })  : id = Value(id),
+        nomorPlat = Value(nomorPlat),
         brand = Value(brand),
         createdAt = Value(createdAt),
         updatedAt = Value(updatedAt);
@@ -1172,8 +1173,11 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
   @override
   GeneratedIntColumn get id => _id ??= _constructId();
   GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+    return GeneratedIntColumn(
+      'id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _nomorPlatMeta = const VerificationMeta('nomorPlat');
@@ -1252,6 +1256,8 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('nomor_plat')) {
       context.handle(_nomorPlatMeta,
@@ -1285,7 +1291,7 @@ class $TrukTable extends Truk with TableInfo<$TrukTable, TrukData> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   TrukData map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;

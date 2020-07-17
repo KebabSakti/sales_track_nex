@@ -41,7 +41,7 @@ class Stok extends Table {
 
 @DataClassName('TrukData')
 class Truk extends Table {
-  IntColumn get id => integer().autoIncrement()();
+  IntColumn get id => integer()();
   TextColumn get nomorPlat => text()();
   TextColumn get brand => text()();
   DateTimeColumn get syncDate => dateTime().nullable()();
@@ -129,8 +129,8 @@ class StokDao extends DatabaseAccessor<NexDatabase> with _$StokDaoMixin {
   StokDao(this.database) : super(database);
 
   Future<List<StokData>> getStok() => select(stok).get();
-  Future insertStok(StokCompanion stokCompanion) =>
-      into(stok).insert(stokCompanion);
+  Future insertStok(Insertable<StokData> stokData) =>
+      into(stok).insert(stokData);
   Future deleteStok() => (delete(stok)).go();
 }
 
@@ -139,12 +139,15 @@ class TrukDao extends DatabaseAccessor<NexDatabase> with _$TrukDaoMixin {
   final NexDatabase database;
   TrukDao(this.database) : super(database);
 
-  Future<int> insertTruk(TrukCompanion trukCompanion) =>
-      into(truk).insert(trukCompanion);
-  Stream<List<TrukData>> getTruk() => select(truk).watch();
+  Future<int> insertTruk(Insertable<TrukData> trukData) =>
+      into(truk).insert(trukData);
+  Stream<List<TrukData>> watchTruk() => select(truk).watch();
+  Future<List<TrukData>> getTruk() => select(truk).get();
+  Stream<List<TrukData>> watchTrukByKeyword(String keyword) =>
+      (select(truk)..where((tbl) => tbl.nomorPlat.like('%$keyword%'))).watch();
   Future<List<TrukData>> getTrukByKeyword(String keyword) =>
       (select(truk)..where((tbl) => tbl.nomorPlat.like('%$keyword%'))).get();
-  Stream<List<TrukWithStok>> getTrukWithStok() {
+  Stream<List<TrukWithStok>> watchTrukWithStok() {
     return select(truk)
         .join([leftOuterJoin(stok, stok.trukId.equalsExp(truk.id))])
         .watch()

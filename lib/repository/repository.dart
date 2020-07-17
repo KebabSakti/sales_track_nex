@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:sales_track_nex/database/nex_database.dart';
+import 'package:sales_track_nex/fake_datasource.dart';
 import 'package:sales_track_nex/utils/constan.dart';
 
 abstract class AppRepository {
@@ -24,11 +25,25 @@ abstract class AppRepository {
   Future deleteOutlet(Insertable<OutletData> outletData);
   Future deleteAllOutlet();
   Future<List<OutletData>> downloadOutlet(User user);
+
+  //truk repos
+  Future<List<TrukData>> getTruk();
+  Future<Map> downloadTruk(User user);
+  Future insertTruk(Insertable<TrukData> trukData);
+  Future uploadTruk(TrukData trukData, User user);
+  Future updateTruk(Insertable<TrukData> trukData);
+  Future deleteTruk();
+
+  //stok repos
+  Future<List<StokData>> getStok(int trukId);
+  Future insertStok(Insertable<StokData> stokData);
+  Future updateStok(Insertable<StokData> stokData);
 }
 
 class Repository implements AppRepository {
   final NexDatabase database;
   final Dio dio;
+  final FakeData fakeDataSource = FakeData();
 
   Repository(this.database, this.dio);
 
@@ -178,6 +193,80 @@ class Repository implements AppRepository {
   @override
   Future<int> updateOutlet(Insertable<OutletData> outletData) {
     // TODO: implement updateOutlet
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<TrukData>> getTruk() async {
+    return database.trukDao.getTruk();
+  }
+
+  @override
+  Future deleteTruk() async {
+    await database.trukDao.deleteTruk();
+    print('ALL TRUK DELETED');
+  }
+
+  @override
+  Future<Map> downloadTruk(User user) async {
+    Response response = await dio.get("$baseUrl/sync/truk",
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${user.token}",
+        }));
+
+    Map data = jsonDecode(response.toString());
+
+    return data;
+
+    // if (data['response']) {
+    //   for (var item in data['data']) {
+    //     truks.add(TrukData(
+    //       id: item['id'],
+    //       nomorPlat: item['nomor_plat'],
+    //       brand: item['brand'],
+    //       createdAt: DateTime.parse(item['created_at']),
+    //       updatedAt: DateTime.parse(item['updated_at']),
+    //     ));
+    //   }
+
+    //   return truks;
+    // } else {
+    //   return null;
+    // }
+  }
+
+  @override
+  Future updateTruk(Insertable<TrukData> trukData) {
+    // TODO: implement updateTruk
+    throw UnimplementedError();
+  }
+
+  @override
+  Future uploadTruk(TrukData trukData, User user) {
+    // TODO: implement uploadTruk
+    throw UnimplementedError();
+  }
+
+  @override
+  Future insertTruk(Insertable<TrukData> trukData) async {
+    await database.trukDao.insertTruk(trukData);
+  }
+
+  @override
+  Future<List<StokData>> getStok(int trukId) {
+    // TODO: implement getStok
+    throw UnimplementedError();
+  }
+
+  @override
+  Future insertStok(Insertable<StokData> stokData) async {
+    await database.stokDao.insertStok(stokData);
+  }
+
+  @override
+  Future updateStok(Insertable<StokData> stokData) {
+    // TODO: implement updateStok
     throw UnimplementedError();
   }
 }

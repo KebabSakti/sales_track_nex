@@ -1,17 +1,17 @@
-part of 'sync_outlet_bloc.dart';
+part of 'sync_download_bloc.dart';
 
-abstract class SyncOutletEvent extends Equatable {
-  const SyncOutletEvent();
+abstract class SyncEvent extends Equatable {
+  const SyncEvent();
 }
 
-class SyncOutletInit extends SyncOutletEvent {
-  const SyncOutletInit();
+class SyncEventInit extends SyncEvent {
+  const SyncEventInit();
 
   @override
   List<Object> get props => [];
 }
 
-class DownloadOutlet extends SyncOutletEvent {
+class DownloadOutlet extends SyncEvent {
   final User user;
 
   const DownloadOutlet(this.user);
@@ -20,7 +20,7 @@ class DownloadOutlet extends SyncOutletEvent {
   List<Object> get props => [user];
 }
 
-class UploadOutlet extends SyncOutletEvent {
+class UploadOutlet extends SyncEvent {
   final OutletData outlet;
 
   const UploadOutlet(this.outlet);
@@ -29,7 +29,7 @@ class UploadOutlet extends SyncOutletEvent {
   List<Object> get props => [outlet];
 }
 
-class FetchOutlet extends SyncOutletEvent {
+class FetchOutlet extends SyncEvent {
   final String keyword;
 
   const FetchOutlet(this.keyword);
@@ -38,7 +38,7 @@ class FetchOutlet extends SyncOutletEvent {
   List<Object> get props => [keyword];
 }
 
-class InsertOutlet extends SyncOutletEvent {
+class InsertOutlet extends SyncEvent {
   final OutletData outlet;
 
   const InsertOutlet(this.outlet);
@@ -47,7 +47,7 @@ class InsertOutlet extends SyncOutletEvent {
   List<Object> get props => [outlet];
 }
 
-class UpdateOutlet extends SyncOutletEvent {
+class UpdateOutlet extends SyncEvent {
   final String barcode;
   final OutletData outlet;
 
@@ -57,7 +57,7 @@ class UpdateOutlet extends SyncOutletEvent {
   List<Object> get props => [barcode, outlet];
 }
 
-class DeleteOutlet extends SyncOutletEvent {
+class DeleteOutlet extends SyncEvent {
   final String barcode;
   final OutletData outlet;
 
@@ -67,7 +67,7 @@ class DeleteOutlet extends SyncOutletEvent {
   List<Object> get props => [outlet];
 }
 
-class DeleteAllOutlet extends SyncOutletEvent {
+class DeleteAllOutlet extends SyncEvent {
   const DeleteAllOutlet();
 
   @override
