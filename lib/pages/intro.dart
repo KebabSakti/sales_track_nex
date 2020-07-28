@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
-import 'package:sales_track_nex/bloc/sync_download_bloc.dart';
+import 'package:sales_track_nex/bloc/sync_bloc.dart';
 
 class Intro extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<SyncBloc>(context).add(SyncEventInit());
+    BlocProvider.of<SyncBloc>(context).add(Sync());
   }
 
   @override
@@ -21,15 +23,23 @@ class _IntroState extends State<Intro> {
       backgroundColor: Colors.grey[100],
       body: MultiBlocListener(
         listeners: [
-          BlocListener<AuthenticateBloc, AuthenticateState>(
-            listener: (context, state) {
-              print(state);
-              BlocProvider.of<SyncBloc>(context).add(SyncEventInit());
-            },
-          ),
           BlocListener<SyncBloc, SyncState>(
             listener: (context, state) {
+              if (state is SyncLoading) {
+                print(state.message);
+              } else if (state is SyncCompleted) {
+                BlocProvider.of<AuthenticateBloc>(context)
+                    .add(GetLoggedInUser());
+              }
+
               print(state);
+            },
+          ),
+          BlocListener<AuthenticateBloc, AuthenticateState>(
+            listener: (context, state) {
+              Timer(Duration(seconds: 3), () {
+                _routeUserToDestination(state);
+              });
             },
           ),
         ],
@@ -43,6 +53,24 @@ class _IntroState extends State<Intro> {
                 image: AssetImage("assets/images/intro.png"),
                 width: 150.0,
               ),
+              SizedBox(height: 10),
+              Container(
+                width: 150,
+                child: LinearProgressIndicator(),
+              ),
+              SizedBox(height: 5),
+              BlocBuilder<SyncBloc, SyncState>(
+                builder: (context, state) {
+                  if (state is SyncLoading)
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  else
+                    return Center(
+                      child: Text('redirect user'),
+                    );
+                },
+              ),
             ],
           ),
         ),
@@ -54,14 +82,14 @@ class _IntroState extends State<Intro> {
     if (state is GetLoggedInUserCompleted) {
       print(state.user);
 
-      if (state.user.type == "Delivery" && state.user.nomorPlat == null) {
+      if (state.user.type == "Delivery" && state.user.truckId == null) {
         //route delivery
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
+            .pushNamedAndRemoveUntil('/truck', (Route<dynamic> route) => false);
       } else {
         //route sales
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/sync', (Route<dynamic> route) => false);
+            .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
       }
     } else if (state is AuthenticateError) {
       //navigate ke halaman login

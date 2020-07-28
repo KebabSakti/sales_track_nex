@@ -10,3 +10,10 @@ class Sync extends SyncEvent {
   @override
   List<Object> get props => [];
 }
+
+class Reset extends SyncEvent {
+  const Reset();
+
+  @override
+  List<Object> get props => [];
+}
