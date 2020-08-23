@@ -22,16 +22,6 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     yield SyncLoading(message: "mulai sync");
 
     if (event is Sync) {
-      /*
-      download outlet
-      download truk
-      download stok
-      download produk
-      download jadwal
-      download order
-      download order item
-      download visit
-       */
       yield* _syncOutlet(event);
       yield* _syncTruk(event);
       yield* _syncStok(event);
@@ -39,7 +29,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       yield* _syncJadwal(event);
       yield* _syncOrder(event);
       yield* _syncOrderItem(event);
-      yield* _syncVisit(event);
+//      yield* _syncVisit(event);
+      yield* _syncInfo(event);
 
       yield SyncCompleted();
     } else if (event is Reset) {
@@ -48,8 +39,11 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       await repository.deleteRule();
       await repository.deleteStok();
       await repository.deleteProduk();
+      await repository.deleteUsers();
 
       print('Reset Successful');
+    } else if (event is ShouldSync) {
+      yield* _shouldSync(event);
     }
   }
 
@@ -78,8 +72,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           picture: Value(item['picture']),
           lat: item['lat'],
           lng: item['lng'],
-          createdAt: item['created_at'],
-          updatedAt: item['updated_at'],
+          createdAt: DateTime.parse(item['created_at']),
+          updatedAt: DateTime.parse(item['updated_at']),
         );
 
         if (outlet == null) {
@@ -238,9 +232,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           userId: item['user_id'],
           outletId: item['outlet_id'],
           tanggal: item['tanggal'],
-          visit: item['visit'],
-          createdAt: item['created_at'],
-          updatedAt: item['updated_at'],
+          createdAt: DateTime.parse(item['created_at']),
+          updatedAt: DateTime.parse(item['updated_at']),
         );
 
         if (jadwal == null) {
@@ -370,10 +363,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           outletId: item['outlet_id'],
           lat: item['lat'],
           lng: item['lng'],
-          tutup: item['tutup'],
-          status: item['status'],
-          createdAt: item['created_at'],
-          updatedAt: item['updated_at'],
+          createdAt: DateTime.parse(item['created_at']),
+          updatedAt: DateTime.parse(item['updated_at']),
         );
 
         if (visit == null) {
@@ -413,6 +404,49 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       await repository.insertRule(syncRuledata);
     } else {
       await repository.updateRule(syncRuledata);
+    }
+  }
+
+  Stream<SyncState> _syncInfo(Sync event) async* {
+    SyncInfoData syncInfoData = await repository.getSyncInfo();
+//    var dateFormat = DateFormat('yyyy-MM-dd');
+//    var now = dateFormat.format(DateTime.now());
+    var now = DateTime.now().toUtc();
+
+    if (syncInfoData == null) {
+      //insert
+      await repository.insertSyncInfo(
+        SyncInfoCompanion.insert(
+          syncInfoId: Helper().generateRandomId(),
+          updatedAt: now,
+        ),
+      );
+    } else {
+      //update
+      await repository.updateSyncInfo(
+        SyncInfoCompanion.insert(
+          syncInfoId: syncInfoData.syncInfoId,
+          updatedAt: now,
+        ),
+      );
+    }
+  }
+
+  Stream<SyncState> _shouldSync(ShouldSync event) async* {
+    SyncInfoData syncInfoData = await repository.getSyncInfo();
+
+    if (syncInfoData == null) {
+      yield ShouldSyncResponse(true);
+    } else {
+      var utc = DateTime.now().toUtc();
+      var dateNow = DateTime.utc(utc.year, utc.month, utc.day);
+      var diff = dateNow.compareTo(syncInfoData.updatedAt);
+
+      if (diff > 0) {
+        yield ShouldSyncResponse(true);
+      } else {
+        yield ShouldSyncResponse(false);
+      }
     }
   }
 }

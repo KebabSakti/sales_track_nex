@@ -1,26 +1,30 @@
 import 'dart:convert';
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:dio/dio.dart';
+import 'package:location/location.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:sales_track_nex/database/nex_database.dart';
-import 'package:sales_track_nex/fake_datasource.dart';
 import 'package:sales_track_nex/utils/constan.dart';
 
 abstract class AppRepository {
   //user repos
-  Future<User> loginRemote(String username, String password);
+  Future<Map> loginRemote(String username, String password);
   Future<User> getLoggedInUser();
-  Future<User> validateUserRemote(String username);
+  Future<Map> validateUserRemote(String username);
   Future<User> validateUserLocal(String username);
-  Future insertUserLocal(User user);
-  Future updateUserLocal(User user);
-  Future<int> deleteUserByUsername(String username);
-  Future<int> deleteUsers();
+  Future<User> getUserLocal();
+  Future insertUserLocal(Insertable<User> user);
+  Future updateUserLocal(Insertable<User> user);
+  Future deleteUserByUsername(String username);
+  Future deleteUsers();
+  Future setTrukId(String trukId, String username);
 
   //outlet repos
   Stream<List<OutletData>> fetchOutlet(String keyword);
   Future<List<OutletData>> getOutlet();
   Future<OutletData> getOutletById(String outletId);
+  Future<List<OutletData>> getOutletByKeyword(String keyword);
   Future<int> insertOutlet(Insertable<OutletData> outletData);
   Future<int> updateOutlet(Insertable<OutletData> outletData);
   Future deleteOutlet(Insertable<OutletData> outletData);
@@ -36,6 +40,7 @@ abstract class AppRepository {
   Future updateTruk(Insertable<TrukData> trukData);
   Future deleteTruk();
   Future<List<TrukWithStokSum>> getTrukWithStokSum();
+  Future<Map> setTruk(String truckId);
 
   //stok repos
   Future<StokData> getStokById(String stokId);
@@ -45,6 +50,9 @@ abstract class AppRepository {
   Future deleteStok();
 
   //produk repos
+  Future<List<ProdukData>> getProduk();
+  Future<List<ProdukData>> getProdukByKeyword(String keyword,
+      {int limit, int offset});
   Future<ProdukData> getProdukById(String produkId);
   Future insertProduk(Insertable<ProdukData> produkData);
   Future updateProduk(Insertable<ProdukData> produkData);
@@ -58,14 +66,28 @@ abstract class AppRepository {
   Future insertJadwal(Insertable<JadwalData> jadwalData);
   Future updateJadwal(Insertable<JadwalData> jadwalData);
   Future deleteJadwal();
+  Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
+      String userId, DateTime dateTime);
+  Future<Map> getJadwalWithRange(String originLat, String originLng,
+      String destinationLat, String destinationLng);
+  Future<JadwalData> getJadwalByDate(
+      DateTime dateTime, String userId, String outletId);
 
   //visit repos
   Future<Map> downloadVisit({String syncDate});
   Future<List<VisitData>> getVisit();
   Future<VisitData> getVisitById(String visitId);
+  Future<VisitData> getVisitToday(
+      DateTime dateTime, String userId, String outletId);
   Future insertVisit(Insertable<VisitData> visitData);
   Future updateVisit(Insertable<VisitData> visitData);
   Future deleteVisit();
+  Future<List<VisitWithOutlet>> getVisitWithOutlet(
+    String userId,
+    String keyword,
+    DateTime periodeAwal,
+    DateTime periodeAkhir,
+  );
 
   //order repos
   Future<Map> downloadOrder({String syncDate});
@@ -83,19 +105,37 @@ abstract class AppRepository {
   Future updateOrderItem(Insertable<OrderItemData> orderItemData);
   Future deleteOrderItem();
 
+  //foto visit
+  Future<FotoVisitData> getFotoVisitById(String fotoVisitId);
+  Future<List<FotoVisitData>> getFotoVisitByVisitId(String visitId);
+  Future insertFotoVisit(Insertable<FotoVisitData> fotoVisitData);
+  Future updateFotoVisit(Insertable<FotoVisitData> fotoVisitData);
+
   //sync rule
   Future<SyncRule> getRule(String name);
   Future insertRule(Insertable<SyncRule> syncRule);
   Future updateRule(Insertable<SyncRule> syncRule);
   Future deleteRule();
+
+  //sync info
+  Future<SyncInfoData> getSyncInfo();
+  Future insertSyncInfo(Insertable<SyncInfoData> syncInfoData);
+  Future updateSyncInfo(Insertable<SyncInfoData> syncInfoData);
+  Future deleteSyncInfo();
+
+  //scanner
+  Future<ScanResult> scanBarcode();
+
+  //location
+  Future<LocationData> getSingleLocation();
 }
 
 class Repository implements AppRepository {
+  final Location location;
   final NexDatabase database;
   final Dio dio;
-  final FakeData fakeDataSource = FakeData();
 
-  Repository(this.database, this.dio);
+  Repository(this.location, this.database, this.dio);
 
   @override
   Future<User> getLoggedInUser() {
@@ -103,14 +143,14 @@ class Repository implements AppRepository {
   }
 
   @override
-  Future insertUserLocal(User user) async {
+  Future insertUserLocal(Insertable<User> user) async {
     await database.userDao.insertUser(user);
   }
 
   @override
-  Future<User> loginRemote(String username, String password) async {
+  Future<Map> loginRemote(String username, String password) async {
     Response response = await dio.post(
-      "$baseUrl/auth/login",
+      "/auth/login",
       options: Options(headers: {
         "Accept": "application/json",
       }),
@@ -120,21 +160,11 @@ class Repository implements AppRepository {
       },
     );
 
-    Map data = jsonDecode(response.toString());
-
-    return (data['response'])
-        ? User(
-            userId: data['data']['user_id'],
-            name: data['data']['name'],
-            username: data['data']['username'],
-            type: data['data']['type'],
-            token: data['data']['token'],
-          )
-        : null;
+    return jsonDecode(response.toString());
   }
 
   @override
-  Future updateUserLocal(User user) async {
+  Future updateUserLocal(Insertable<User> user) async {
     await database.userDao.updateUser(user);
   }
 
@@ -144,37 +174,26 @@ class Repository implements AppRepository {
   }
 
   @override
-  Future<User> validateUserRemote(String username) async {
-    var user = await database.userDao.getUserByUsername(username);
-    Response response = await dio.post("$baseUrl/auth/validate",
+  Future<Map> validateUserRemote(String username) async {
+    User user = await database.userDao.getUserByUsername(username);
+    Response response = await dio.post("/auth/validate",
         options: Options(headers: {
           "Accept": "application/json",
           "Authorization": "Bearer ${user.token}",
         }),
         data: {"username": user.username});
 
-    Map data = jsonDecode(response.toString());
-
-    return (data['response'])
-        ? User(
-//            id: data['data']['id'],
-            userId: data['data']['user_id'],
-            name: data['data']['name'],
-            username: data['data']['username'],
-            type: data['data']['type'],
-            token: user.token,
-          )
-        : null;
+    return jsonDecode(response.toString());
   }
 
   @override
-  Future<int> deleteUserByUsername(String username) async {
-    return await database.userDao.deleteUserByUsername(username);
+  Future deleteUserByUsername(String username) async {
+    await database.userDao.deleteUserByUsername(username);
   }
 
   @override
-  Future<int> deleteUsers() async {
-    return await database.userDao.deleteUsers();
+  Future deleteUsers() async {
+    await database.userDao.deleteUsers();
   }
 
   @override
@@ -192,7 +211,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadOutlet({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/outlet",
+    Response response = await dio.post("/sync/outlet",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -235,7 +254,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadTruk({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/truk",
+    Response response = await dio.post("/sync/truk",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -306,7 +325,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadStok({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/stok",
+    Response response = await dio.post("/sync/stok",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -338,7 +357,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadProduk({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/produk",
+    Response response = await dio.post("/sync/produk",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -389,7 +408,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadJadwal({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/jadwal",
+    Response response = await dio.post("/sync/jadwal",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -402,7 +421,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadOrder({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/order",
+    Response response = await dio.post("/sync/order",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -415,7 +434,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadOrderItem({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/orderitem",
+    Response response = await dio.post("/sync/orderitem",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -428,7 +447,7 @@ class Repository implements AppRepository {
 
   @override
   Future<Map> downloadVisit({String syncDate}) async {
-    Response response = await dio.post("$baseUrl/sync/visit",
+    Response response = await dio.post("/sync/visit",
         options: Options(headers: {
           "Accept": "application/json",
         }),
@@ -441,8 +460,7 @@ class Repository implements AppRepository {
 
   @override
   Future<List<JadwalData>> getJadwal() {
-    // TODO: implement getJadwal
-    throw UnimplementedError();
+    return database.jadwalDao.getJadwal();
   }
 
   @override
@@ -526,5 +544,141 @@ class Repository implements AppRepository {
   @override
   Future<List<TrukWithStokSum>> getTrukWithStokSum() async {
     return await database.trukDao.getTrukWithStokSum();
+  }
+
+  @override
+  Future<Map> setTruk(String truckId) async {
+    User user = await getLoggedInUser();
+    Response response = await dio.post("/util/set/truk",
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${user.token}",
+        }),
+        data: {
+          "username": user.username,
+          "truck_id": truckId,
+        });
+
+    return jsonDecode(response.toString());
+  }
+
+  @override
+  Future setTrukId(String trukId, String username) async {
+    await database.userDao.setTrukId(trukId, username);
+  }
+
+  @override
+  Future<User> getUserLocal() async {
+    return await database.userDao.getUser();
+  }
+
+  @override
+  Future<SyncInfoData> getSyncInfo() async {
+    return await database.syncInfoDao.getSyncInfo();
+  }
+
+  @override
+  Future insertSyncInfo(Insertable<SyncInfoData> syncInfoData) async {
+    await database.syncInfoDao.insertSyncInfo(syncInfoData);
+  }
+
+  @override
+  Future updateSyncInfo(Insertable<SyncInfoData> syncInfoData) async {
+    await database.syncInfoDao.updateSyncInfo(syncInfoData);
+  }
+
+  @override
+  Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
+      String userId, DateTime dateTime) async {
+    return await database.jadwalDao.getJadwalWithOutlet(userId, dateTime);
+  }
+
+  @override
+  Future<Map> getJadwalWithRange(String originLat, String originLng,
+      String destinationLat, String destinationLng) async {
+    var mDio = Dio();
+    mDio.options.baseUrl = hereMap;
+    Response response = await mDio.get(
+        '/routes?transportMode=car&origin=$originLat,$originLng&destination=$destinationLat,$destinationLng&return=summary&apiKey=_7lZezRcEwDHkCj4mjrul2qJzmjWIQmhx7nEFoK76_Q');
+
+    return jsonDecode(response.toString());
+  }
+
+  @override
+  Future<ScanResult> scanBarcode() async {
+    return await BarcodeScanner.scan();
+  }
+
+  @override
+  Future<List<OutletData>> getOutletByKeyword(String keyword) async {
+    return await database.outletDao.getOutletByKeyword(keyword);
+  }
+
+  @override
+  Future<LocationData> getSingleLocation() async {
+    return await location.getLocation();
+  }
+
+  @override
+  Future<FotoVisitData> getFotoVisitById(String fotoVisitId) {
+    // TODO: implement getFotoVisitById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<FotoVisitData>> getFotoVisitByVisitId(String visitId) {
+    // TODO: implement getFotoVisitByVisitId
+    throw UnimplementedError();
+  }
+
+  @override
+  Future insertFotoVisit(Insertable<FotoVisitData> fotoVisitData) async {
+    await database.fotoVisitDao.insertFotoVisit(fotoVisitData);
+  }
+
+  @override
+  Future updateFotoVisit(Insertable<FotoVisitData> fotoVisitData) {
+    // TODO: implement updateFotoVisit
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<VisitData> getVisitToday(
+      DateTime dateTime, String userId, String outletId) async {
+    return await database.visitDao.getVisitToday(dateTime, userId, outletId);
+  }
+
+  @override
+  Future<List<ProdukData>> getProduk() async {
+    return await database.produkDao.getProduk();
+  }
+
+  @override
+  Future<List<ProdukData>> getProdukByKeyword(String keyword,
+      {int limit, int offset}) async {
+    return await database.produkDao
+        .getProdukByKeyword(keyword, limit: limit, offset: offset);
+  }
+
+  @override
+  Future<JadwalData> getJadwalByDate(
+      DateTime dateTime, String userId, String outletId) async {
+    return await database.jadwalDao.getJadwalByDate(dateTime, userId, outletId);
+  }
+
+  @override
+  Future deleteSyncInfo() async {
+    await database.syncInfoDao.deleteSyncInfo();
+  }
+
+  @override
+  Future<List<VisitWithOutlet>> getVisitWithOutlet(String userId,
+      String keyword, DateTime periodeAwal, DateTime periodeAkhir) async {
+    return await database.visitDao.getVisitWithOutlet(
+      userId,
+      keyword,
+      periodeAwal,
+      periodeAkhir,
+    );
   }
 }

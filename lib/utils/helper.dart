@@ -18,4 +18,25 @@ class Helper {
   String _generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
   }
+
+  String generateIdWithPrefix(prefix) {
+    int min = 100000000;
+    int max = 999999999;
+    final _random = new Random();
+    var value = min + _random.nextInt(max - min);
+    var generated = '${prefix + value.toString()}';
+
+    return generated;
+  }
+
+  String getFormattedDate(DateTime dateTime, {DateFormat mDateFormat}) {
+    var dateFormat =
+        (mDateFormat != null) ? mDateFormat : DateFormat('yyyy-MM-dd H:m:s');
+    return dateFormat.format(dateTime);
+  }
+
+  String getFormattedNumber(var number) {
+    var f = NumberFormat.currency(locale: 'id_ID', name: 'Rp ');
+    return f.format(number);
+  }
 }

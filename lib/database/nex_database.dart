@@ -1,5 +1,7 @@
+import 'package:intl/intl.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:sales_track_nex/utils/helper.dart';
 
 part 'nex_database.g.dart';
 
@@ -69,8 +71,8 @@ class Outlet extends Table {
   TextColumn get lng => text()();
   TextColumn get geofence => text().nullable()();
   TextColumn get picture => text().nullable()();
-  TextColumn get createdAt => text()();
-  TextColumn get updatedAt => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {outletId};
@@ -93,8 +95,8 @@ class Jadwal extends Table {
   TextColumn get outletId => text()();
   TextColumn get tanggal => text()();
   IntColumn get visit => integer().withDefault(const Constant(0))();
-  TextColumn get createdAt => text()();
-  TextColumn get updatedAt => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {jadwalId};
@@ -108,13 +110,30 @@ class Visit extends Table {
   TextColumn get outletId => text()();
   TextColumn get lat => text()();
   TextColumn get lng => text()();
-  IntColumn get tutup => integer().withDefault(const Constant(0))();
+  IntColumn get tutup => integer().nullable().withDefault(const Constant(0))();
   TextColumn get status => text().nullable()();
-  TextColumn get createdAt => text()();
-  TextColumn get updatedAt => text()();
+  IntColumn get isPosted =>
+      integer().nullable().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {visitId};
+}
+
+@DataClassName('FotoVisitData')
+class FotoVisit extends Table {
+  TextColumn get fotoVisitId => text()();
+  TextColumn get visitId => text()();
+  TextColumn get localPath => text()();
+  TextColumn get original => text().nullable()();
+  TextColumn get modified => text().nullable()();
+  TextColumn get url => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {fotoVisitId};
 }
 
 @DataClassName('OrderData')
@@ -130,8 +149,8 @@ class Order extends Table {
   TextColumn get status => text().withDefault(const Constant('PO'))();
   TextColumn get totalBayar => text()();
   TextColumn get pembayaran => text().withDefault(const Constant('Cash'))();
-  TextColumn get createdAt => text()();
-  TextColumn get updatedAt => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {orderId};
@@ -142,15 +161,26 @@ class OrderItem extends Table {
   TextColumn get orderItemId => text()();
   TextColumn get orderId => text()();
   TextColumn get produkId => text()();
-  TextColumn get kodeOrder => text()();
+  TextColumn get kodeOrder => text().nullable()();
   TextColumn get userId => text()();
   IntColumn get quantity => integer()();
   TextColumn get totalHarga => text()();
-  TextColumn get createdAt => text()();
-  TextColumn get updatedAt => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 
   @override
   Set<Column> get primaryKey => {orderItemId};
+}
+
+@DataClassName('SyncInfoData')
+class SyncInfo extends Table {
+  TextColumn get syncInfoId => text()();
+  TextColumn get userId => text().nullable()();
+  TextColumn get keterangan => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {syncInfoId};
 }
 
 class TrukWithStokSum {
@@ -158,6 +188,20 @@ class TrukWithStokSum {
 
   final TrukData trukData;
   final int stokTotal;
+}
+
+class JadwalWithOutlet {
+  JadwalWithOutlet(this.jadwalData, this.outletData);
+
+  final JadwalData jadwalData;
+  final OutletData outletData;
+}
+
+class VisitWithOutlet {
+  final OutletData outletData;
+  final VisitData visitData;
+
+  VisitWithOutlet({@required this.outletData, @required this.visitData});
 }
 
 @UseMoor(tables: [
@@ -171,6 +215,8 @@ class TrukWithStokSum {
   Visit,
   Order,
   OrderItem,
+  SyncInfo,
+  FotoVisit
 ], daos: [
   UserDao,
   ProdukDao,
@@ -182,6 +228,8 @@ class TrukWithStokSum {
   VisitDao,
   OrderDao,
   OrderItemDao,
+  SyncInfoDao,
+  FotoVisitDao
 ])
 class NexDatabase extends _$NexDatabase {
   // we tell the database where to store the data with this constructor
@@ -196,7 +244,49 @@ class NexDatabase extends _$NexDatabase {
   int get schemaVersion => 1;
 }
 
-@UseDao(tables: [Jadwal])
+@UseDao(tables: [FotoVisit])
+class FotoVisitDao extends DatabaseAccessor<NexDatabase>
+    with _$FotoVisitDaoMixin {
+  final NexDatabase database;
+
+  FotoVisitDao(this.database) : super(database);
+
+  Future<FotoVisitData> getFotoVisitById(String fotoVisitId) =>
+      (select(fotoVisit)
+            ..where((tbl) => tbl.fotoVisitId.equals(fotoVisitId))
+            ..limit(1))
+          .getSingle();
+  Future<List<FotoVisitData>> getFotoVisitByVisitId(String visitId) =>
+      (select(fotoVisit)..where((tbl) => tbl.visitId.equals(visitId))).get();
+  Future insertFotoVisit(Insertable<FotoVisitData> fotoVisitData) =>
+      into(fotoVisit).insert(fotoVisitData);
+  Future updateFotoVisit(Insertable<FotoVisitData> fotoVisitData) =>
+      update(fotoVisit).replace(fotoVisitData);
+}
+
+@UseDao(tables: [SyncInfo])
+class SyncInfoDao extends DatabaseAccessor<NexDatabase>
+    with _$SyncInfoDaoMixin {
+  final NexDatabase database;
+
+  SyncInfoDao(this.database) : super(database);
+
+  Future<SyncInfoData> getSyncInfo() =>
+      (select(syncInfo)..limit(1)).getSingle();
+  Future insertSyncInfo(Insertable<SyncInfoData> syncInfoData) =>
+      into(syncInfo).insert(syncInfoData);
+  Future updateSyncInfo(Insertable<SyncInfoData> syncInfoData) =>
+      update(syncInfo).replace(syncInfoData);
+  Future deleteSyncInfo() => delete(syncInfo).go();
+}
+
+@UseDao(tables: [
+  Jadwal,
+  Outlet
+], queries: {
+  '_jadwalWithOutlet':
+      ''' SELECT j.*, o.* FROM jadwal j JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ? ''',
+})
 class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
   final NexDatabase database;
 
@@ -212,9 +302,61 @@ class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
   Future updateJadwal(Insertable<JadwalData> jadwalData) =>
       update(jadwal).replace(jadwalData);
   Future deleteJadwal() => delete(jadwal).go();
+  //get jadwal by date
+  Future<JadwalData> getJadwalByDate(
+          DateTime dateTime, String userId, String outletId) =>
+      (select(jadwal)
+            ..where(
+              (tbl) =>
+                  tbl.updatedAt.year.equals(dateTime.year) &
+                  tbl.updatedAt.month.equals(dateTime.month) &
+                  tbl.updatedAt.day.equals(dateTime.day) &
+                  tbl.userId.equals(userId) &
+                  tbl.outletId.equals(outletId),
+            )
+            ..limit(1))
+          .getSingle();
+  //relations
+  Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
+      String userId, DateTime dateTime) {
+    return _jadwalWithOutlet(userId).map((row) {
+      if (row.createdAt.year == dateTime.year &&
+          row.createdAt.month == dateTime.month &&
+          row.createdAt.day == dateTime.day)
+        return JadwalWithOutlet(
+          JadwalData(
+            jadwalId: row.jadwalId,
+            userId: row.userId,
+            outletId: row.outletId,
+            tanggal: row.tanggal,
+            visit: row.visit,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ),
+          OutletData(
+            outletId: row.outletId,
+            barcode: row.barcode,
+            user: row.user,
+            outletName: row.outletName,
+            lat: row.lat,
+            lng: row.lng,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ),
+        );
+
+      return null;
+    }).get();
+  }
 }
 
-@UseDao(tables: [Visit])
+@UseDao(tables: [
+  Visit,
+  Outlet
+], queries: {
+  '_visitWithOutlet':
+      ''' SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND (CAST(strftime('%s', '2020-08-23')  AS  integer)) = (CAST(strftime('%s', ?)  AS  integer)) ''',
+})
 class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
   final NexDatabase database;
 
@@ -225,11 +367,63 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
         ..where((tbl) => tbl.visitId.equals(visitId))
         ..limit(1))
       .getSingle();
+  Future<VisitData> getVisitToday(
+          DateTime dateTime, String userId, String outletId) =>
+      (select(visit)
+            ..where((tbl) {
+              return tbl.updatedAt.year.equals(dateTime.year) &
+                  tbl.updatedAt.month.equals(dateTime.month) &
+                  tbl.updatedAt.day.equals(dateTime.day) &
+                  tbl.userId.equals(userId) &
+                  tbl.outletId.equals(outletId);
+            })
+            ..limit(1))
+          .getSingle();
   Future insertVisit(Insertable<VisitData> visitData) =>
       into(visit).insert(visitData);
   Future updateVisit(Insertable<VisitData> visitData) =>
       update(visit).replace(visitData);
   Future deleteVisit() => delete(visit).go();
+  Future<List<VisitWithOutlet>> getVisitWithOutlet(
+    String userId,
+    String keyword,
+    DateTime periodeAwal,
+    DateTime periodeAkhir,
+  ) {
+    return _visitWithOutlet(
+      userId,
+//      keyword,
+      Helper().getFormattedDate(
+        periodeAwal,
+        mDateFormat: DateFormat('yyyy-MM-dd'),
+      ),
+//      Helper().getFormattedDate(
+//        periodeAkhir,
+//        mDateFormat: DateFormat('yyyy-MM-dd'),
+//      ),
+    ).map((row) {
+      return VisitWithOutlet(
+          outletData: OutletData(
+            outletId: row.outletId,
+            barcode: row.barcode,
+            user: row.user,
+            outletName: row.outletName,
+            lat: row.lat,
+            lng: row.lng,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ),
+          visitData: VisitData(
+            visitId: row.visitId,
+            userId: row.userId,
+            outletId: row.outletId,
+            lat: row.lat,
+            lng: row.lng,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ));
+    }).get();
+  }
 }
 
 @UseDao(tables: [Order])
@@ -298,19 +492,17 @@ class UserDao extends DatabaseAccessor<NexDatabase> with _$UserDaoMixin {
   Future<User> getUserByUsername(String username) =>
       (select(users)..where((tbl) => tbl.username.equals(username)))
           .getSingle();
-  Future<int> insertUser(User user) => into(users).insert(user);
-  Future updateUser(User user) =>
-      (update(users)..where((tbl) => tbl.username.equals(user.username))).write(
-        UsersCompanion(
-//          id: Value.absent(),
-          username: Value(user.username),
-          token: Value(user.token),
-          type: Value(user.type),
-        ),
-      );
+  Future<int> insertUser(Insertable<User> user) => into(users).insert(user);
+  Future updateUser(Insertable<User> user) => update(users).replace(user);
   Future<int> deleteUserByUsername(String username) =>
       (delete(users)..where((tbl) => tbl.username.equals(username))).go();
-  Future<int> deleteUsers() => (delete(users)).go();
+  Future<int> deleteUsers() => delete(users).go();
+  Future setTrukId(String trukId, String username) =>
+      (update(users)..where((tbl) => tbl.username.equals(username))).write(
+        UsersCompanion(
+          truckId: Value(trukId),
+        ),
+      );
 }
 
 @UseDao(tables: [Produk])
@@ -323,10 +515,17 @@ class ProdukDao extends DatabaseAccessor<NexDatabase> with _$ProdukDaoMixin {
         ..where((tbl) => tbl.produkId.equals(produkId))
         ..limit(1))
       .getSingle();
-  Future<List<ProdukData>> getProdukByKeyword(String keyword) => (select(produk)
-        ..where(
-            (tbl) => tbl.nama.like('%$keyword%') | tbl.kode.like('%$keyword%')))
-      .get();
+  Future<List<ProdukData>> getProdukByKeyword(String keyword,
+      {int limit, int offset}) {
+    var query = (select(produk)
+      ..where(
+          (tbl) => tbl.nama.like('%$keyword%') | tbl.kode.like('%$keyword%')));
+
+    if (limit != null && offset != null) query..limit(limit, offset: offset);
+
+    return query.get();
+  }
+
   Future insertProduk(Insertable<ProdukData> produkData) =>
       into(produk).insert(produkData);
   Future updateProduk(Insertable<ProdukData> produkData) =>
@@ -400,6 +599,10 @@ class OutletDao extends DatabaseAccessor<NexDatabase> with _$OutletDaoMixin {
       .watch();
 
   Future<List<OutletData>> getOutlet() => select(outlet).get();
+  Future<List<OutletData>> getOutletByKeyword(String keyword) => (select(outlet)
+        ..where(
+            (tbl) => tbl.barcode.equals(keyword) | tbl.user.equals(keyword)))
+      .get();
   Future<OutletData> getOutletById(String outletId) => (select(outlet)
         ..where((tbl) => tbl.outletId.equals(outletId))
         ..limit(1))

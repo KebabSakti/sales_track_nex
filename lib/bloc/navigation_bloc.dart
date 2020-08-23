@@ -24,11 +24,10 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     } else if (event is NavigateToPageIndex) {
       yield SetPageIndex(event.index);
     } else if (event is NavigateLogout) {
-      var deleted = await repository.deleteUsers();
-      if (deleted > 0)
-        yield NavigateLogoutCompleted();
-      else
-        yield NavigateError("Terjadi kesalahan, coba beberapa saat lagi");
+      await repository.deleteUsers();
+      yield NavigateLogoutCompleted();
+    } else {
+      yield NavigateError("Terjadi kesalahan, coba beberapa saat lagi");
     }
   }
 }

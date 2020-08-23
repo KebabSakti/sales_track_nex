@@ -17,3 +17,10 @@ class Reset extends SyncEvent {
   @override
   List<Object> get props => [];
 }
+
+class ShouldSync extends SyncEvent {
+  const ShouldSync();
+
+  @override
+  List<Object> get props => [];
+}

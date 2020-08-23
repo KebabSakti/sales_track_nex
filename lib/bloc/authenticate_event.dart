@@ -52,6 +52,13 @@ class UpdateUserLocal extends AuthenticateEvent {
   List<Object> get props => [user];
 }
 
+class GetUserLocal extends AuthenticateEvent {
+  const GetUserLocal();
+
+  @override
+  List<Object> get props => [];
+}
+
 class DeleteUserLocal extends AuthenticateEvent {
   final String username;
   const DeleteUserLocal(this.username);
@@ -65,4 +72,13 @@ class DeleteAllUserLocal extends AuthenticateEvent {
 
   @override
   List<Object> get props => [];
+}
+
+class SetTruck extends AuthenticateEvent {
+  final String truckId;
+
+  const SetTruck(this.truckId);
+
+  @override
+  List<Object> get props => [truckId];
 }

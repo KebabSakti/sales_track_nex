@@ -39,3 +39,11 @@ class SyncFailed extends SyncState {
   @override
   List<Object> get props => [message, data];
 }
+
+class ShouldSyncResponse extends SyncState {
+  final bool response;
+  const ShouldSyncResponse(this.response);
+
+  @override
+  List<Object> get props => [];
+}

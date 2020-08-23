@@ -127,14 +127,18 @@ class Login extends StatelessWidget {
   }
 
   void _routeUserType(User user, BuildContext context) {
-    if (user.type == "Delivery" && user.truckId == null) {
-      //route pilih truk
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/truck', (Route<dynamic> route) => false);
-    } else {
-      //route dashboard
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
-    }
+    //route dashboard
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+
+//    if (user.type == "Delivery" && user.truckId == null) {
+//      //route pilih truk
+//      Navigator.of(context)
+//          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+//    } else {
+//      //route dashboard
+//      Navigator.of(context)
+//          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
+//    }
   }
 }

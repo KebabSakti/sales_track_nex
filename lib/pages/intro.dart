@@ -14,7 +14,7 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<SyncBloc>(context).add(Sync());
+    BlocProvider.of<SyncBloc>(context).add(ShouldSync());
   }
 
   @override
@@ -27,6 +27,13 @@ class _IntroState extends State<Intro> {
             listener: (context, state) {
               if (state is SyncLoading) {
                 print(state.message);
+              } else if (state is ShouldSyncResponse) {
+                if (state.response) {
+                  BlocProvider.of<SyncBloc>(context).add(Sync());
+                } else {
+                  BlocProvider.of<AuthenticateBloc>(context)
+                      .add(GetLoggedInUser());
+                }
               } else if (state is SyncCompleted) {
                 BlocProvider.of<AuthenticateBloc>(context)
                     .add(GetLoggedInUser());
@@ -80,17 +87,9 @@ class _IntroState extends State<Intro> {
 
   _routeUserToDestination(AuthenticateState state) {
     if (state is GetLoggedInUserCompleted) {
-      print(state.user);
-
-      if (state.user.type == "Delivery" && state.user.truckId == null) {
-        //route delivery
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/truck', (Route<dynamic> route) => false);
-      } else {
-        //route sales
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
-      }
+      //route ke dashboard
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/app', (Route<dynamic> route) => false);
     } else if (state is AuthenticateError) {
       //navigate ke halaman login
       Navigator.of(context)

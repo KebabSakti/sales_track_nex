@@ -1629,8 +1629,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
   final String lng;
   final String geofence;
   final String picture;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   OutletData(
       {@required this.outletId,
       @required this.barcode,
@@ -1649,6 +1649,7 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OutletData(
       outletId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}outlet_id']),
@@ -1669,9 +1670,9 @@ class OutletData extends DataClass implements Insertable<OutletData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}geofence']),
       picture:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}picture']),
-      createdAt: stringType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: stringType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -1712,10 +1713,10 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       map['picture'] = Variable<String>(picture);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<String>(updatedAt);
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -1771,8 +1772,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       lng: serializer.fromJson<String>(json['lng']),
       geofence: serializer.fromJson<String>(json['geofence']),
       picture: serializer.fromJson<String>(json['picture']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
-      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -1790,8 +1791,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       'lng': serializer.toJson<String>(lng),
       'geofence': serializer.toJson<String>(geofence),
       'picture': serializer.toJson<String>(picture),
-      'createdAt': serializer.toJson<String>(createdAt),
-      'updatedAt': serializer.toJson<String>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -1807,8 +1808,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
           String lng,
           String geofence,
           String picture,
-          String createdAt,
-          String updatedAt}) =>
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       OutletData(
         outletId: outletId ?? this.outletId,
         barcode: barcode ?? this.barcode,
@@ -1902,8 +1903,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
   final Value<String> lng;
   final Value<String> geofence;
   final Value<String> picture;
-  final Value<String> createdAt;
-  final Value<String> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const OutletCompanion({
     this.outletId = const Value.absent(),
     this.barcode = const Value.absent(),
@@ -1931,8 +1932,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
     @required String lng,
     this.geofence = const Value.absent(),
     this.picture = const Value.absent(),
-    @required String createdAt,
-    @required String updatedAt,
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : outletId = Value(outletId),
         barcode = Value(barcode),
         user = Value(user),
@@ -1953,8 +1954,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
     Expression<String> lng,
     Expression<String> geofence,
     Expression<String> picture,
-    Expression<String> createdAt,
-    Expression<String> updatedAt,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (outletId != null) 'outlet_id': outletId,
@@ -1985,8 +1986,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
       Value<String> lng,
       Value<String> geofence,
       Value<String> picture,
-      Value<String> createdAt,
-      Value<String> updatedAt}) {
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return OutletCompanion(
       outletId: outletId ?? this.outletId,
       barcode: barcode ?? this.barcode,
@@ -2041,10 +2042,10 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
       map['picture'] = Variable<String>(picture.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<String>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -2207,11 +2208,11 @@ class $OutletTable extends Outlet with TableInfo<$OutletTable, OutletData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
       'created_at',
       $tableName,
       false,
@@ -2219,11 +2220,11 @@ class $OutletTable extends Outlet with TableInfo<$OutletTable, OutletData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedTextColumn _updatedAt;
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedTextColumn _constructUpdatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
       'updated_at',
       $tableName,
       false,
@@ -2595,8 +2596,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
   final String outletId;
   final String tanggal;
   final int visit;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   JadwalData(
       {@required this.jadwalId,
       @required this.userId,
@@ -2610,6 +2611,7 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return JadwalData(
       jadwalId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}jadwal_id']),
@@ -2620,9 +2622,9 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       tanggal:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}tanggal']),
       visit: intType.mapFromDatabaseResponse(data['${effectivePrefix}visit']),
-      createdAt: stringType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: stringType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -2645,10 +2647,10 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       map['visit'] = Variable<int>(visit);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<String>(updatedAt);
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -2686,8 +2688,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       outletId: serializer.fromJson<String>(json['outletId']),
       tanggal: serializer.fromJson<String>(json['tanggal']),
       visit: serializer.fromJson<int>(json['visit']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
-      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -2699,8 +2701,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       'outletId': serializer.toJson<String>(outletId),
       'tanggal': serializer.toJson<String>(tanggal),
       'visit': serializer.toJson<int>(visit),
-      'createdAt': serializer.toJson<String>(createdAt),
-      'updatedAt': serializer.toJson<String>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -2710,8 +2712,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
           String outletId,
           String tanggal,
           int visit,
-          String createdAt,
-          String updatedAt}) =>
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       JadwalData(
         jadwalId: jadwalId ?? this.jadwalId,
         userId: userId ?? this.userId,
@@ -2765,8 +2767,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
   final Value<String> outletId;
   final Value<String> tanggal;
   final Value<int> visit;
-  final Value<String> createdAt;
-  final Value<String> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const JadwalCompanion({
     this.jadwalId = const Value.absent(),
     this.userId = const Value.absent(),
@@ -2782,8 +2784,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
     @required String outletId,
     @required String tanggal,
     this.visit = const Value.absent(),
-    @required String createdAt,
-    @required String updatedAt,
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : jadwalId = Value(jadwalId),
         userId = Value(userId),
         outletId = Value(outletId),
@@ -2796,8 +2798,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
     Expression<String> outletId,
     Expression<String> tanggal,
     Expression<int> visit,
-    Expression<String> createdAt,
-    Expression<String> updatedAt,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (jadwalId != null) 'jadwal_id': jadwalId,
@@ -2816,8 +2818,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
       Value<String> outletId,
       Value<String> tanggal,
       Value<int> visit,
-      Value<String> createdAt,
-      Value<String> updatedAt}) {
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return JadwalCompanion(
       jadwalId: jadwalId ?? this.jadwalId,
       userId: userId ?? this.userId,
@@ -2848,10 +2850,10 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
       map['visit'] = Variable<int>(visit.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<String>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -2933,11 +2935,11 @@ class $JadwalTable extends Jadwal with TableInfo<$JadwalTable, JadwalData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
       'created_at',
       $tableName,
       false,
@@ -2945,11 +2947,11 @@ class $JadwalTable extends Jadwal with TableInfo<$JadwalTable, JadwalData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedTextColumn _updatedAt;
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedTextColumn _constructUpdatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
       'updated_at',
       $tableName,
       false,
@@ -3036,8 +3038,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
   final String lng;
   final int tutup;
   final String status;
-  final String createdAt;
-  final String updatedAt;
+  final int isPosted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   VisitData(
       {@required this.visitId,
       this.kodeVisit,
@@ -3045,8 +3048,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       @required this.outletId,
       @required this.lat,
       @required this.lng,
-      @required this.tutup,
+      this.tutup,
       this.status,
+      this.isPosted,
       @required this.createdAt,
       @required this.updatedAt});
   factory VisitData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -3054,6 +3058,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return VisitData(
       visitId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}visit_id']),
@@ -3068,9 +3073,11 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       tutup: intType.mapFromDatabaseResponse(data['${effectivePrefix}tutup']),
       status:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
-      createdAt: stringType
+      isPosted:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}is_posted']),
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: stringType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -3101,11 +3108,14 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     if (!nullToAbsent || status != null) {
       map['status'] = Variable<String>(status);
     }
+    if (!nullToAbsent || isPosted != null) {
+      map['is_posted'] = Variable<int>(isPosted);
+    }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<String>(updatedAt);
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -3129,6 +3139,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           tutup == null && nullToAbsent ? const Value.absent() : Value(tutup),
       status:
           status == null && nullToAbsent ? const Value.absent() : Value(status),
+      isPosted: isPosted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isPosted),
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
@@ -3150,8 +3163,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       lng: serializer.fromJson<String>(json['lng']),
       tutup: serializer.fromJson<int>(json['tutup']),
       status: serializer.fromJson<String>(json['status']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
-      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      isPosted: serializer.fromJson<int>(json['isPosted']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -3166,8 +3180,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       'lng': serializer.toJson<String>(lng),
       'tutup': serializer.toJson<int>(tutup),
       'status': serializer.toJson<String>(status),
-      'createdAt': serializer.toJson<String>(createdAt),
-      'updatedAt': serializer.toJson<String>(updatedAt),
+      'isPosted': serializer.toJson<int>(isPosted),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -3180,8 +3195,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           String lng,
           int tutup,
           String status,
-          String createdAt,
-          String updatedAt}) =>
+          int isPosted,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       VisitData(
         visitId: visitId ?? this.visitId,
         kodeVisit: kodeVisit ?? this.kodeVisit,
@@ -3191,6 +3207,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
         lng: lng ?? this.lng,
         tutup: tutup ?? this.tutup,
         status: status ?? this.status,
+        isPosted: isPosted ?? this.isPosted,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -3205,6 +3222,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           ..write('lng: $lng, ')
           ..write('tutup: $tutup, ')
           ..write('status: $status, ')
+          ..write('isPosted: $isPosted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3228,8 +3246,10 @@ class VisitData extends DataClass implements Insertable<VisitData> {
                               tutup.hashCode,
                               $mrjc(
                                   status.hashCode,
-                                  $mrjc(createdAt.hashCode,
-                                      updatedAt.hashCode))))))))));
+                                  $mrjc(
+                                      isPosted.hashCode,
+                                      $mrjc(createdAt.hashCode,
+                                          updatedAt.hashCode)))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -3242,6 +3262,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           other.lng == this.lng &&
           other.tutup == this.tutup &&
           other.status == this.status &&
+          other.isPosted == this.isPosted &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -3255,8 +3276,9 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   final Value<String> lng;
   final Value<int> tutup;
   final Value<String> status;
-  final Value<String> createdAt;
-  final Value<String> updatedAt;
+  final Value<int> isPosted;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const VisitCompanion({
     this.visitId = const Value.absent(),
     this.kodeVisit = const Value.absent(),
@@ -3266,6 +3288,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     this.lng = const Value.absent(),
     this.tutup = const Value.absent(),
     this.status = const Value.absent(),
+    this.isPosted = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -3278,8 +3301,9 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     @required String lng,
     this.tutup = const Value.absent(),
     this.status = const Value.absent(),
-    @required String createdAt,
-    @required String updatedAt,
+    this.isPosted = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : visitId = Value(visitId),
         userId = Value(userId),
         outletId = Value(outletId),
@@ -3296,8 +3320,9 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     Expression<String> lng,
     Expression<int> tutup,
     Expression<String> status,
-    Expression<String> createdAt,
-    Expression<String> updatedAt,
+    Expression<int> isPosted,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (visitId != null) 'visit_id': visitId,
@@ -3308,6 +3333,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       if (lng != null) 'lng': lng,
       if (tutup != null) 'tutup': tutup,
       if (status != null) 'status': status,
+      if (isPosted != null) 'is_posted': isPosted,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -3322,8 +3348,9 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       Value<String> lng,
       Value<int> tutup,
       Value<String> status,
-      Value<String> createdAt,
-      Value<String> updatedAt}) {
+      Value<int> isPosted,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return VisitCompanion(
       visitId: visitId ?? this.visitId,
       kodeVisit: kodeVisit ?? this.kodeVisit,
@@ -3333,6 +3360,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       lng: lng ?? this.lng,
       tutup: tutup ?? this.tutup,
       status: status ?? this.status,
+      isPosted: isPosted ?? this.isPosted,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -3365,11 +3393,14 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (isPosted.present) {
+      map['is_posted'] = Variable<int>(isPosted.value);
+    }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<String>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -3385,6 +3416,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
           ..write('lng: $lng, ')
           ..write('tutup: $tutup, ')
           ..write('status: $status, ')
+          ..write('isPosted: $isPosted, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3473,7 +3505,7 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
   @override
   GeneratedIntColumn get tutup => _tutup ??= _constructTutup();
   GeneratedIntColumn _constructTutup() {
-    return GeneratedIntColumn('tutup', $tableName, false,
+    return GeneratedIntColumn('tutup', $tableName, true,
         defaultValue: const Constant(0));
   }
 
@@ -3489,12 +3521,21 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
     );
   }
 
-  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  final VerificationMeta _isPostedMeta = const VerificationMeta('isPosted');
+  GeneratedIntColumn _isPosted;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
+  GeneratedIntColumn get isPosted => _isPosted ??= _constructIsPosted();
+  GeneratedIntColumn _constructIsPosted() {
+    return GeneratedIntColumn('is_posted', $tableName, true,
+        defaultValue: const Constant(0));
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
+  @override
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
       'created_at',
       $tableName,
       false,
@@ -3502,11 +3543,11 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedTextColumn _updatedAt;
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedTextColumn _constructUpdatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
       'updated_at',
       $tableName,
       false,
@@ -3523,6 +3564,7 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
         lng,
         tutup,
         status,
+        isPosted,
         createdAt,
         updatedAt
       ];
@@ -3579,6 +3621,10 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
       context.handle(_statusMeta,
           status.isAcceptableOrUnknown(data['status'], _statusMeta));
     }
+    if (data.containsKey('is_posted')) {
+      context.handle(_isPostedMeta,
+          isPosted.isAcceptableOrUnknown(data['is_posted'], _isPostedMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
@@ -3620,8 +3666,8 @@ class OrderData extends DataClass implements Insertable<OrderData> {
   final String status;
   final String totalBayar;
   final String pembayaran;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   OrderData(
       {@required this.orderId,
       @required this.outletId,
@@ -3640,6 +3686,7 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OrderData(
       orderId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}order_id']),
@@ -3663,9 +3710,9 @@ class OrderData extends DataClass implements Insertable<OrderData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}total_bayar']),
       pembayaran: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}pembayaran']),
-      createdAt: stringType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: stringType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -3706,10 +3753,10 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       map['pembayaran'] = Variable<String>(pembayaran);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<String>(updatedAt);
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -3772,8 +3819,8 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       status: serializer.fromJson<String>(json['status']),
       totalBayar: serializer.fromJson<String>(json['totalBayar']),
       pembayaran: serializer.fromJson<String>(json['pembayaran']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
-      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -3791,8 +3838,8 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       'status': serializer.toJson<String>(status),
       'totalBayar': serializer.toJson<String>(totalBayar),
       'pembayaran': serializer.toJson<String>(pembayaran),
-      'createdAt': serializer.toJson<String>(createdAt),
-      'updatedAt': serializer.toJson<String>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -3808,8 +3855,8 @@ class OrderData extends DataClass implements Insertable<OrderData> {
           String status,
           String totalBayar,
           String pembayaran,
-          String createdAt,
-          String updatedAt}) =>
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       OrderData(
         orderId: orderId ?? this.orderId,
         outletId: outletId ?? this.outletId,
@@ -3903,8 +3950,8 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
   final Value<String> status;
   final Value<String> totalBayar;
   final Value<String> pembayaran;
-  final Value<String> createdAt;
-  final Value<String> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const OrderCompanion({
     this.orderId = const Value.absent(),
     this.outletId = const Value.absent(),
@@ -3932,8 +3979,8 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     this.status = const Value.absent(),
     @required String totalBayar,
     this.pembayaran = const Value.absent(),
-    @required String createdAt,
-    @required String updatedAt,
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : orderId = Value(orderId),
         outletId = Value(outletId),
         kodeOrder = Value(kodeOrder),
@@ -3954,8 +4001,8 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     Expression<String> status,
     Expression<String> totalBayar,
     Expression<String> pembayaran,
-    Expression<String> createdAt,
-    Expression<String> updatedAt,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (orderId != null) 'order_id': orderId,
@@ -3986,8 +4033,8 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
       Value<String> status,
       Value<String> totalBayar,
       Value<String> pembayaran,
-      Value<String> createdAt,
-      Value<String> updatedAt}) {
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return OrderCompanion(
       orderId: orderId ?? this.orderId,
       outletId: outletId ?? this.outletId,
@@ -4042,10 +4089,10 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
       map['pembayaran'] = Variable<String>(pembayaran.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<String>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -4206,11 +4253,11 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
       'created_at',
       $tableName,
       false,
@@ -4218,11 +4265,11 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedTextColumn _updatedAt;
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedTextColumn _constructUpdatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
       'updated_at',
       $tableName,
       false,
@@ -4357,13 +4404,13 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
   final String userId;
   final int quantity;
   final String totalHarga;
-  final String createdAt;
-  final String updatedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   OrderItemData(
       {@required this.orderItemId,
       @required this.orderId,
       @required this.produkId,
-      @required this.kodeOrder,
+      this.kodeOrder,
       @required this.userId,
       @required this.quantity,
       @required this.totalHarga,
@@ -4375,6 +4422,7 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OrderItemData(
       orderItemId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}order_item_id']),
@@ -4390,9 +4438,9 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}quantity']),
       totalHarga: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}total_harga']),
-      createdAt: stringType
+      createdAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: stringType
+      updatedAt: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -4421,10 +4469,10 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       map['total_harga'] = Variable<String>(totalHarga);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<String>(createdAt);
+      map['created_at'] = Variable<DateTime>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<String>(updatedAt);
+      map['updated_at'] = Variable<DateTime>(updatedAt);
     }
     return map;
   }
@@ -4471,8 +4519,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       userId: serializer.fromJson<String>(json['userId']),
       quantity: serializer.fromJson<int>(json['quantity']),
       totalHarga: serializer.fromJson<String>(json['totalHarga']),
-      createdAt: serializer.fromJson<String>(json['createdAt']),
-      updatedAt: serializer.fromJson<String>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -4486,8 +4534,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       'userId': serializer.toJson<String>(userId),
       'quantity': serializer.toJson<int>(quantity),
       'totalHarga': serializer.toJson<String>(totalHarga),
-      'createdAt': serializer.toJson<String>(createdAt),
-      'updatedAt': serializer.toJson<String>(updatedAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -4499,8 +4547,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
           String userId,
           int quantity,
           String totalHarga,
-          String createdAt,
-          String updatedAt}) =>
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       OrderItemData(
         orderItemId: orderItemId ?? this.orderItemId,
         orderId: orderId ?? this.orderId,
@@ -4568,8 +4616,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
   final Value<String> userId;
   final Value<int> quantity;
   final Value<String> totalHarga;
-  final Value<String> createdAt;
-  final Value<String> updatedAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const OrderItemCompanion({
     this.orderItemId = const Value.absent(),
     this.orderId = const Value.absent(),
@@ -4585,16 +4633,15 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
     @required String orderItemId,
     @required String orderId,
     @required String produkId,
-    @required String kodeOrder,
+    this.kodeOrder = const Value.absent(),
     @required String userId,
     @required int quantity,
     @required String totalHarga,
-    @required String createdAt,
-    @required String updatedAt,
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : orderItemId = Value(orderItemId),
         orderId = Value(orderId),
         produkId = Value(produkId),
-        kodeOrder = Value(kodeOrder),
         userId = Value(userId),
         quantity = Value(quantity),
         totalHarga = Value(totalHarga),
@@ -4608,8 +4655,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
     Expression<String> userId,
     Expression<int> quantity,
     Expression<String> totalHarga,
-    Expression<String> createdAt,
-    Expression<String> updatedAt,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (orderItemId != null) 'order_item_id': orderItemId,
@@ -4632,8 +4679,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
       Value<String> userId,
       Value<int> quantity,
       Value<String> totalHarga,
-      Value<String> createdAt,
-      Value<String> updatedAt}) {
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return OrderItemCompanion(
       orderItemId: orderItemId ?? this.orderItemId,
       orderId: orderId ?? this.orderId,
@@ -4672,10 +4719,10 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
       map['total_harga'] = Variable<String>(totalHarga.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<String>(createdAt.value);
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<String>(updatedAt.value);
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     return map;
   }
@@ -4748,7 +4795,7 @@ class $OrderItemTable extends OrderItem
     return GeneratedTextColumn(
       'kode_order',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -4789,11 +4836,11 @@ class $OrderItemTable extends OrderItem
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedTextColumn _createdAt;
+  GeneratedDateTimeColumn _createdAt;
   @override
-  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedTextColumn _constructCreatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
       'created_at',
       $tableName,
       false,
@@ -4801,11 +4848,11 @@ class $OrderItemTable extends OrderItem
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedTextColumn _updatedAt;
+  GeneratedDateTimeColumn _updatedAt;
   @override
-  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedTextColumn _constructUpdatedAt() {
-    return GeneratedTextColumn(
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
       'updated_at',
       $tableName,
       false,
@@ -4858,8 +4905,6 @@ class $OrderItemTable extends OrderItem
     if (data.containsKey('kode_order')) {
       context.handle(_kodeOrderMeta,
           kodeOrder.isAcceptableOrUnknown(data['kode_order'], _kodeOrderMeta));
-    } else if (isInserting) {
-      context.missing(_kodeOrderMeta);
     }
     if (data.containsKey('user_id')) {
       context.handle(_userIdMeta,
@@ -4910,6 +4955,802 @@ class $OrderItemTable extends OrderItem
   }
 }
 
+class SyncInfoData extends DataClass implements Insertable<SyncInfoData> {
+  final String syncInfoId;
+  final String userId;
+  final String keterangan;
+  final DateTime updatedAt;
+  SyncInfoData(
+      {@required this.syncInfoId,
+      this.userId,
+      this.keterangan,
+      @required this.updatedAt});
+  factory SyncInfoData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return SyncInfoData(
+      syncInfoId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}sync_info_id']),
+      userId:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+      keterangan: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}keterangan']),
+      updatedAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || syncInfoId != null) {
+      map['sync_info_id'] = Variable<String>(syncInfoId);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    if (!nullToAbsent || keterangan != null) {
+      map['keterangan'] = Variable<String>(keterangan);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  SyncInfoCompanion toCompanion(bool nullToAbsent) {
+    return SyncInfoCompanion(
+      syncInfoId: syncInfoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncInfoId),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      keterangan: keterangan == null && nullToAbsent
+          ? const Value.absent()
+          : Value(keterangan),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory SyncInfoData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return SyncInfoData(
+      syncInfoId: serializer.fromJson<String>(json['syncInfoId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      keterangan: serializer.fromJson<String>(json['keterangan']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'syncInfoId': serializer.toJson<String>(syncInfoId),
+      'userId': serializer.toJson<String>(userId),
+      'keterangan': serializer.toJson<String>(keterangan),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SyncInfoData copyWith(
+          {String syncInfoId,
+          String userId,
+          String keterangan,
+          DateTime updatedAt}) =>
+      SyncInfoData(
+        syncInfoId: syncInfoId ?? this.syncInfoId,
+        userId: userId ?? this.userId,
+        keterangan: keterangan ?? this.keterangan,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SyncInfoData(')
+          ..write('syncInfoId: $syncInfoId, ')
+          ..write('userId: $userId, ')
+          ..write('keterangan: $keterangan, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(syncInfoId.hashCode,
+      $mrjc(userId.hashCode, $mrjc(keterangan.hashCode, updatedAt.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is SyncInfoData &&
+          other.syncInfoId == this.syncInfoId &&
+          other.userId == this.userId &&
+          other.keterangan == this.keterangan &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SyncInfoCompanion extends UpdateCompanion<SyncInfoData> {
+  final Value<String> syncInfoId;
+  final Value<String> userId;
+  final Value<String> keterangan;
+  final Value<DateTime> updatedAt;
+  const SyncInfoCompanion({
+    this.syncInfoId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.keterangan = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  SyncInfoCompanion.insert({
+    @required String syncInfoId,
+    this.userId = const Value.absent(),
+    this.keterangan = const Value.absent(),
+    @required DateTime updatedAt,
+  })  : syncInfoId = Value(syncInfoId),
+        updatedAt = Value(updatedAt);
+  static Insertable<SyncInfoData> custom({
+    Expression<String> syncInfoId,
+    Expression<String> userId,
+    Expression<String> keterangan,
+    Expression<DateTime> updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (syncInfoId != null) 'sync_info_id': syncInfoId,
+      if (userId != null) 'user_id': userId,
+      if (keterangan != null) 'keterangan': keterangan,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  SyncInfoCompanion copyWith(
+      {Value<String> syncInfoId,
+      Value<String> userId,
+      Value<String> keterangan,
+      Value<DateTime> updatedAt}) {
+    return SyncInfoCompanion(
+      syncInfoId: syncInfoId ?? this.syncInfoId,
+      userId: userId ?? this.userId,
+      keterangan: keterangan ?? this.keterangan,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (syncInfoId.present) {
+      map['sync_info_id'] = Variable<String>(syncInfoId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (keterangan.present) {
+      map['keterangan'] = Variable<String>(keterangan.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncInfoCompanion(')
+          ..write('syncInfoId: $syncInfoId, ')
+          ..write('userId: $userId, ')
+          ..write('keterangan: $keterangan, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncInfoTable extends SyncInfo
+    with TableInfo<$SyncInfoTable, SyncInfoData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $SyncInfoTable(this._db, [this._alias]);
+  final VerificationMeta _syncInfoIdMeta = const VerificationMeta('syncInfoId');
+  GeneratedTextColumn _syncInfoId;
+  @override
+  GeneratedTextColumn get syncInfoId => _syncInfoId ??= _constructSyncInfoId();
+  GeneratedTextColumn _constructSyncInfoId() {
+    return GeneratedTextColumn(
+      'sync_info_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  GeneratedTextColumn _userId;
+  @override
+  GeneratedTextColumn get userId => _userId ??= _constructUserId();
+  GeneratedTextColumn _constructUserId() {
+    return GeneratedTextColumn(
+      'user_id',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _keteranganMeta = const VerificationMeta('keterangan');
+  GeneratedTextColumn _keterangan;
+  @override
+  GeneratedTextColumn get keterangan => _keterangan ??= _constructKeterangan();
+  GeneratedTextColumn _constructKeterangan() {
+    return GeneratedTextColumn(
+      'keterangan',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
+  @override
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
+      'updated_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [syncInfoId, userId, keterangan, updatedAt];
+  @override
+  $SyncInfoTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'sync_info';
+  @override
+  final String actualTableName = 'sync_info';
+  @override
+  VerificationContext validateIntegrity(Insertable<SyncInfoData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sync_info_id')) {
+      context.handle(
+          _syncInfoIdMeta,
+          syncInfoId.isAcceptableOrUnknown(
+              data['sync_info_id'], _syncInfoIdMeta));
+    } else if (isInserting) {
+      context.missing(_syncInfoIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id'], _userIdMeta));
+    }
+    if (data.containsKey('keterangan')) {
+      context.handle(
+          _keteranganMeta,
+          keterangan.isAcceptableOrUnknown(
+              data['keterangan'], _keteranganMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {syncInfoId};
+  @override
+  SyncInfoData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return SyncInfoData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $SyncInfoTable createAlias(String alias) {
+    return $SyncInfoTable(_db, alias);
+  }
+}
+
+class FotoVisitData extends DataClass implements Insertable<FotoVisitData> {
+  final String fotoVisitId;
+  final String visitId;
+  final String localPath;
+  final String original;
+  final String modified;
+  final String url;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  FotoVisitData(
+      {@required this.fotoVisitId,
+      @required this.visitId,
+      @required this.localPath,
+      this.original,
+      this.modified,
+      this.url,
+      @required this.createdAt,
+      @required this.updatedAt});
+  factory FotoVisitData.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return FotoVisitData(
+      fotoVisitId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}foto_visit_id']),
+      visitId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}visit_id']),
+      localPath: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}local_path']),
+      original: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}original']),
+      modified: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}modified']),
+      url: stringType.mapFromDatabaseResponse(data['${effectivePrefix}url']),
+      createdAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      updatedAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || fotoVisitId != null) {
+      map['foto_visit_id'] = Variable<String>(fotoVisitId);
+    }
+    if (!nullToAbsent || visitId != null) {
+      map['visit_id'] = Variable<String>(visitId);
+    }
+    if (!nullToAbsent || localPath != null) {
+      map['local_path'] = Variable<String>(localPath);
+    }
+    if (!nullToAbsent || original != null) {
+      map['original'] = Variable<String>(original);
+    }
+    if (!nullToAbsent || modified != null) {
+      map['modified'] = Variable<String>(modified);
+    }
+    if (!nullToAbsent || url != null) {
+      map['url'] = Variable<String>(url);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  FotoVisitCompanion toCompanion(bool nullToAbsent) {
+    return FotoVisitCompanion(
+      fotoVisitId: fotoVisitId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fotoVisitId),
+      visitId: visitId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(visitId),
+      localPath: localPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localPath),
+      original: original == null && nullToAbsent
+          ? const Value.absent()
+          : Value(original),
+      modified: modified == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modified),
+      url: url == null && nullToAbsent ? const Value.absent() : Value(url),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory FotoVisitData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return FotoVisitData(
+      fotoVisitId: serializer.fromJson<String>(json['fotoVisitId']),
+      visitId: serializer.fromJson<String>(json['visitId']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      original: serializer.fromJson<String>(json['original']),
+      modified: serializer.fromJson<String>(json['modified']),
+      url: serializer.fromJson<String>(json['url']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'fotoVisitId': serializer.toJson<String>(fotoVisitId),
+      'visitId': serializer.toJson<String>(visitId),
+      'localPath': serializer.toJson<String>(localPath),
+      'original': serializer.toJson<String>(original),
+      'modified': serializer.toJson<String>(modified),
+      'url': serializer.toJson<String>(url),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  FotoVisitData copyWith(
+          {String fotoVisitId,
+          String visitId,
+          String localPath,
+          String original,
+          String modified,
+          String url,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
+      FotoVisitData(
+        fotoVisitId: fotoVisitId ?? this.fotoVisitId,
+        visitId: visitId ?? this.visitId,
+        localPath: localPath ?? this.localPath,
+        original: original ?? this.original,
+        modified: modified ?? this.modified,
+        url: url ?? this.url,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('FotoVisitData(')
+          ..write('fotoVisitId: $fotoVisitId, ')
+          ..write('visitId: $visitId, ')
+          ..write('localPath: $localPath, ')
+          ..write('original: $original, ')
+          ..write('modified: $modified, ')
+          ..write('url: $url, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      fotoVisitId.hashCode,
+      $mrjc(
+          visitId.hashCode,
+          $mrjc(
+              localPath.hashCode,
+              $mrjc(
+                  original.hashCode,
+                  $mrjc(
+                      modified.hashCode,
+                      $mrjc(url.hashCode,
+                          $mrjc(createdAt.hashCode, updatedAt.hashCode))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is FotoVisitData &&
+          other.fotoVisitId == this.fotoVisitId &&
+          other.visitId == this.visitId &&
+          other.localPath == this.localPath &&
+          other.original == this.original &&
+          other.modified == this.modified &&
+          other.url == this.url &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class FotoVisitCompanion extends UpdateCompanion<FotoVisitData> {
+  final Value<String> fotoVisitId;
+  final Value<String> visitId;
+  final Value<String> localPath;
+  final Value<String> original;
+  final Value<String> modified;
+  final Value<String> url;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const FotoVisitCompanion({
+    this.fotoVisitId = const Value.absent(),
+    this.visitId = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.original = const Value.absent(),
+    this.modified = const Value.absent(),
+    this.url = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  FotoVisitCompanion.insert({
+    @required String fotoVisitId,
+    @required String visitId,
+    @required String localPath,
+    this.original = const Value.absent(),
+    this.modified = const Value.absent(),
+    this.url = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
+  })  : fotoVisitId = Value(fotoVisitId),
+        visitId = Value(visitId),
+        localPath = Value(localPath),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<FotoVisitData> custom({
+    Expression<String> fotoVisitId,
+    Expression<String> visitId,
+    Expression<String> localPath,
+    Expression<String> original,
+    Expression<String> modified,
+    Expression<String> url,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (fotoVisitId != null) 'foto_visit_id': fotoVisitId,
+      if (visitId != null) 'visit_id': visitId,
+      if (localPath != null) 'local_path': localPath,
+      if (original != null) 'original': original,
+      if (modified != null) 'modified': modified,
+      if (url != null) 'url': url,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  FotoVisitCompanion copyWith(
+      {Value<String> fotoVisitId,
+      Value<String> visitId,
+      Value<String> localPath,
+      Value<String> original,
+      Value<String> modified,
+      Value<String> url,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
+    return FotoVisitCompanion(
+      fotoVisitId: fotoVisitId ?? this.fotoVisitId,
+      visitId: visitId ?? this.visitId,
+      localPath: localPath ?? this.localPath,
+      original: original ?? this.original,
+      modified: modified ?? this.modified,
+      url: url ?? this.url,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (fotoVisitId.present) {
+      map['foto_visit_id'] = Variable<String>(fotoVisitId.value);
+    }
+    if (visitId.present) {
+      map['visit_id'] = Variable<String>(visitId.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (original.present) {
+      map['original'] = Variable<String>(original.value);
+    }
+    if (modified.present) {
+      map['modified'] = Variable<String>(modified.value);
+    }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FotoVisitCompanion(')
+          ..write('fotoVisitId: $fotoVisitId, ')
+          ..write('visitId: $visitId, ')
+          ..write('localPath: $localPath, ')
+          ..write('original: $original, ')
+          ..write('modified: $modified, ')
+          ..write('url: $url, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FotoVisitTable extends FotoVisit
+    with TableInfo<$FotoVisitTable, FotoVisitData> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $FotoVisitTable(this._db, [this._alias]);
+  final VerificationMeta _fotoVisitIdMeta =
+      const VerificationMeta('fotoVisitId');
+  GeneratedTextColumn _fotoVisitId;
+  @override
+  GeneratedTextColumn get fotoVisitId =>
+      _fotoVisitId ??= _constructFotoVisitId();
+  GeneratedTextColumn _constructFotoVisitId() {
+    return GeneratedTextColumn(
+      'foto_visit_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _visitIdMeta = const VerificationMeta('visitId');
+  GeneratedTextColumn _visitId;
+  @override
+  GeneratedTextColumn get visitId => _visitId ??= _constructVisitId();
+  GeneratedTextColumn _constructVisitId() {
+    return GeneratedTextColumn(
+      'visit_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _localPathMeta = const VerificationMeta('localPath');
+  GeneratedTextColumn _localPath;
+  @override
+  GeneratedTextColumn get localPath => _localPath ??= _constructLocalPath();
+  GeneratedTextColumn _constructLocalPath() {
+    return GeneratedTextColumn(
+      'local_path',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _originalMeta = const VerificationMeta('original');
+  GeneratedTextColumn _original;
+  @override
+  GeneratedTextColumn get original => _original ??= _constructOriginal();
+  GeneratedTextColumn _constructOriginal() {
+    return GeneratedTextColumn(
+      'original',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _modifiedMeta = const VerificationMeta('modified');
+  GeneratedTextColumn _modified;
+  @override
+  GeneratedTextColumn get modified => _modified ??= _constructModified();
+  GeneratedTextColumn _constructModified() {
+    return GeneratedTextColumn(
+      'modified',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _urlMeta = const VerificationMeta('url');
+  GeneratedTextColumn _url;
+  @override
+  GeneratedTextColumn get url => _url ??= _constructUrl();
+  GeneratedTextColumn _constructUrl() {
+    return GeneratedTextColumn(
+      'url',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
+  @override
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
+      'created_at',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
+  @override
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
+      'updated_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        fotoVisitId,
+        visitId,
+        localPath,
+        original,
+        modified,
+        url,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  $FotoVisitTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'foto_visit';
+  @override
+  final String actualTableName = 'foto_visit';
+  @override
+  VerificationContext validateIntegrity(Insertable<FotoVisitData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('foto_visit_id')) {
+      context.handle(
+          _fotoVisitIdMeta,
+          fotoVisitId.isAcceptableOrUnknown(
+              data['foto_visit_id'], _fotoVisitIdMeta));
+    } else if (isInserting) {
+      context.missing(_fotoVisitIdMeta);
+    }
+    if (data.containsKey('visit_id')) {
+      context.handle(_visitIdMeta,
+          visitId.isAcceptableOrUnknown(data['visit_id'], _visitIdMeta));
+    } else if (isInserting) {
+      context.missing(_visitIdMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(_localPathMeta,
+          localPath.isAcceptableOrUnknown(data['local_path'], _localPathMeta));
+    } else if (isInserting) {
+      context.missing(_localPathMeta);
+    }
+    if (data.containsKey('original')) {
+      context.handle(_originalMeta,
+          original.isAcceptableOrUnknown(data['original'], _originalMeta));
+    }
+    if (data.containsKey('modified')) {
+      context.handle(_modifiedMeta,
+          modified.isAcceptableOrUnknown(data['modified'], _modifiedMeta));
+    }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url'], _urlMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {fotoVisitId};
+  @override
+  FotoVisitData map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return FotoVisitData.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $FotoVisitTable createAlias(String alias) {
+    return $FotoVisitTable(_db, alias);
+  }
+}
+
 abstract class _$NexDatabase extends GeneratedDatabase {
   _$NexDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UsersTable _users;
@@ -4933,6 +5774,10 @@ abstract class _$NexDatabase extends GeneratedDatabase {
   $OrderTable get order => _order ??= $OrderTable(this);
   $OrderItemTable _orderItem;
   $OrderItemTable get orderItem => _orderItem ??= $OrderItemTable(this);
+  $SyncInfoTable _syncInfo;
+  $SyncInfoTable get syncInfo => _syncInfo ??= $SyncInfoTable(this);
+  $FotoVisitTable _fotoVisit;
+  $FotoVisitTable get fotoVisit => _fotoVisit ??= $FotoVisitTable(this);
   UserDao _userDao;
   UserDao get userDao => _userDao ??= UserDao(this as NexDatabase);
   ProdukDao _produkDao;
@@ -4955,6 +5800,12 @@ abstract class _$NexDatabase extends GeneratedDatabase {
   OrderItemDao _orderItemDao;
   OrderItemDao get orderItemDao =>
       _orderItemDao ??= OrderItemDao(this as NexDatabase);
+  SyncInfoDao _syncInfoDao;
+  SyncInfoDao get syncInfoDao =>
+      _syncInfoDao ??= SyncInfoDao(this as NexDatabase);
+  FotoVisitDao _fotoVisitDao;
+  FotoVisitDao get fotoVisitDao =>
+      _fotoVisitDao ??= FotoVisitDao(this as NexDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
@@ -4968,7 +5819,9 @@ abstract class _$NexDatabase extends GeneratedDatabase {
         jadwal,
         visit,
         order,
-        orderItem
+        orderItem,
+        syncInfo,
+        fotoVisit
       ];
 }
 
@@ -4976,12 +5829,152 @@ abstract class _$NexDatabase extends GeneratedDatabase {
 // DaoGenerator
 // **************************************************************************
 
+mixin _$FotoVisitDaoMixin on DatabaseAccessor<NexDatabase> {
+  $FotoVisitTable get fotoVisit => attachedDatabase.fotoVisit;
+}
+mixin _$SyncInfoDaoMixin on DatabaseAccessor<NexDatabase> {
+  $SyncInfoTable get syncInfo => attachedDatabase.syncInfo;
+}
 mixin _$JadwalDaoMixin on DatabaseAccessor<NexDatabase> {
   $JadwalTable get jadwal => attachedDatabase.jadwal;
+  $OutletTable get outlet => attachedDatabase.outlet;
+  Selectable<JadwalWithOutletResult> _jadwalWithOutlet(String var1) {
+    return customSelect(
+        'SELECT j.*, o.* FROM jadwal j JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {jadwal, outlet}).map((QueryRow row) {
+      return JadwalWithOutletResult(
+        jadwalId: row.readString('jadwal_id'),
+        userId: row.readString('user_id'),
+        outletId: row.readString('outlet_id'),
+        tanggal: row.readString('tanggal'),
+        visit: row.readInt('visit'),
+        createdAt: row.readDateTime('created_at'),
+        updatedAt: row.readDateTime('updated_at'),
+        outletId1: row.readString('outlet_id'),
+        barcode: row.readString('barcode'),
+        user: row.readString('user'),
+        outletName: row.readString('outlet_name'),
+        address: row.readString('address'),
+        phone: row.readString('phone'),
+        owner: row.readString('owner'),
+        lat: row.readString('lat'),
+        lng: row.readString('lng'),
+        geofence: row.readString('geofence'),
+        picture: row.readString('picture'),
+        createdAt1: row.readDateTime('created_at'),
+        updatedAt1: row.readDateTime('updated_at'),
+      );
+    });
+  }
 }
+
+class JadwalWithOutletResult {
+  final String jadwalId;
+  final String userId;
+  final String outletId;
+  final String tanggal;
+  final int visit;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String outletId1;
+  final String barcode;
+  final String user;
+  final String outletName;
+  final String address;
+  final String phone;
+  final String owner;
+  final String lat;
+  final String lng;
+  final String geofence;
+  final String picture;
+  final DateTime createdAt1;
+  final DateTime updatedAt1;
+  JadwalWithOutletResult({
+    this.jadwalId,
+    this.userId,
+    this.outletId,
+    this.tanggal,
+    this.visit,
+    this.createdAt,
+    this.updatedAt,
+    this.outletId1,
+    this.barcode,
+    this.user,
+    this.outletName,
+    this.address,
+    this.phone,
+    this.owner,
+    this.lat,
+    this.lng,
+    this.geofence,
+    this.picture,
+    this.createdAt1,
+    this.updatedAt1,
+  });
+}
+
 mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
   $VisitTable get visit => attachedDatabase.visit;
+  $OutletTable get outlet => attachedDatabase.outlet;
+  Selectable<VisitWithOutletResult> _visitWithOutlet(String var1, String var2) {
+    return customSelect(
+        'SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND (CAST(strftime(\'%s\', \'2020-08-23\')  AS  integer)) = (CAST(strftime(\'%s\', ?)  AS  integer))',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {outlet, visit}).map((QueryRow row) {
+      return VisitWithOutletResult(
+        visitId: row.readString('visit_id'),
+        kodeVisit: row.readString('kode_visit'),
+        userId: row.readString('user_id'),
+        outletId: row.readString('outlet_id'),
+        lat: row.readString('lat'),
+        lng: row.readString('lng'),
+        tutup: row.readInt('tutup'),
+        status: row.readString('status'),
+        isPosted: row.readInt('is_posted'),
+        createdAt: row.readDateTime('created_at'),
+        updatedAt: row.readDateTime('updated_at'),
+        outletName: row.readString('outlet_name'),
+        barcode: row.readString('barcode'),
+        user: row.readString('user'),
+      );
+    });
+  }
 }
+
+class VisitWithOutletResult {
+  final String visitId;
+  final String kodeVisit;
+  final String userId;
+  final String outletId;
+  final String lat;
+  final String lng;
+  final int tutup;
+  final String status;
+  final int isPosted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String outletName;
+  final String barcode;
+  final String user;
+  VisitWithOutletResult({
+    this.visitId,
+    this.kodeVisit,
+    this.userId,
+    this.outletId,
+    this.lat,
+    this.lng,
+    this.tutup,
+    this.status,
+    this.isPosted,
+    this.createdAt,
+    this.updatedAt,
+    this.outletName,
+    this.barcode,
+    this.user,
+  });
+}
+
 mixin _$OrderDaoMixin on DatabaseAccessor<NexDatabase> {
   $OrderTable get order => attachedDatabase.order;
 }
