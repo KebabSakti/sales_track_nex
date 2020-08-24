@@ -3039,8 +3039,8 @@ class VisitData extends DataClass implements Insertable<VisitData> {
   final int tutup;
   final String status;
   final int isPosted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   VisitData(
       {@required this.visitId,
       this.kodeVisit,
@@ -3058,7 +3058,6 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return VisitData(
       visitId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}visit_id']),
@@ -3075,9 +3074,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
       isPosted:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}is_posted']),
-      createdAt: dateTimeType
+      createdAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: dateTimeType
+      updatedAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -3112,10 +3111,10 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       map['is_posted'] = Variable<int>(isPosted);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<String>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
+      map['updated_at'] = Variable<String>(updatedAt);
     }
     return map;
   }
@@ -3164,8 +3163,8 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       tutup: serializer.fromJson<int>(json['tutup']),
       status: serializer.fromJson<String>(json['status']),
       isPosted: serializer.fromJson<int>(json['isPosted']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
     );
   }
   @override
@@ -3181,8 +3180,8 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       'tutup': serializer.toJson<int>(tutup),
       'status': serializer.toJson<String>(status),
       'isPosted': serializer.toJson<int>(isPosted),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
     };
   }
 
@@ -3196,8 +3195,8 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           int tutup,
           String status,
           int isPosted,
-          DateTime createdAt,
-          DateTime updatedAt}) =>
+          String createdAt,
+          String updatedAt}) =>
       VisitData(
         visitId: visitId ?? this.visitId,
         kodeVisit: kodeVisit ?? this.kodeVisit,
@@ -3277,8 +3276,8 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   final Value<int> tutup;
   final Value<String> status;
   final Value<int> isPosted;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
   const VisitCompanion({
     this.visitId = const Value.absent(),
     this.kodeVisit = const Value.absent(),
@@ -3302,8 +3301,8 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     this.tutup = const Value.absent(),
     this.status = const Value.absent(),
     this.isPosted = const Value.absent(),
-    @required DateTime createdAt,
-    @required DateTime updatedAt,
+    @required String createdAt,
+    @required String updatedAt,
   })  : visitId = Value(visitId),
         userId = Value(userId),
         outletId = Value(outletId),
@@ -3321,8 +3320,8 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     Expression<int> tutup,
     Expression<String> status,
     Expression<int> isPosted,
-    Expression<DateTime> createdAt,
-    Expression<DateTime> updatedAt,
+    Expression<String> createdAt,
+    Expression<String> updatedAt,
   }) {
     return RawValuesInsertable({
       if (visitId != null) 'visit_id': visitId,
@@ -3349,8 +3348,8 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       Value<int> tutup,
       Value<String> status,
       Value<int> isPosted,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt}) {
+      Value<String> createdAt,
+      Value<String> updatedAt}) {
     return VisitCompanion(
       visitId: visitId ?? this.visitId,
       kodeVisit: kodeVisit ?? this.kodeVisit,
@@ -3397,10 +3396,10 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       map['is_posted'] = Variable<int>(isPosted.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<String>(updatedAt.value);
     }
     return map;
   }
@@ -3531,11 +3530,11 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedTextColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
       'created_at',
       $tableName,
       false,
@@ -3543,11 +3542,11 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedDateTimeColumn _updatedAt;
+  GeneratedTextColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedDateTimeColumn _constructUpdatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedTextColumn _constructUpdatedAt() {
+    return GeneratedTextColumn(
       'updated_at',
       $tableName,
       false,
@@ -5917,11 +5916,20 @@ class JadwalWithOutletResult {
 mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
   $VisitTable get visit => attachedDatabase.visit;
   $OutletTable get outlet => attachedDatabase.outlet;
-  Selectable<VisitWithOutletResult> _visitWithOutlet(String var1, String var2) {
+  Selectable<VisitWithOutletResult> _visitWithOutlet(
+      String var1, String keyword, String var3, String var4) {
     return customSelect(
-        'SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND (CAST(strftime(\'%s\', \'2020-08-23\')  AS  integer)) = (CAST(strftime(\'%s\', ?)  AS  integer))',
-        variables: [Variable.withString(var1), Variable.withString(var2)],
-        readsFrom: {outlet, visit}).map((QueryRow row) {
+        'SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?)',
+        variables: [
+          Variable.withString(var1),
+          Variable.withString(keyword),
+          Variable.withString(var3),
+          Variable.withString(var4)
+        ],
+        readsFrom: {
+          outlet,
+          visit
+        }).map((QueryRow row) {
       return VisitWithOutletResult(
         visitId: row.readString('visit_id'),
         kodeVisit: row.readString('kode_visit'),
@@ -5932,13 +5940,26 @@ mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
         tutup: row.readInt('tutup'),
         status: row.readString('status'),
         isPosted: row.readInt('is_posted'),
-        createdAt: row.readDateTime('created_at'),
-        updatedAt: row.readDateTime('updated_at'),
+        createdAt: row.readString('created_at'),
+        updatedAt: row.readString('updated_at'),
         outletName: row.readString('outlet_name'),
         barcode: row.readString('barcode'),
         user: row.readString('user'),
       );
     });
+  }
+
+  Selectable<VisitData> _getVisitToday(String var1, String var2, String var3) {
+    return customSelect(
+        'SELECT * FROM visit WHERE date(created_at) = date(?) AND user_id = ? AND outlet_id = ?',
+        variables: [
+          Variable.withString(var1),
+          Variable.withString(var2),
+          Variable.withString(var3)
+        ],
+        readsFrom: {
+          visit
+        }).map(visit.mapFromRow);
   }
 }
 
@@ -5952,8 +5973,8 @@ class VisitWithOutletResult {
   final int tutup;
   final String status;
   final int isPosted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   final String outletName;
   final String barcode;
   final String user;

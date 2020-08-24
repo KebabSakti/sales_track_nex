@@ -40,7 +40,9 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
     if (outletData.length > 0) {
       //cek apakah sudah visit hari ini
       VisitData visitData = await repository.getVisitToday(
-          DateTime.now(), event.userId, outletData[0].outletId);
+          DateTime.now().toIso8601String(),
+          event.userId,
+          outletData[0].outletId);
 
       if (visitData == null) {
         print('no visit');
@@ -68,8 +70,8 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
       outletId: event.outletData.outletId,
       lat: event.outletData.lat,
       lng: event.outletData.lng,
-      createdAt: today,
-      updatedAt: today,
+      createdAt: today.toIso8601String(),
+      updatedAt: today.toIso8601String(),
     ));
 
     //foto visit

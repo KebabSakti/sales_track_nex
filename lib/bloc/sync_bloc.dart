@@ -363,8 +363,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           outletId: item['outlet_id'],
           lat: item['lat'],
           lng: item['lng'],
-          createdAt: DateTime.parse(item['created_at']),
-          updatedAt: DateTime.parse(item['updated_at']),
+          createdAt: item['created_at'],
+          updatedAt: item['updated_at'],
         );
 
         if (visit == null) {

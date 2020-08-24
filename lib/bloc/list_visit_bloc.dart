@@ -18,7 +18,7 @@ class ListVisitBloc extends Bloc<ListVisitEvent, ListVisitState> {
   Stream<ListVisitState> mapEventToState(
     ListVisitEvent event,
   ) async* {
-    yield GetDataVisitLoading();
+    yield GetDataVisitLoading(state.visitWithOutlet);
 
     if (event is GetDataVisit) {
       yield* _getDataVisit(event);
@@ -33,11 +33,9 @@ class ListVisitBloc extends Bloc<ListVisitEvent, ListVisitState> {
       event.periodeAkhir,
     );
 
-    print(visitWithOutlet.length);
-
     if (visitWithOutlet.length > 0)
       yield GetDataVisitComplete(visitWithOutlet);
     else
-      print('error');
+      yield GetDataVisitError();
   }
 }

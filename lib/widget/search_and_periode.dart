@@ -5,13 +5,11 @@ import 'package:sales_track_nex/utils/helper.dart';
 
 class SearchPeriode extends StatefulWidget {
   final ValueChanged<String> onSearchFieldChanged;
-  final ValueChanged<DateTime> onPeriodeAwalChanged;
-  final ValueChanged<DateTime> onPeriodeAkhirChanged;
+  final ValueChanged<List<DateTime>> onPeriodeChanged;
 
   SearchPeriode({
     @required this.onSearchFieldChanged,
-    @required this.onPeriodeAwalChanged,
-    @required this.onPeriodeAkhirChanged,
+    @required this.onPeriodeChanged,
   });
 
   @override
@@ -22,7 +20,9 @@ class _SearchPeriodeState extends State<SearchPeriode> {
   final TextEditingController _searchFieldText = TextEditingController();
   final TextEditingController _periodeAwalText = TextEditingController();
   final TextEditingController _periodeAkhirText = TextEditingController();
-  DateTime _periodeAwal, _periodeAkhir;
+
+  DateTime _periodeAwal = Helper().getPeriode()[0];
+  DateTime _periodeAkhir = Helper().getPeriode()[1];
 
   void _searchFieldChangeListener() {
     widget.onSearchFieldChanged(_searchFieldText.text);
@@ -31,6 +31,11 @@ class _SearchPeriodeState extends State<SearchPeriode> {
   @override
   void initState() {
     _searchFieldText.addListener(_searchFieldChangeListener);
+
+    _periodeAwalText.text = Helper()
+        .getFormattedDate(_periodeAwal, mDateFormat: DateFormat('dd-MM-yyyy'));
+    _periodeAkhirText.text = Helper()
+        .getFormattedDate(_periodeAkhir, mDateFormat: DateFormat('dd-MM-yyyy'));
     super.initState();
   }
 
@@ -151,10 +156,7 @@ class _SearchPeriodeState extends State<SearchPeriode> {
                                 onPressed: () async {
                                   _periodeAwal = await showRoundedDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate:
-                                        DateTime(DateTime.now().year - 1),
-                                    lastDate: DateTime(DateTime.now().year + 1),
+                                    initialDate: _periodeAwal,
                                     borderRadius: 16,
                                   );
 
@@ -162,7 +164,7 @@ class _SearchPeriodeState extends State<SearchPeriode> {
                                     _periodeAwalText.text = Helper()
                                         .getFormattedDate(_periodeAwal,
                                             mDateFormat:
-                                                DateFormat('dd/MM/yyyy'));
+                                                DateFormat('dd-MM-yyyy'));
                                 },
                               ),
                             ),
@@ -204,10 +206,7 @@ class _SearchPeriodeState extends State<SearchPeriode> {
                                 onPressed: () async {
                                   _periodeAkhir = await showRoundedDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate:
-                                        DateTime(DateTime.now().year - 1),
-                                    lastDate: DateTime(DateTime.now().year + 1),
+                                    initialDate: _periodeAkhir,
                                     borderRadius: 16,
                                   );
 
@@ -215,7 +214,7 @@ class _SearchPeriodeState extends State<SearchPeriode> {
                                     _periodeAkhirText.text = Helper()
                                         .getFormattedDate(_periodeAkhir,
                                             mDateFormat:
-                                                DateFormat('dd/MM/yyyy'));
+                                                DateFormat('dd-MM-yyyy'));
                                 },
                               ),
                             ),
@@ -236,8 +235,8 @@ class _SearchPeriodeState extends State<SearchPeriode> {
                               onPressed: () {
                                 if (_periodeAwal != null &&
                                     _periodeAkhir != null) {
-                                  widget.onPeriodeAwalChanged(_periodeAwal);
-                                  widget.onPeriodeAkhirChanged(_periodeAkhir);
+                                  widget.onPeriodeChanged(
+                                      [_periodeAwal, _periodeAkhir]);
                                 }
 
                                 Navigator.of(context).pop();

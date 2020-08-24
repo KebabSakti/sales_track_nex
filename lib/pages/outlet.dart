@@ -135,7 +135,7 @@ class _OutletState extends State<Outlet> {
               builder: (context, state) {
                 return PopupMenuButton(
                   icon: Icon(Icons.add),
-                  onSelected: (value) {
+                  onSelected: (value) async {
                     if (value == 1) {
                       Navigator.of(context).pushNamed('/tambah_outlet');
                     } else if (value == 2) {

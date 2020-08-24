@@ -1,7 +1,5 @@
-import 'package:intl/intl.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:sales_track_nex/utils/helper.dart';
 
 part 'nex_database.g.dart';
 
@@ -114,8 +112,8 @@ class Visit extends Table {
   TextColumn get status => text().nullable()();
   IntColumn get isPosted =>
       integer().nullable().withDefault(const Constant(0))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get createdAt => text()();
+  TextColumn get updatedAt => text()();
 
   @override
   Set<Column> get primaryKey => {visitId};
@@ -355,7 +353,9 @@ class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
   Outlet
 ], queries: {
   '_visitWithOutlet':
-      ''' SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND (CAST(strftime('%s', '2020-08-23')  AS  integer)) = (CAST(strftime('%s', ?)  AS  integer)) ''',
+      ''' SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?) ''',
+  '_getVisitToday':
+      ''' SELECT * FROM visit WHERE date(created_at) = date(?) AND user_id = ? AND outlet_id = ? ''',
 })
 class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
   final NexDatabase database;
@@ -368,17 +368,24 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
         ..limit(1))
       .getSingle();
   Future<VisitData> getVisitToday(
-          DateTime dateTime, String userId, String outletId) =>
-      (select(visit)
-            ..where((tbl) {
-              return tbl.updatedAt.year.equals(dateTime.year) &
-                  tbl.updatedAt.month.equals(dateTime.month) &
-                  tbl.updatedAt.day.equals(dateTime.day) &
-                  tbl.userId.equals(userId) &
-                  tbl.outletId.equals(outletId);
-            })
-            ..limit(1))
-          .getSingle();
+      String dateTime, String userId, String outletId) {
+    return _getVisitToday(dateTime, userId, outletId)
+        .map((row) => VisitData(
+              visitId: row.visitId,
+              userId: row.userId,
+              outletId: row.outletId,
+              lat: row.lat,
+              lng: row.lng,
+              status: row.status,
+              isPosted: row.isPosted,
+              kodeVisit: row.kodeVisit,
+              tutup: row.tutup,
+              createdAt: row.createdAt,
+              updatedAt: row.updatedAt,
+            ))
+        .getSingle();
+  }
+
   Future insertVisit(Insertable<VisitData> visitData) =>
       into(visit).insert(visitData);
   Future updateVisit(Insertable<VisitData> visitData) =>
@@ -387,20 +394,14 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
   Future<List<VisitWithOutlet>> getVisitWithOutlet(
     String userId,
     String keyword,
-    DateTime periodeAwal,
-    DateTime periodeAkhir,
+    String periodeAwal,
+    String periodeAkhir,
   ) {
     return _visitWithOutlet(
       userId,
-//      keyword,
-      Helper().getFormattedDate(
-        periodeAwal,
-        mDateFormat: DateFormat('yyyy-MM-dd'),
-      ),
-//      Helper().getFormattedDate(
-//        periodeAkhir,
-//        mDateFormat: DateFormat('yyyy-MM-dd'),
-//      ),
+      '%$keyword%',
+      periodeAwal,
+      periodeAkhir,
     ).map((row) {
       return VisitWithOutlet(
           outletData: OutletData(
@@ -410,8 +411,8 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
             outletName: row.outletName,
             lat: row.lat,
             lng: row.lng,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
+            createdAt: DateTime.parse(row.createdAt),
+            updatedAt: DateTime.parse(row.updatedAt),
           ),
           visitData: VisitData(
             visitId: row.visitId,

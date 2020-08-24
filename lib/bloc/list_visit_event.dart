@@ -5,8 +5,7 @@ abstract class ListVisitEvent extends Equatable {
 }
 
 class GetDataVisit extends ListVisitEvent {
-  final String userId, keyword;
-  final DateTime periodeAwal, periodeAkhir;
+  final String userId, keyword, periodeAwal, periodeAkhir;
 
   const GetDataVisit(
       {this.keyword,

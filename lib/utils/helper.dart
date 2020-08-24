@@ -39,4 +39,17 @@ class Helper {
     var f = NumberFormat.currency(locale: 'id_ID', name: 'Rp ');
     return f.format(number);
   }
+
+  List<DateTime> getPeriode() {
+    List<DateTime> periode = [];
+
+    var now = DateTime.now();
+    var awal = DateTime(now.year, now.month, 1);
+    var akhir =
+        DateTime(now.year, now.month, DateTime(now.year, now.month + 1, 0).day);
+    periode.add(awal);
+    periode.add(akhir);
+
+    return periode;
+  }
 }

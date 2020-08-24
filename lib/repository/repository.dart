@@ -78,15 +78,15 @@ abstract class AppRepository {
   Future<List<VisitData>> getVisit();
   Future<VisitData> getVisitById(String visitId);
   Future<VisitData> getVisitToday(
-      DateTime dateTime, String userId, String outletId);
+      String dateTime, String userId, String outletId);
   Future insertVisit(Insertable<VisitData> visitData);
   Future updateVisit(Insertable<VisitData> visitData);
   Future deleteVisit();
   Future<List<VisitWithOutlet>> getVisitWithOutlet(
     String userId,
     String keyword,
-    DateTime periodeAwal,
-    DateTime periodeAkhir,
+    String periodeAwal,
+    String periodeAkhir,
   );
 
   //order repos
@@ -644,7 +644,7 @@ class Repository implements AppRepository {
 
   @override
   Future<VisitData> getVisitToday(
-      DateTime dateTime, String userId, String outletId) async {
+      String dateTime, String userId, String outletId) async {
     return await database.visitDao.getVisitToday(dateTime, userId, outletId);
   }
 
@@ -673,7 +673,7 @@ class Repository implements AppRepository {
 
   @override
   Future<List<VisitWithOutlet>> getVisitWithOutlet(String userId,
-      String keyword, DateTime periodeAwal, DateTime periodeAkhir) async {
+      String keyword, String periodeAwal, String periodeAkhir) async {
     return await database.visitDao.getVisitWithOutlet(
       userId,
       keyword,
