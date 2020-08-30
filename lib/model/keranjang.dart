@@ -5,25 +5,28 @@ class KeranjangData {
   final ProdukData produkData;
   final int qty;
   final double total;
+  final OrderItemData orderItemData;
 
   const KeranjangData({
     @required this.produkData,
     @required this.qty,
     this.total,
+    this.orderItemData,
   });
 }
 
 class KeranjangDetail {
   final Map<String, KeranjangData> keranjangData;
   final double sum;
-  final String pembayaran;
+  String pembayaran = 'Cash';
   final String nomorPo;
 
-  KeranjangDetail(
-      {@required this.keranjangData,
-      this.nomorPo,
-      this.sum,
-      this.pembayaran = 'Cash'});
+  KeranjangDetail({
+    @required this.keranjangData,
+    this.nomorPo,
+    this.sum,
+    this.pembayaran,
+  });
 
   KeranjangDetail copyWith({
     Map<String, KeranjangData> keranjangData,
@@ -35,6 +38,6 @@ class KeranjangDetail {
         keranjangData: keranjangData ?? this.keranjangData,
         nomorPo: nomorPo ?? this.nomorPo,
         sum: sum ?? this.sum,
-        pembayaran: pembayaran,
+        pembayaran: pembayaran ?? this.pembayaran,
       );
 }

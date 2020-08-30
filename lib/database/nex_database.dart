@@ -69,8 +69,8 @@ class Outlet extends Table {
   TextColumn get lng => text()();
   TextColumn get geofence => text().nullable()();
   TextColumn get picture => text().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get createdAt => text()();
+  TextColumn get updatedAt => text()();
 
   @override
   Set<Column> get primaryKey => {outletId};
@@ -93,8 +93,8 @@ class Jadwal extends Table {
   TextColumn get outletId => text()();
   TextColumn get tanggal => text()();
   IntColumn get visit => integer().withDefault(const Constant(0))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get createdAt => text().nullable()();
+  TextColumn get updatedAt => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {jadwalId};
@@ -103,6 +103,7 @@ class Jadwal extends Table {
 @DataClassName('VisitData')
 class Visit extends Table {
   TextColumn get visitId => text()();
+  TextColumn get orderId => text().nullable()();
   TextColumn get kodeVisit => text().nullable()();
   TextColumn get userId => text()();
   TextColumn get outletId => text()();
@@ -135,9 +136,10 @@ class FotoVisit extends Table {
 }
 
 @DataClassName('OrderData')
-class Order extends Table {
+class Sales extends Table {
   TextColumn get orderId => text()();
   TextColumn get outletId => text()();
+  TextColumn get visitId => text().nullable()();
   TextColumn get barcode => text().nullable()();
   TextColumn get kodeOrder => text()();
   TextColumn get nomorPO => text()();
@@ -147,8 +149,8 @@ class Order extends Table {
   TextColumn get status => text().withDefault(const Constant('PO'))();
   TextColumn get totalBayar => text()();
   TextColumn get pembayaran => text().withDefault(const Constant('Cash'))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get createdAt => text()();
+  TextColumn get updatedAt => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {orderId};
@@ -163,8 +165,8 @@ class OrderItem extends Table {
   TextColumn get userId => text()();
   IntColumn get quantity => integer()();
   TextColumn get totalHarga => text()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get createdAt => text()();
+  TextColumn get updatedAt => text()();
 
   @override
   Set<Column> get primaryKey => {orderItemId};
@@ -202,6 +204,27 @@ class VisitWithOutlet {
   VisitWithOutlet({@required this.outletData, @required this.visitData});
 }
 
+class StokWithProduct {
+  final StokData stokData;
+  final ProdukData produkData;
+
+  StokWithProduct(this.stokData, this.produkData);
+}
+
+class OrderWithOutlet {
+  final OrderData orderData;
+  final OutletData outletData;
+
+  OrderWithOutlet(this.orderData, this.outletData);
+}
+
+class ItemWithProduk {
+  final OrderItemData orderItemData;
+  final ProdukData produkData;
+
+  ItemWithProduk(this.orderItemData, this.produkData);
+}
+
 @UseMoor(tables: [
   Users,
   Produk,
@@ -211,7 +234,7 @@ class VisitWithOutlet {
   SyncRuleTable,
   Jadwal,
   Visit,
-  Order,
+  Sales,
   OrderItem,
   SyncInfo,
   FotoVisit
@@ -283,7 +306,7 @@ class SyncInfoDao extends DatabaseAccessor<NexDatabase>
   Outlet
 ], queries: {
   '_jadwalWithOutlet':
-      ''' SELECT j.*, o.* FROM jadwal j JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ? ''',
+      ''' SELECT j.*, o.barcode, o.outlet_name, o.address, o.phone, o.owner, o.lat, o.lng, o.user FROM jadwal j LEFT JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ? AND date(j.created_at) = date(?) ORDER BY j.visit DESC ''',
 })
 class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
   final NexDatabase database;
@@ -306,44 +329,39 @@ class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
       (select(jadwal)
             ..where(
               (tbl) =>
-                  tbl.updatedAt.year.equals(dateTime.year) &
-                  tbl.updatedAt.month.equals(dateTime.month) &
-                  tbl.updatedAt.day.equals(dateTime.day) &
-                  tbl.userId.equals(userId) &
-                  tbl.outletId.equals(outletId),
+//                  tbl.updatedAt.year.equals(dateTime.year) &
+//                  tbl.updatedAt.month.equals(dateTime.month) &
+//                  tbl.updatedAt.day.equals(dateTime.day) &
+                  tbl.userId.equals(userId) & tbl.outletId.equals(outletId),
             )
             ..limit(1))
           .getSingle();
   //relations
   Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
-      String userId, DateTime dateTime) {
-    return _jadwalWithOutlet(userId).map((row) {
-      if (row.createdAt.year == dateTime.year &&
-          row.createdAt.month == dateTime.month &&
-          row.createdAt.day == dateTime.day)
-        return JadwalWithOutlet(
-          JadwalData(
-            jadwalId: row.jadwalId,
-            userId: row.userId,
-            outletId: row.outletId,
-            tanggal: row.tanggal,
-            visit: row.visit,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
-          ),
-          OutletData(
-            outletId: row.outletId,
-            barcode: row.barcode,
-            user: row.user,
-            outletName: row.outletName,
-            lat: row.lat,
-            lng: row.lng,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
-          ),
-        );
-
-      return null;
+      String userId, String date) {
+    return _jadwalWithOutlet(userId, date).map((row) {
+      return JadwalWithOutlet(
+        JadwalData(
+          jadwalId: row.jadwalId,
+          userId: row.userId,
+          outletId: row.outletId,
+          tanggal: row.tanggal,
+          visit: row.visit,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+        ),
+        OutletData(
+          outletId: row.outletId,
+          barcode: row.barcode,
+          user: row.user,
+          outletName: row.outletName,
+          lat: row.lat,
+          lng: row.lng,
+          owner: row.owner,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+        ),
+      );
     }).get();
   }
 }
@@ -353,7 +371,7 @@ class JadwalDao extends DatabaseAccessor<NexDatabase> with _$JadwalDaoMixin {
   Outlet
 ], queries: {
   '_visitWithOutlet':
-      ''' SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?) ''',
+      ''' SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?) ORDER BY v.created_at DESC ''',
   '_getVisitToday':
       ''' SELECT * FROM visit WHERE date(created_at) = date(?) AND user_id = ? AND outlet_id = ? ''',
 })
@@ -411,13 +429,77 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
             outletName: row.outletName,
             lat: row.lat,
             lng: row.lng,
-            createdAt: DateTime.parse(row.createdAt),
-            updatedAt: DateTime.parse(row.updatedAt),
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
           ),
           visitData: VisitData(
             visitId: row.visitId,
+            orderId: row.orderId,
             userId: row.userId,
             outletId: row.outletId,
+            lat: row.lat,
+            lng: row.lng,
+            status: row.status,
+            tutup: row.tutup,
+            kodeVisit: row.kodeVisit,
+            isPosted: row.isPosted,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ));
+    }).get();
+  }
+}
+
+@UseDao(tables: [
+  Sales,
+  Outlet
+], queries: {
+  '_fetchOrder':
+      ''' SELECT o.*, l.user, l.outlet_name, l.lat, l.lng, l.owner, l.phone FROM sales o LEFT JOIN outlet l ON o.outlet_id = l.outlet_id WHERE date(o.created_at) >= date(?) AND date(o.created_at) <= date(?) AND o.po_user_id = ? AND l.outlet_name LIKE ? ORDER BY o.created_at DESC ''',
+})
+class OrderDao extends DatabaseAccessor<NexDatabase> with _$OrderDaoMixin {
+  final NexDatabase database;
+
+  OrderDao(this.database) : super(database);
+
+  Future<List<OrderData>> getOrder() => select(sales).get();
+  Future<OrderData> getOrderById(String orderId) => (select(sales)
+        ..where((tbl) => tbl.orderId.equals(orderId))
+        ..limit(1))
+      .getSingle();
+  Future insertOrder(Insertable<OrderData> orderData) =>
+      into(sales).insert(orderData);
+  Future updateOrder(Insertable<OrderData> orderData) =>
+      update(sales).replace(orderData);
+  Future deleteJadwal() => delete(sales).go();
+  Future<List<OrderWithOutlet>> fetchOrder(
+      String periodeAwal, String periodeAkhir, String userId, String keyword) {
+    return _fetchOrder(periodeAwal, periodeAkhir, userId, '%$keyword%')
+        .map((row) {
+      return OrderWithOutlet(
+          OrderData(
+            orderId: row.orderId,
+            outletId: row.outletId,
+            kodeOrder: row.kodeOrder,
+            nomorPO: row.nomorPO,
+            poUserId: row.poUserId,
+            status: row.status,
+            nomorFaktur: row.nomorFaktur,
+            barcode: row.barcode,
+            visitId: row.visitId,
+            fakturUserId: row.fakturUserId,
+            totalBayar: row.totalBayar,
+            pembayaran: row.pembayaran,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ),
+          OutletData(
+            outletId: row.outletId,
+            barcode: row.barcode,
+            user: row.user,
+            outletName: row.outletName,
+            owner: row.owner,
+            phone: row.phone,
             lat: row.lat,
             lng: row.lng,
             createdAt: row.createdAt,
@@ -427,25 +509,13 @@ class VisitDao extends DatabaseAccessor<NexDatabase> with _$VisitDaoMixin {
   }
 }
 
-@UseDao(tables: [Order])
-class OrderDao extends DatabaseAccessor<NexDatabase> with _$OrderDaoMixin {
-  final NexDatabase database;
-
-  OrderDao(this.database) : super(database);
-
-  Future<List<OrderData>> getOrder() => select(order).get();
-  Future<OrderData> getOrderById(String orderId) => (select(order)
-        ..where((tbl) => tbl.orderId.equals(orderId))
-        ..limit(1))
-      .getSingle();
-  Future insertOrder(Insertable<OrderData> orderData) =>
-      into(order).insert(orderData);
-  Future updateOrder(Insertable<OrderData> orderData) =>
-      update(order).replace(orderData);
-  Future deleteJadwal() => delete(order).go();
-}
-
-@UseDao(tables: [OrderItem])
+@UseDao(tables: [
+  OrderItem,
+  Produk
+], queries: {
+  '_fetchJoinedOrderItem':
+      ''' SELECT i.*, p.nama, p.harga, p.stok, p.kode, p.aktif FROM order_item i INNER JOIN produk p ON i.produk_id = p.produk_id WHERE i.order_id = ? ''',
+})
 class OrderItemDao extends DatabaseAccessor<NexDatabase>
     with _$OrderItemDaoMixin {
   final NexDatabase database;
@@ -463,6 +533,31 @@ class OrderItemDao extends DatabaseAccessor<NexDatabase>
   Future updateOrderItem(Insertable<OrderItemData> orderItemData) =>
       update(orderItem).replace(orderItemData);
   Future deleteOrderItem() => delete(orderItem).go();
+  Future<List<ItemWithProduk>> fetchOrderItem(String orderId) {
+    return _fetchJoinedOrderItem(orderId).map((row) {
+      return ItemWithProduk(
+          OrderItemData(
+            orderItemId: row.orderItemId,
+            orderId: row.orderId,
+            produkId: row.produkId,
+            userId: row.userId,
+            quantity: row.quantity,
+            totalHarga: row.totalHarga,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ),
+          ProdukData(
+            produkId: row.produkId,
+            kode: row.kode,
+            nama: row.nama,
+            harga: row.harga,
+            stok: row.stok,
+            aktif: row.aktif,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          ));
+    }).get();
+  }
 }
 
 @UseDao(tables: [SyncRuleTable])
@@ -534,7 +629,13 @@ class ProdukDao extends DatabaseAccessor<NexDatabase> with _$ProdukDaoMixin {
   Future deleteProduk() => delete(produk).go();
 }
 
-@UseDao(tables: [Stok])
+@UseDao(tables: [
+  Stok,
+  Produk
+], queries: {
+  '_stokWithProduct':
+      ''' SELECT s.*, p.kode, p.nama, p.harga, p.aktif, p.stok FROM stok s LEFT JOIN produk p ON s.produk_id = p.produk_id WHERE s.truk_id = ? AND p.nama LIKE ? ORDER BY p.nama ASC ''',
+})
 class StokDao extends DatabaseAccessor<NexDatabase> with _$StokDaoMixin {
   final NexDatabase database;
   StokDao(this.database) : super(database);
@@ -549,6 +650,31 @@ class StokDao extends DatabaseAccessor<NexDatabase> with _$StokDaoMixin {
   Future updateStok(Insertable<StokData> stokData) =>
       update(stok).replace(stokData);
   Future deleteStok() => (delete(stok)).go();
+  Future<List<StokWithProduct>> getStokWithProduk(
+      String trukId, String keyword) {
+    return _stokWithProduct(trukId, '%$keyword%').map((row) {
+      return StokWithProduct(
+        StokData(
+          trukId: row.trukId,
+          stokId: row.stokId,
+          produkId: row.produkId,
+          quantity: row.quantity,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+        ),
+        ProdukData(
+          produkId: row.produkId,
+          kode: row.kode,
+          nama: row.nama,
+          harga: row.harga,
+          stok: row.stok,
+          aktif: row.aktif,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
+        ),
+      );
+    }).get();
+  }
 }
 
 @UseDao(tables: [
@@ -600,10 +726,14 @@ class OutletDao extends DatabaseAccessor<NexDatabase> with _$OutletDaoMixin {
       .watch();
 
   Future<List<OutletData>> getOutlet() => select(outlet).get();
-  Future<List<OutletData>> getOutletByKeyword(String keyword) => (select(outlet)
-        ..where(
-            (tbl) => tbl.barcode.equals(keyword) | tbl.user.equals(keyword)))
-      .get();
+  Future<List<OutletData>> getOutletByKeyword(
+          String keyword, String username) =>
+      (select(outlet)
+            ..where((tbl) =>
+                tbl.barcode.like('%$keyword%') |
+                tbl.outletName.like('%$keyword%'))
+            ..where((tbl) => tbl.user.equals(username)))
+          .get();
   Future<OutletData> getOutletById(String outletId) => (select(outlet)
         ..where((tbl) => tbl.outletId.equals(outletId))
         ..limit(1))

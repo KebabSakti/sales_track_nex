@@ -1,24 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
 import 'package:sales_track_nex/bloc/keranjang_bloc.dart';
 import 'package:sales_track_nex/bloc/order_product_bloc.dart';
 import 'package:sales_track_nex/database/nex_database.dart';
 import 'package:sales_track_nex/model/keranjang.dart';
 import 'package:sales_track_nex/utils/helper.dart';
+import 'package:sales_track_nex/widget/SearchAppBar.dart';
 import 'package:toast/toast.dart';
 
 class OrderProduct extends StatefulWidget {
+  final bool noCheckout;
+
+  OrderProduct({@required this.noCheckout});
+
   @override
   _OrderProductState createState() => _OrderProductState();
 }
 
 class _OrderProductState extends State<OrderProduct> {
   TextEditingController _searchText = TextEditingController();
+  // ignore: close_sinks
+  AuthenticateBloc authenticateBloc;
 
   _getProduct(String keyword, {int limit, int offset}) {
-    BlocProvider.of<OrderProductBloc>(context)
-        .add(GetOrderProduct(keyword, limit: limit, offset: offset));
+    BlocProvider.of<OrderProductBloc>(context).add(GetOrderProduct(
+      keyword,
+      authenticateBloc.state.user,
+      limit: limit,
+      offset: offset,
+    ));
   }
 
   _searchBarChangedListener(value) {
@@ -27,6 +39,7 @@ class _OrderProductState extends State<OrderProduct> {
 
   @override
   void initState() {
+    authenticateBloc = BlocProvider.of<AuthenticateBloc>(context);
     //list all product
     _getProduct('');
     super.initState();
@@ -50,8 +63,10 @@ class _OrderProductState extends State<OrderProduct> {
         ),
       ],
       child: Scaffold(
-        appBar: OrderProductAppbar(
-          onChanged: _searchBarChangedListener,
+        appBar: SearchAppBar(
+          title: 'Pilih Produk',
+          hintText: 'Ketik nama produk',
+          onTextChanged: _searchBarChangedListener,
         ),
         body: BlocBuilder<OrderProductBloc, OrderProductState>(
           builder: (context, state) {
@@ -196,6 +211,7 @@ class _OrderProductState extends State<OrderProduct> {
                               produkData: produkItem,
                               state:
                                   BlocProvider.of<KeranjangBloc>(context).state,
+                              noCheckout: widget.noCheckout,
                             );
                           },
                         );
@@ -294,11 +310,16 @@ class _OrderProductState extends State<OrderProduct> {
                               .state
                               .keranjangDetail
                               .sum >
-                          0)
-                        Navigator.of(context).pushNamed('/checkout');
-                      else
+                          0) {
+                        if (!widget.noCheckout) {
+                          Navigator.of(context).pushNamed('/checkout');
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      } else {
                         Toast.show('Belum ada produk di tambahkan', context,
                             gravity: Toast.CENTER);
+                      }
                     },
                   ),
                 ),
@@ -312,11 +333,16 @@ class _OrderProductState extends State<OrderProduct> {
 }
 
 class ProdukQty extends StatefulWidget {
-  ProdukQty({Key key, @required this.produkData, @required this.state})
+  ProdukQty(
+      {Key key,
+      @required this.produkData,
+      @required this.state,
+      @required this.noCheckout})
       : super(key: key);
 
   final ProdukData produkData;
   final KeranjangState state;
+  final bool noCheckout;
 
   @override
   _ProdukQtyState createState() => _ProdukQtyState();
@@ -337,8 +363,21 @@ class _ProdukQtyState extends State<ProdukQty> {
         _stok -= 1;
       });
 
-      BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
-          produkData: widget.produkData, qty: _qty, total: _total)));
+      if (widget.noCheckout) {
+        BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
+          produkData: widget.produkData,
+          qty: _qty,
+          total: _total,
+          orderItemData: widget.state.keranjangDetail
+              .keranjangData[widget.produkData.produkId]?.orderItemData,
+        )));
+      } else {
+        BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
+          produkData: widget.produkData,
+          qty: _qty,
+          total: _total,
+        )));
+      }
     }
   }
 
@@ -352,8 +391,21 @@ class _ProdukQtyState extends State<ProdukQty> {
         _stok += 1;
       });
 
-      BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
-          produkData: widget.produkData, qty: _qty, total: _total)));
+      if (widget.noCheckout) {
+        BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
+          produkData: widget.produkData,
+          qty: _qty,
+          total: _total,
+          orderItemData: widget.state.keranjangDetail
+              .keranjangData[widget.produkData.produkId]?.orderItemData,
+        )));
+      } else {
+        BlocProvider.of<KeranjangBloc>(context).add(AddItem(KeranjangData(
+          produkData: widget.produkData,
+          qty: _qty,
+          total: _total,
+        )));
+      }
     }
   }
 

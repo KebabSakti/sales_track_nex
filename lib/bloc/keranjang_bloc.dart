@@ -13,7 +13,8 @@ class KeranjangBloc extends Bloc<KeranjangEvent, KeranjangState> {
   final Repository repository;
 
   KeranjangBloc(this.repository)
-      : super(KeranjangInitial(KeranjangDetail(keranjangData: {}, sum: 0)));
+      : super(KeranjangInitial(
+            KeranjangDetail(keranjangData: {}, sum: 0, pembayaran: 'Cash')));
 
   @override
   Stream<KeranjangState> mapEventToState(
@@ -26,13 +27,12 @@ class KeranjangBloc extends Bloc<KeranjangEvent, KeranjangState> {
     } else if (event is SetNomorPo) {
       yield* _setNomorPo(event);
     } else if (event is Resetkeranjang) {
-      yield ResetKeranjangComplete(KeranjangDetail(keranjangData: {}, sum: 0));
+      yield ResetKeranjangComplete(
+          KeranjangDetail(keranjangData: {}, sum: 0, pembayaran: 'Cash'));
     }
   }
 
   Stream<KeranjangState> _addItem(AddItem event) async* {
-    print('QTY IS ${event.keranjangData.qty}');
-
     Map<String, KeranjangData> keranjangData = {};
 
     if (event.keranjangData.qty == 0) {
@@ -55,7 +55,7 @@ class KeranjangBloc extends Bloc<KeranjangEvent, KeranjangState> {
     });
 
     yield KeranjangStatus(
-        KeranjangDetail(keranjangData: keranjangData, sum: sum));
+        state.keranjangDetail.copyWith(keranjangData: keranjangData, sum: sum));
   }
 
   Stream<KeranjangState> _setPembayaran(SetPembayaran event) async* {

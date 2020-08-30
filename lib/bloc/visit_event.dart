@@ -13,14 +13,15 @@ class ScanBarcode extends VisitEvent {
 }
 
 class ValidateOutlet extends VisitEvent {
-  const ValidateOutlet(
-      {@required this.scanResult,
-      @required this.locationData,
-      @required this.userId});
+  const ValidateOutlet({
+    @required this.scanResult,
+    @required this.locationData,
+    @required this.user,
+  });
 
-  final ScanResult scanResult;
+  final String scanResult;
   final LocationData locationData;
-  final String userId;
+  final User user;
 
   @override
   // TODO: implement props
@@ -39,15 +40,20 @@ class VisitFoto extends VisitEvent {
 
 class SubmitVisit extends VisitEvent {
   final OutletData outletData;
+  final LocationData locationData;
   final List<String> foto;
   final KeranjangDetail keranjangDetail;
   final User user;
+  final int tutup;
 
-  const SubmitVisit(
-      {@required this.outletData,
-      @required this.foto,
-      @required this.user,
-      this.keranjangDetail});
+  const SubmitVisit({
+    @required this.outletData,
+    @required this.locationData,
+    @required this.foto,
+    @required this.user,
+    @required this.tutup,
+    this.keranjangDetail,
+  });
 
   @override
   // TODO: implement props

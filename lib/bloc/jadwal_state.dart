@@ -17,11 +17,11 @@ class GetJadwalLoading extends JadwalState {
 }
 
 class GetJadwalCompleted extends JadwalState {
-  final List<JadwalData> jadwalData;
-  const GetJadwalCompleted(this.jadwalData);
+  final List<JadwalWithOutlet> jadwalWithOutlet;
+  const GetJadwalCompleted(this.jadwalWithOutlet);
 
   @override
-  List<Object> get props => [jadwalData];
+  List<Object> get props => [jadwalWithOutlet];
 }
 
 class GetJadwalWithOutletCompleted extends JadwalState {

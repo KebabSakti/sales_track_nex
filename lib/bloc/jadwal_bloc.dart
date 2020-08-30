@@ -21,41 +21,18 @@ class JadwalBloc extends Bloc<JadwalEvent, JadwalState> {
     yield GetJadwalLoading();
 
     if (event is GetJadwal) {
-      List<JadwalRangeData> jadwalRangeData = [];
+      yield* _getJadwal(event);
+    }
+  }
 
-      User user = await repository.getLoggedInUser();
-      List<JadwalWithOutlet> jadwalWithOutlet =
-          await repository.getJadwalWithOutlet(user.userId, DateTime.now());
+  Stream<JadwalState> _getJadwal(GetJadwal event) async* {
+    var jadwalWithOutlet =
+        await repository.getJadwalWithOutlet(event.user.userId, event.date);
 
-      for (var item in jadwalWithOutlet) {
-//        Map response = await repository.getJadwalWithRange('-0.454551',
-//            '117.143850', item.outletData.lat, item.outletData.lng);
-//
-//        print(response);
-//
-//        var jarak = response['routes'].length > 0
-//            ? (response['routes'][0]['sections'][0]['summary']['length'] / 1000)
-//                .toString()
-//            : '0';
-        if (item != null)
-          jadwalRangeData.add(
-            JadwalRangeData(
-              outletId: item.outletData.outletId,
-              namaOutlet: item.outletData.outletName,
-              lat: item.outletData.lat,
-              lng: item.outletData.lng,
-              keterangan: '',
-              jarak: '',
-              visit: item.jadwalData.visit,
-            ),
-          );
-      }
-
-      if (jadwalRangeData.length > 0) {
-        yield GetJadwalWithOutletCompleted(jadwalRangeData);
-      } else {
-        yield GetJadwalError();
-      }
+    if (jadwalWithOutlet.length > 0) {
+      yield GetJadwalCompleted(jadwalWithOutlet);
+    } else {
+      yield GetJadwalError(message: 'Tidak ada data');
     }
   }
 }

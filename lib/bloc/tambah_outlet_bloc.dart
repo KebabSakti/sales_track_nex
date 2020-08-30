@@ -41,8 +41,8 @@ class TambahOutletBloc extends Bloc<TambahOutletEvent, TambahOutletState> {
         outletName: event.namaOutlet,
         lat: event.lat,
         lng: event.lng,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
       ),
     );
 
@@ -51,7 +51,8 @@ class TambahOutletBloc extends Bloc<TambahOutletEvent, TambahOutletState> {
 
   Stream<TambahOutletState> _validateOutlet(ValidateOutlet event) async* {
     //cek apakah outlet sudah ada pada database
-    List<OutletData> outlets = await repository.getOutletByKeyword(event.qr);
+    List<OutletData> outlets =
+        await repository.getOutletByKeyword(event.qr, event.user.username);
     if (outlets.length == 0)
       yield ValidateOutletComplete();
     else

@@ -8,8 +8,9 @@ class GetOrderProduct extends OrderProductEvent {
   final String keyword;
   final int limit;
   final int offset;
+  final User user;
 
-  const GetOrderProduct(this.keyword, {this.limit, this.offset});
+  const GetOrderProduct(this.keyword, this.user, {this.limit, this.offset});
 
   @override
   // TODO: implement props

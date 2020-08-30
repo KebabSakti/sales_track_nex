@@ -14,9 +14,12 @@ class VisitInitial extends VisitState {
 }
 
 class ValidateOutletComplete extends VisitState {
-  const ValidateOutletComplete({@required this.outletData}) : super(outletData);
+  const ValidateOutletComplete(
+      {@required this.outletData, @required this.locationData})
+      : super(outletData);
 
   final OutletData outletData;
+  final LocationData locationData;
 
   @override
   // TODO: implement props

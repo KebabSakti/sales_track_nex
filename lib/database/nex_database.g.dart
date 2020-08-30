@@ -1629,8 +1629,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
   final String lng;
   final String geofence;
   final String picture;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   OutletData(
       {@required this.outletId,
       @required this.barcode,
@@ -1649,7 +1649,6 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OutletData(
       outletId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}outlet_id']),
@@ -1670,9 +1669,9 @@ class OutletData extends DataClass implements Insertable<OutletData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}geofence']),
       picture:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}picture']),
-      createdAt: dateTimeType
+      createdAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: dateTimeType
+      updatedAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -1713,10 +1712,10 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       map['picture'] = Variable<String>(picture);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<String>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
+      map['updated_at'] = Variable<String>(updatedAt);
     }
     return map;
   }
@@ -1772,8 +1771,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       lng: serializer.fromJson<String>(json['lng']),
       geofence: serializer.fromJson<String>(json['geofence']),
       picture: serializer.fromJson<String>(json['picture']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
     );
   }
   @override
@@ -1791,8 +1790,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
       'lng': serializer.toJson<String>(lng),
       'geofence': serializer.toJson<String>(geofence),
       'picture': serializer.toJson<String>(picture),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
     };
   }
 
@@ -1808,8 +1807,8 @@ class OutletData extends DataClass implements Insertable<OutletData> {
           String lng,
           String geofence,
           String picture,
-          DateTime createdAt,
-          DateTime updatedAt}) =>
+          String createdAt,
+          String updatedAt}) =>
       OutletData(
         outletId: outletId ?? this.outletId,
         barcode: barcode ?? this.barcode,
@@ -1903,8 +1902,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
   final Value<String> lng;
   final Value<String> geofence;
   final Value<String> picture;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
   const OutletCompanion({
     this.outletId = const Value.absent(),
     this.barcode = const Value.absent(),
@@ -1932,8 +1931,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
     @required String lng,
     this.geofence = const Value.absent(),
     this.picture = const Value.absent(),
-    @required DateTime createdAt,
-    @required DateTime updatedAt,
+    @required String createdAt,
+    @required String updatedAt,
   })  : outletId = Value(outletId),
         barcode = Value(barcode),
         user = Value(user),
@@ -1954,8 +1953,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
     Expression<String> lng,
     Expression<String> geofence,
     Expression<String> picture,
-    Expression<DateTime> createdAt,
-    Expression<DateTime> updatedAt,
+    Expression<String> createdAt,
+    Expression<String> updatedAt,
   }) {
     return RawValuesInsertable({
       if (outletId != null) 'outlet_id': outletId,
@@ -1986,8 +1985,8 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
       Value<String> lng,
       Value<String> geofence,
       Value<String> picture,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt}) {
+      Value<String> createdAt,
+      Value<String> updatedAt}) {
     return OutletCompanion(
       outletId: outletId ?? this.outletId,
       barcode: barcode ?? this.barcode,
@@ -2042,10 +2041,10 @@ class OutletCompanion extends UpdateCompanion<OutletData> {
       map['picture'] = Variable<String>(picture.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<String>(updatedAt.value);
     }
     return map;
   }
@@ -2208,11 +2207,11 @@ class $OutletTable extends Outlet with TableInfo<$OutletTable, OutletData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedTextColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
       'created_at',
       $tableName,
       false,
@@ -2220,11 +2219,11 @@ class $OutletTable extends Outlet with TableInfo<$OutletTable, OutletData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedDateTimeColumn _updatedAt;
+  GeneratedTextColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedDateTimeColumn _constructUpdatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedTextColumn _constructUpdatedAt() {
+    return GeneratedTextColumn(
       'updated_at',
       $tableName,
       false,
@@ -2596,22 +2595,21 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
   final String outletId;
   final String tanggal;
   final int visit;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   JadwalData(
       {@required this.jadwalId,
       @required this.userId,
       @required this.outletId,
       @required this.tanggal,
       @required this.visit,
-      @required this.createdAt,
-      @required this.updatedAt});
+      this.createdAt,
+      this.updatedAt});
   factory JadwalData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return JadwalData(
       jadwalId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}jadwal_id']),
@@ -2622,9 +2620,9 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       tanggal:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}tanggal']),
       visit: intType.mapFromDatabaseResponse(data['${effectivePrefix}visit']),
-      createdAt: dateTimeType
+      createdAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: dateTimeType
+      updatedAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -2647,10 +2645,10 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       map['visit'] = Variable<int>(visit);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<String>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
+      map['updated_at'] = Variable<String>(updatedAt);
     }
     return map;
   }
@@ -2688,8 +2686,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       outletId: serializer.fromJson<String>(json['outletId']),
       tanggal: serializer.fromJson<String>(json['tanggal']),
       visit: serializer.fromJson<int>(json['visit']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
     );
   }
   @override
@@ -2701,8 +2699,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
       'outletId': serializer.toJson<String>(outletId),
       'tanggal': serializer.toJson<String>(tanggal),
       'visit': serializer.toJson<int>(visit),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
     };
   }
 
@@ -2712,8 +2710,8 @@ class JadwalData extends DataClass implements Insertable<JadwalData> {
           String outletId,
           String tanggal,
           int visit,
-          DateTime createdAt,
-          DateTime updatedAt}) =>
+          String createdAt,
+          String updatedAt}) =>
       JadwalData(
         jadwalId: jadwalId ?? this.jadwalId,
         userId: userId ?? this.userId,
@@ -2767,8 +2765,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
   final Value<String> outletId;
   final Value<String> tanggal;
   final Value<int> visit;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
   const JadwalCompanion({
     this.jadwalId = const Value.absent(),
     this.userId = const Value.absent(),
@@ -2784,22 +2782,20 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
     @required String outletId,
     @required String tanggal,
     this.visit = const Value.absent(),
-    @required DateTime createdAt,
-    @required DateTime updatedAt,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   })  : jadwalId = Value(jadwalId),
         userId = Value(userId),
         outletId = Value(outletId),
-        tanggal = Value(tanggal),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt);
+        tanggal = Value(tanggal);
   static Insertable<JadwalData> custom({
     Expression<String> jadwalId,
     Expression<String> userId,
     Expression<String> outletId,
     Expression<String> tanggal,
     Expression<int> visit,
-    Expression<DateTime> createdAt,
-    Expression<DateTime> updatedAt,
+    Expression<String> createdAt,
+    Expression<String> updatedAt,
   }) {
     return RawValuesInsertable({
       if (jadwalId != null) 'jadwal_id': jadwalId,
@@ -2818,8 +2814,8 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
       Value<String> outletId,
       Value<String> tanggal,
       Value<int> visit,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt}) {
+      Value<String> createdAt,
+      Value<String> updatedAt}) {
     return JadwalCompanion(
       jadwalId: jadwalId ?? this.jadwalId,
       userId: userId ?? this.userId,
@@ -2850,10 +2846,10 @@ class JadwalCompanion extends UpdateCompanion<JadwalData> {
       map['visit'] = Variable<int>(visit.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<String>(updatedAt.value);
     }
     return map;
   }
@@ -2935,26 +2931,26 @@ class $JadwalTable extends Jadwal with TableInfo<$JadwalTable, JadwalData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedTextColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
       'created_at',
       $tableName,
-      false,
+      true,
     );
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedDateTimeColumn _updatedAt;
+  GeneratedTextColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedDateTimeColumn _constructUpdatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedTextColumn _constructUpdatedAt() {
+    return GeneratedTextColumn(
       'updated_at',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -3003,14 +2999,10 @@ class $JadwalTable extends Jadwal with TableInfo<$JadwalTable, JadwalData> {
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -3031,6 +3023,7 @@ class $JadwalTable extends Jadwal with TableInfo<$JadwalTable, JadwalData> {
 
 class VisitData extends DataClass implements Insertable<VisitData> {
   final String visitId;
+  final String orderId;
   final String kodeVisit;
   final String userId;
   final String outletId;
@@ -3043,6 +3036,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
   final String updatedAt;
   VisitData(
       {@required this.visitId,
+      this.orderId,
       this.kodeVisit,
       @required this.userId,
       @required this.outletId,
@@ -3061,6 +3055,8 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     return VisitData(
       visitId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}visit_id']),
+      orderId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}order_id']),
       kodeVisit: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}kode_visit']),
       userId:
@@ -3085,6 +3081,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     final map = <String, Expression>{};
     if (!nullToAbsent || visitId != null) {
       map['visit_id'] = Variable<String>(visitId);
+    }
+    if (!nullToAbsent || orderId != null) {
+      map['order_id'] = Variable<String>(orderId);
     }
     if (!nullToAbsent || kodeVisit != null) {
       map['kode_visit'] = Variable<String>(kodeVisit);
@@ -3124,6 +3123,9 @@ class VisitData extends DataClass implements Insertable<VisitData> {
       visitId: visitId == null && nullToAbsent
           ? const Value.absent()
           : Value(visitId),
+      orderId: orderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderId),
       kodeVisit: kodeVisit == null && nullToAbsent
           ? const Value.absent()
           : Value(kodeVisit),
@@ -3155,6 +3157,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return VisitData(
       visitId: serializer.fromJson<String>(json['visitId']),
+      orderId: serializer.fromJson<String>(json['orderId']),
       kodeVisit: serializer.fromJson<String>(json['kodeVisit']),
       userId: serializer.fromJson<String>(json['userId']),
       outletId: serializer.fromJson<String>(json['outletId']),
@@ -3172,6 +3175,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'visitId': serializer.toJson<String>(visitId),
+      'orderId': serializer.toJson<String>(orderId),
       'kodeVisit': serializer.toJson<String>(kodeVisit),
       'userId': serializer.toJson<String>(userId),
       'outletId': serializer.toJson<String>(outletId),
@@ -3187,6 +3191,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
 
   VisitData copyWith(
           {String visitId,
+          String orderId,
           String kodeVisit,
           String userId,
           String outletId,
@@ -3199,6 +3204,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
           String updatedAt}) =>
       VisitData(
         visitId: visitId ?? this.visitId,
+        orderId: orderId ?? this.orderId,
         kodeVisit: kodeVisit ?? this.kodeVisit,
         userId: userId ?? this.userId,
         outletId: outletId ?? this.outletId,
@@ -3214,6 +3220,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
   String toString() {
     return (StringBuffer('VisitData(')
           ..write('visitId: $visitId, ')
+          ..write('orderId: $orderId, ')
           ..write('kodeVisit: $kodeVisit, ')
           ..write('userId: $userId, ')
           ..write('outletId: $outletId, ')
@@ -3232,28 +3239,31 @@ class VisitData extends DataClass implements Insertable<VisitData> {
   int get hashCode => $mrjf($mrjc(
       visitId.hashCode,
       $mrjc(
-          kodeVisit.hashCode,
+          orderId.hashCode,
           $mrjc(
-              userId.hashCode,
+              kodeVisit.hashCode,
               $mrjc(
-                  outletId.hashCode,
+                  userId.hashCode,
                   $mrjc(
-                      lat.hashCode,
+                      outletId.hashCode,
                       $mrjc(
-                          lng.hashCode,
+                          lat.hashCode,
                           $mrjc(
-                              tutup.hashCode,
+                              lng.hashCode,
                               $mrjc(
-                                  status.hashCode,
+                                  tutup.hashCode,
                                   $mrjc(
-                                      isPosted.hashCode,
-                                      $mrjc(createdAt.hashCode,
-                                          updatedAt.hashCode)))))))))));
+                                      status.hashCode,
+                                      $mrjc(
+                                          isPosted.hashCode,
+                                          $mrjc(createdAt.hashCode,
+                                              updatedAt.hashCode))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is VisitData &&
           other.visitId == this.visitId &&
+          other.orderId == this.orderId &&
           other.kodeVisit == this.kodeVisit &&
           other.userId == this.userId &&
           other.outletId == this.outletId &&
@@ -3268,6 +3278,7 @@ class VisitData extends DataClass implements Insertable<VisitData> {
 
 class VisitCompanion extends UpdateCompanion<VisitData> {
   final Value<String> visitId;
+  final Value<String> orderId;
   final Value<String> kodeVisit;
   final Value<String> userId;
   final Value<String> outletId;
@@ -3280,6 +3291,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   final Value<String> updatedAt;
   const VisitCompanion({
     this.visitId = const Value.absent(),
+    this.orderId = const Value.absent(),
     this.kodeVisit = const Value.absent(),
     this.userId = const Value.absent(),
     this.outletId = const Value.absent(),
@@ -3293,6 +3305,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   });
   VisitCompanion.insert({
     @required String visitId,
+    this.orderId = const Value.absent(),
     this.kodeVisit = const Value.absent(),
     @required String userId,
     @required String outletId,
@@ -3312,6 +3325,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
         updatedAt = Value(updatedAt);
   static Insertable<VisitData> custom({
     Expression<String> visitId,
+    Expression<String> orderId,
     Expression<String> kodeVisit,
     Expression<String> userId,
     Expression<String> outletId,
@@ -3325,6 +3339,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   }) {
     return RawValuesInsertable({
       if (visitId != null) 'visit_id': visitId,
+      if (orderId != null) 'order_id': orderId,
       if (kodeVisit != null) 'kode_visit': kodeVisit,
       if (userId != null) 'user_id': userId,
       if (outletId != null) 'outlet_id': outletId,
@@ -3340,6 +3355,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
 
   VisitCompanion copyWith(
       {Value<String> visitId,
+      Value<String> orderId,
       Value<String> kodeVisit,
       Value<String> userId,
       Value<String> outletId,
@@ -3352,6 +3368,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
       Value<String> updatedAt}) {
     return VisitCompanion(
       visitId: visitId ?? this.visitId,
+      orderId: orderId ?? this.orderId,
       kodeVisit: kodeVisit ?? this.kodeVisit,
       userId: userId ?? this.userId,
       outletId: outletId ?? this.outletId,
@@ -3370,6 +3387,9 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
     final map = <String, Expression>{};
     if (visitId.present) {
       map['visit_id'] = Variable<String>(visitId.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
     }
     if (kodeVisit.present) {
       map['kode_visit'] = Variable<String>(kodeVisit.value);
@@ -3408,6 +3428,7 @@ class VisitCompanion extends UpdateCompanion<VisitData> {
   String toString() {
     return (StringBuffer('VisitCompanion(')
           ..write('visitId: $visitId, ')
+          ..write('orderId: $orderId, ')
           ..write('kodeVisit: $kodeVisit, ')
           ..write('userId: $userId, ')
           ..write('outletId: $outletId, ')
@@ -3436,6 +3457,18 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
       'visit_id',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _orderIdMeta = const VerificationMeta('orderId');
+  GeneratedTextColumn _orderId;
+  @override
+  GeneratedTextColumn get orderId => _orderId ??= _constructOrderId();
+  GeneratedTextColumn _constructOrderId() {
+    return GeneratedTextColumn(
+      'order_id',
+      $tableName,
+      true,
     );
   }
 
@@ -3556,6 +3589,7 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
   @override
   List<GeneratedColumn> get $columns => [
         visitId,
+        orderId,
         kodeVisit,
         userId,
         outletId,
@@ -3583,6 +3617,10 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
           visitId.isAcceptableOrUnknown(data['visit_id'], _visitIdMeta));
     } else if (isInserting) {
       context.missing(_visitIdMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(_orderIdMeta,
+          orderId.isAcceptableOrUnknown(data['order_id'], _orderIdMeta));
     }
     if (data.containsKey('kode_visit')) {
       context.handle(_kodeVisitMeta,
@@ -3656,6 +3694,7 @@ class $VisitTable extends Visit with TableInfo<$VisitTable, VisitData> {
 class OrderData extends DataClass implements Insertable<OrderData> {
   final String orderId;
   final String outletId;
+  final String visitId;
   final String barcode;
   final String kodeOrder;
   final String nomorPO;
@@ -3665,11 +3704,12 @@ class OrderData extends DataClass implements Insertable<OrderData> {
   final String status;
   final String totalBayar;
   final String pembayaran;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   OrderData(
       {@required this.orderId,
       @required this.outletId,
+      this.visitId,
       this.barcode,
       @required this.kodeOrder,
       @required this.nomorPO,
@@ -3680,17 +3720,18 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       @required this.totalBayar,
       @required this.pembayaran,
       @required this.createdAt,
-      @required this.updatedAt});
+      this.updatedAt});
   factory OrderData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OrderData(
       orderId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}order_id']),
       outletId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}outlet_id']),
+      visitId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}visit_id']),
       barcode:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}barcode']),
       kodeOrder: stringType
@@ -3709,9 +3750,9 @@ class OrderData extends DataClass implements Insertable<OrderData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}total_bayar']),
       pembayaran: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}pembayaran']),
-      createdAt: dateTimeType
+      createdAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: dateTimeType
+      updatedAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -3723,6 +3764,9 @@ class OrderData extends DataClass implements Insertable<OrderData> {
     }
     if (!nullToAbsent || outletId != null) {
       map['outlet_id'] = Variable<String>(outletId);
+    }
+    if (!nullToAbsent || visitId != null) {
+      map['visit_id'] = Variable<String>(visitId);
     }
     if (!nullToAbsent || barcode != null) {
       map['barcode'] = Variable<String>(barcode);
@@ -3752,22 +3796,25 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       map['pembayaran'] = Variable<String>(pembayaran);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<String>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
+      map['updated_at'] = Variable<String>(updatedAt);
     }
     return map;
   }
 
-  OrderCompanion toCompanion(bool nullToAbsent) {
-    return OrderCompanion(
+  SalesCompanion toCompanion(bool nullToAbsent) {
+    return SalesCompanion(
       orderId: orderId == null && nullToAbsent
           ? const Value.absent()
           : Value(orderId),
       outletId: outletId == null && nullToAbsent
           ? const Value.absent()
           : Value(outletId),
+      visitId: visitId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(visitId),
       barcode: barcode == null && nullToAbsent
           ? const Value.absent()
           : Value(barcode),
@@ -3809,6 +3856,7 @@ class OrderData extends DataClass implements Insertable<OrderData> {
     return OrderData(
       orderId: serializer.fromJson<String>(json['orderId']),
       outletId: serializer.fromJson<String>(json['outletId']),
+      visitId: serializer.fromJson<String>(json['visitId']),
       barcode: serializer.fromJson<String>(json['barcode']),
       kodeOrder: serializer.fromJson<String>(json['kodeOrder']),
       nomorPO: serializer.fromJson<String>(json['nomorPO']),
@@ -3818,8 +3866,8 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       status: serializer.fromJson<String>(json['status']),
       totalBayar: serializer.fromJson<String>(json['totalBayar']),
       pembayaran: serializer.fromJson<String>(json['pembayaran']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
     );
   }
   @override
@@ -3828,6 +3876,7 @@ class OrderData extends DataClass implements Insertable<OrderData> {
     return <String, dynamic>{
       'orderId': serializer.toJson<String>(orderId),
       'outletId': serializer.toJson<String>(outletId),
+      'visitId': serializer.toJson<String>(visitId),
       'barcode': serializer.toJson<String>(barcode),
       'kodeOrder': serializer.toJson<String>(kodeOrder),
       'nomorPO': serializer.toJson<String>(nomorPO),
@@ -3837,14 +3886,15 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       'status': serializer.toJson<String>(status),
       'totalBayar': serializer.toJson<String>(totalBayar),
       'pembayaran': serializer.toJson<String>(pembayaran),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
     };
   }
 
   OrderData copyWith(
           {String orderId,
           String outletId,
+          String visitId,
           String barcode,
           String kodeOrder,
           String nomorPO,
@@ -3854,11 +3904,12 @@ class OrderData extends DataClass implements Insertable<OrderData> {
           String status,
           String totalBayar,
           String pembayaran,
-          DateTime createdAt,
-          DateTime updatedAt}) =>
+          String createdAt,
+          String updatedAt}) =>
       OrderData(
         orderId: orderId ?? this.orderId,
         outletId: outletId ?? this.outletId,
+        visitId: visitId ?? this.visitId,
         barcode: barcode ?? this.barcode,
         kodeOrder: kodeOrder ?? this.kodeOrder,
         nomorPO: nomorPO ?? this.nomorPO,
@@ -3876,6 +3927,7 @@ class OrderData extends DataClass implements Insertable<OrderData> {
     return (StringBuffer('OrderData(')
           ..write('orderId: $orderId, ')
           ..write('outletId: $outletId, ')
+          ..write('visitId: $visitId, ')
           ..write('barcode: $barcode, ')
           ..write('kodeOrder: $kodeOrder, ')
           ..write('nomorPO: $nomorPO, ')
@@ -3897,33 +3949,36 @@ class OrderData extends DataClass implements Insertable<OrderData> {
       $mrjc(
           outletId.hashCode,
           $mrjc(
-              barcode.hashCode,
+              visitId.hashCode,
               $mrjc(
-                  kodeOrder.hashCode,
+                  barcode.hashCode,
                   $mrjc(
-                      nomorPO.hashCode,
+                      kodeOrder.hashCode,
                       $mrjc(
-                          nomorFaktur.hashCode,
+                          nomorPO.hashCode,
                           $mrjc(
-                              poUserId.hashCode,
+                              nomorFaktur.hashCode,
                               $mrjc(
-                                  fakturUserId.hashCode,
+                                  poUserId.hashCode,
                                   $mrjc(
-                                      status.hashCode,
+                                      fakturUserId.hashCode,
                                       $mrjc(
-                                          totalBayar.hashCode,
+                                          status.hashCode,
                                           $mrjc(
-                                              pembayaran.hashCode,
+                                              totalBayar.hashCode,
                                               $mrjc(
-                                                  createdAt.hashCode,
-                                                  updatedAt
-                                                      .hashCode)))))))))))));
+                                                  pembayaran.hashCode,
+                                                  $mrjc(
+                                                      createdAt.hashCode,
+                                                      updatedAt
+                                                          .hashCode))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is OrderData &&
           other.orderId == this.orderId &&
           other.outletId == this.outletId &&
+          other.visitId == this.visitId &&
           other.barcode == this.barcode &&
           other.kodeOrder == this.kodeOrder &&
           other.nomorPO == this.nomorPO &&
@@ -3937,9 +3992,10 @@ class OrderData extends DataClass implements Insertable<OrderData> {
           other.updatedAt == this.updatedAt);
 }
 
-class OrderCompanion extends UpdateCompanion<OrderData> {
+class SalesCompanion extends UpdateCompanion<OrderData> {
   final Value<String> orderId;
   final Value<String> outletId;
+  final Value<String> visitId;
   final Value<String> barcode;
   final Value<String> kodeOrder;
   final Value<String> nomorPO;
@@ -3949,11 +4005,12 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
   final Value<String> status;
   final Value<String> totalBayar;
   final Value<String> pembayaran;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  const OrderCompanion({
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
+  const SalesCompanion({
     this.orderId = const Value.absent(),
     this.outletId = const Value.absent(),
+    this.visitId = const Value.absent(),
     this.barcode = const Value.absent(),
     this.kodeOrder = const Value.absent(),
     this.nomorPO = const Value.absent(),
@@ -3966,9 +4023,10 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
-  OrderCompanion.insert({
+  SalesCompanion.insert({
     @required String orderId,
     @required String outletId,
+    this.visitId = const Value.absent(),
     this.barcode = const Value.absent(),
     @required String kodeOrder,
     @required String nomorPO,
@@ -3978,19 +4036,19 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     this.status = const Value.absent(),
     @required String totalBayar,
     this.pembayaran = const Value.absent(),
-    @required DateTime createdAt,
-    @required DateTime updatedAt,
+    @required String createdAt,
+    this.updatedAt = const Value.absent(),
   })  : orderId = Value(orderId),
         outletId = Value(outletId),
         kodeOrder = Value(kodeOrder),
         nomorPO = Value(nomorPO),
         poUserId = Value(poUserId),
         totalBayar = Value(totalBayar),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt);
+        createdAt = Value(createdAt);
   static Insertable<OrderData> custom({
     Expression<String> orderId,
     Expression<String> outletId,
+    Expression<String> visitId,
     Expression<String> barcode,
     Expression<String> kodeOrder,
     Expression<String> nomorPO,
@@ -4000,12 +4058,13 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     Expression<String> status,
     Expression<String> totalBayar,
     Expression<String> pembayaran,
-    Expression<DateTime> createdAt,
-    Expression<DateTime> updatedAt,
+    Expression<String> createdAt,
+    Expression<String> updatedAt,
   }) {
     return RawValuesInsertable({
       if (orderId != null) 'order_id': orderId,
       if (outletId != null) 'outlet_id': outletId,
+      if (visitId != null) 'visit_id': visitId,
       if (barcode != null) 'barcode': barcode,
       if (kodeOrder != null) 'kode_order': kodeOrder,
       if (nomorPO != null) 'nomor_p_o': nomorPO,
@@ -4020,9 +4079,10 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     });
   }
 
-  OrderCompanion copyWith(
+  SalesCompanion copyWith(
       {Value<String> orderId,
       Value<String> outletId,
+      Value<String> visitId,
       Value<String> barcode,
       Value<String> kodeOrder,
       Value<String> nomorPO,
@@ -4032,11 +4092,12 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
       Value<String> status,
       Value<String> totalBayar,
       Value<String> pembayaran,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt}) {
-    return OrderCompanion(
+      Value<String> createdAt,
+      Value<String> updatedAt}) {
+    return SalesCompanion(
       orderId: orderId ?? this.orderId,
       outletId: outletId ?? this.outletId,
+      visitId: visitId ?? this.visitId,
       barcode: barcode ?? this.barcode,
       kodeOrder: kodeOrder ?? this.kodeOrder,
       nomorPO: nomorPO ?? this.nomorPO,
@@ -4059,6 +4120,9 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
     }
     if (outletId.present) {
       map['outlet_id'] = Variable<String>(outletId.value);
+    }
+    if (visitId.present) {
+      map['visit_id'] = Variable<String>(visitId.value);
     }
     if (barcode.present) {
       map['barcode'] = Variable<String>(barcode.value);
@@ -4088,19 +4152,20 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
       map['pembayaran'] = Variable<String>(pembayaran.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<String>(updatedAt.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('OrderCompanion(')
+    return (StringBuffer('SalesCompanion(')
           ..write('orderId: $orderId, ')
           ..write('outletId: $outletId, ')
+          ..write('visitId: $visitId, ')
           ..write('barcode: $barcode, ')
           ..write('kodeOrder: $kodeOrder, ')
           ..write('nomorPO: $nomorPO, ')
@@ -4117,10 +4182,10 @@ class OrderCompanion extends UpdateCompanion<OrderData> {
   }
 }
 
-class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
+class $SalesTable extends Sales with TableInfo<$SalesTable, OrderData> {
   final GeneratedDatabase _db;
   final String _alias;
-  $OrderTable(this._db, [this._alias]);
+  $SalesTable(this._db, [this._alias]);
   final VerificationMeta _orderIdMeta = const VerificationMeta('orderId');
   GeneratedTextColumn _orderId;
   @override
@@ -4142,6 +4207,18 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
       'outlet_id',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _visitIdMeta = const VerificationMeta('visitId');
+  GeneratedTextColumn _visitId;
+  @override
+  GeneratedTextColumn get visitId => _visitId ??= _constructVisitId();
+  GeneratedTextColumn _constructVisitId() {
+    return GeneratedTextColumn(
+      'visit_id',
+      $tableName,
+      true,
     );
   }
 
@@ -4252,11 +4329,11 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedTextColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
       'created_at',
       $tableName,
       false,
@@ -4264,14 +4341,14 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedDateTimeColumn _updatedAt;
+  GeneratedTextColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedDateTimeColumn _constructUpdatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedTextColumn _constructUpdatedAt() {
+    return GeneratedTextColumn(
       'updated_at',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -4279,6 +4356,7 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   List<GeneratedColumn> get $columns => [
         orderId,
         outletId,
+        visitId,
         barcode,
         kodeOrder,
         nomorPO,
@@ -4292,11 +4370,11 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
         updatedAt
       ];
   @override
-  $OrderTable get asDslTable => this;
+  $SalesTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? '`order`';
+  String get $tableName => _alias ?? 'sales';
   @override
-  final String actualTableName = '`order`';
+  final String actualTableName = 'sales';
   @override
   VerificationContext validateIntegrity(Insertable<OrderData> instance,
       {bool isInserting = false}) {
@@ -4313,6 +4391,10 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
           outletId.isAcceptableOrUnknown(data['outlet_id'], _outletIdMeta));
     } else if (isInserting) {
       context.missing(_outletIdMeta);
+    }
+    if (data.containsKey('visit_id')) {
+      context.handle(_visitIdMeta,
+          visitId.isAcceptableOrUnknown(data['visit_id'], _visitIdMeta));
     }
     if (data.containsKey('barcode')) {
       context.handle(_barcodeMeta,
@@ -4375,8 +4457,6 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
     if (data.containsKey('updated_at')) {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -4390,8 +4470,8 @@ class $OrderTable extends Order with TableInfo<$OrderTable, OrderData> {
   }
 
   @override
-  $OrderTable createAlias(String alias) {
-    return $OrderTable(_db, alias);
+  $SalesTable createAlias(String alias) {
+    return $SalesTable(_db, alias);
   }
 }
 
@@ -4403,8 +4483,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
   final String userId;
   final int quantity;
   final String totalHarga;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String createdAt;
+  final String updatedAt;
   OrderItemData(
       {@required this.orderItemId,
       @required this.orderId,
@@ -4421,7 +4501,6 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final intType = db.typeSystem.forDartType<int>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return OrderItemData(
       orderItemId: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}order_item_id']),
@@ -4437,9 +4516,9 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}quantity']),
       totalHarga: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}total_harga']),
-      createdAt: dateTimeType
+      createdAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
-      updatedAt: dateTimeType
+      updatedAt: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
@@ -4468,10 +4547,10 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       map['total_harga'] = Variable<String>(totalHarga);
     }
     if (!nullToAbsent || createdAt != null) {
-      map['created_at'] = Variable<DateTime>(createdAt);
+      map['created_at'] = Variable<String>(createdAt);
     }
     if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
+      map['updated_at'] = Variable<String>(updatedAt);
     }
     return map;
   }
@@ -4518,8 +4597,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       userId: serializer.fromJson<String>(json['userId']),
       quantity: serializer.fromJson<int>(json['quantity']),
       totalHarga: serializer.fromJson<String>(json['totalHarga']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      updatedAt: serializer.fromJson<String>(json['updatedAt']),
     );
   }
   @override
@@ -4533,8 +4612,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
       'userId': serializer.toJson<String>(userId),
       'quantity': serializer.toJson<int>(quantity),
       'totalHarga': serializer.toJson<String>(totalHarga),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'updatedAt': serializer.toJson<String>(updatedAt),
     };
   }
 
@@ -4546,8 +4625,8 @@ class OrderItemData extends DataClass implements Insertable<OrderItemData> {
           String userId,
           int quantity,
           String totalHarga,
-          DateTime createdAt,
-          DateTime updatedAt}) =>
+          String createdAt,
+          String updatedAt}) =>
       OrderItemData(
         orderItemId: orderItemId ?? this.orderItemId,
         orderId: orderId ?? this.orderId,
@@ -4615,8 +4694,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
   final Value<String> userId;
   final Value<int> quantity;
   final Value<String> totalHarga;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String> createdAt;
+  final Value<String> updatedAt;
   const OrderItemCompanion({
     this.orderItemId = const Value.absent(),
     this.orderId = const Value.absent(),
@@ -4636,8 +4715,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
     @required String userId,
     @required int quantity,
     @required String totalHarga,
-    @required DateTime createdAt,
-    @required DateTime updatedAt,
+    @required String createdAt,
+    @required String updatedAt,
   })  : orderItemId = Value(orderItemId),
         orderId = Value(orderId),
         produkId = Value(produkId),
@@ -4654,8 +4733,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
     Expression<String> userId,
     Expression<int> quantity,
     Expression<String> totalHarga,
-    Expression<DateTime> createdAt,
-    Expression<DateTime> updatedAt,
+    Expression<String> createdAt,
+    Expression<String> updatedAt,
   }) {
     return RawValuesInsertable({
       if (orderItemId != null) 'order_item_id': orderItemId,
@@ -4678,8 +4757,8 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
       Value<String> userId,
       Value<int> quantity,
       Value<String> totalHarga,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt}) {
+      Value<String> createdAt,
+      Value<String> updatedAt}) {
     return OrderItemCompanion(
       orderItemId: orderItemId ?? this.orderItemId,
       orderId: orderId ?? this.orderId,
@@ -4718,10 +4797,10 @@ class OrderItemCompanion extends UpdateCompanion<OrderItemData> {
       map['total_harga'] = Variable<String>(totalHarga.value);
     }
     if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
+      map['created_at'] = Variable<String>(createdAt.value);
     }
     if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+      map['updated_at'] = Variable<String>(updatedAt.value);
     }
     return map;
   }
@@ -4835,11 +4914,11 @@ class $OrderItemTable extends OrderItem
   }
 
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
-  GeneratedDateTimeColumn _createdAt;
+  GeneratedTextColumn _createdAt;
   @override
-  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
-  GeneratedDateTimeColumn _constructCreatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedTextColumn _constructCreatedAt() {
+    return GeneratedTextColumn(
       'created_at',
       $tableName,
       false,
@@ -4847,11 +4926,11 @@ class $OrderItemTable extends OrderItem
   }
 
   final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
-  GeneratedDateTimeColumn _updatedAt;
+  GeneratedTextColumn _updatedAt;
   @override
-  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
-  GeneratedDateTimeColumn _constructUpdatedAt() {
-    return GeneratedDateTimeColumn(
+  GeneratedTextColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedTextColumn _constructUpdatedAt() {
+    return GeneratedTextColumn(
       'updated_at',
       $tableName,
       false,
@@ -5769,8 +5848,8 @@ abstract class _$NexDatabase extends GeneratedDatabase {
   $JadwalTable get jadwal => _jadwal ??= $JadwalTable(this);
   $VisitTable _visit;
   $VisitTable get visit => _visit ??= $VisitTable(this);
-  $OrderTable _order;
-  $OrderTable get order => _order ??= $OrderTable(this);
+  $SalesTable _sales;
+  $SalesTable get sales => _sales ??= $SalesTable(this);
   $OrderItemTable _orderItem;
   $OrderItemTable get orderItem => _orderItem ??= $OrderItemTable(this);
   $SyncInfoTable _syncInfo;
@@ -5817,7 +5896,7 @@ abstract class _$NexDatabase extends GeneratedDatabase {
         syncRuleTable,
         jadwal,
         visit,
-        order,
+        sales,
         orderItem,
         syncInfo,
         fotoVisit
@@ -5837,32 +5916,28 @@ mixin _$SyncInfoDaoMixin on DatabaseAccessor<NexDatabase> {
 mixin _$JadwalDaoMixin on DatabaseAccessor<NexDatabase> {
   $JadwalTable get jadwal => attachedDatabase.jadwal;
   $OutletTable get outlet => attachedDatabase.outlet;
-  Selectable<JadwalWithOutletResult> _jadwalWithOutlet(String var1) {
+  Selectable<JadwalWithOutletResult> _jadwalWithOutlet(
+      String var1, String var2) {
     return customSelect(
-        'SELECT j.*, o.* FROM jadwal j JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ?',
-        variables: [Variable.withString(var1)],
-        readsFrom: {jadwal, outlet}).map((QueryRow row) {
+        'SELECT j.*, o.barcode, o.outlet_name, o.address, o.phone, o.owner, o.lat, o.lng, o.user FROM jadwal j LEFT JOIN outlet o ON j.outlet_id = o.outlet_id WHERE j.user_id = ? AND date(j.created_at) = date(?) ORDER BY j.visit DESC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {outlet, jadwal}).map((QueryRow row) {
       return JadwalWithOutletResult(
         jadwalId: row.readString('jadwal_id'),
         userId: row.readString('user_id'),
         outletId: row.readString('outlet_id'),
         tanggal: row.readString('tanggal'),
         visit: row.readInt('visit'),
-        createdAt: row.readDateTime('created_at'),
-        updatedAt: row.readDateTime('updated_at'),
-        outletId1: row.readString('outlet_id'),
+        createdAt: row.readString('created_at'),
+        updatedAt: row.readString('updated_at'),
         barcode: row.readString('barcode'),
-        user: row.readString('user'),
         outletName: row.readString('outlet_name'),
         address: row.readString('address'),
         phone: row.readString('phone'),
         owner: row.readString('owner'),
         lat: row.readString('lat'),
         lng: row.readString('lng'),
-        geofence: row.readString('geofence'),
-        picture: row.readString('picture'),
-        createdAt1: row.readDateTime('created_at'),
-        updatedAt1: row.readDateTime('updated_at'),
+        user: row.readString('user'),
       );
     });
   }
@@ -5874,21 +5949,16 @@ class JadwalWithOutletResult {
   final String outletId;
   final String tanggal;
   final int visit;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String outletId1;
+  final String createdAt;
+  final String updatedAt;
   final String barcode;
-  final String user;
   final String outletName;
   final String address;
   final String phone;
   final String owner;
   final String lat;
   final String lng;
-  final String geofence;
-  final String picture;
-  final DateTime createdAt1;
-  final DateTime updatedAt1;
+  final String user;
   JadwalWithOutletResult({
     this.jadwalId,
     this.userId,
@@ -5897,19 +5967,14 @@ class JadwalWithOutletResult {
     this.visit,
     this.createdAt,
     this.updatedAt,
-    this.outletId1,
     this.barcode,
-    this.user,
     this.outletName,
     this.address,
     this.phone,
     this.owner,
     this.lat,
     this.lng,
-    this.geofence,
-    this.picture,
-    this.createdAt1,
-    this.updatedAt1,
+    this.user,
   });
 }
 
@@ -5919,7 +5984,7 @@ mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
   Selectable<VisitWithOutletResult> _visitWithOutlet(
       String var1, String keyword, String var3, String var4) {
     return customSelect(
-        'SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?)',
+        'SELECT v.*, o.outlet_name, o.barcode, o.user FROM visit v LEFT JOIN outlet o ON v.outlet_id = o.outlet_id WHERE v.user_id = ? AND o.outlet_name LIKE :keyword AND date(v.created_at) >= date(?) AND date(v.created_at) <= date(?) ORDER BY v.created_at DESC',
         variables: [
           Variable.withString(var1),
           Variable.withString(keyword),
@@ -5932,6 +5997,7 @@ mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
         }).map((QueryRow row) {
       return VisitWithOutletResult(
         visitId: row.readString('visit_id'),
+        orderId: row.readString('order_id'),
         kodeVisit: row.readString('kode_visit'),
         userId: row.readString('user_id'),
         outletId: row.readString('outlet_id'),
@@ -5965,6 +6031,7 @@ mixin _$VisitDaoMixin on DatabaseAccessor<NexDatabase> {
 
 class VisitWithOutletResult {
   final String visitId;
+  final String orderId;
   final String kodeVisit;
   final String userId;
   final String outletId;
@@ -5980,6 +6047,7 @@ class VisitWithOutletResult {
   final String user;
   VisitWithOutletResult({
     this.visitId,
+    this.orderId,
     this.kodeVisit,
     this.userId,
     this.outletId,
@@ -5997,11 +6065,154 @@ class VisitWithOutletResult {
 }
 
 mixin _$OrderDaoMixin on DatabaseAccessor<NexDatabase> {
-  $OrderTable get order => attachedDatabase.order;
+  $SalesTable get sales => attachedDatabase.sales;
+  $OutletTable get outlet => attachedDatabase.outlet;
+  Selectable<FetchOrderResult> _fetchOrder(
+      String var1, String var2, String var3, String var4) {
+    return customSelect(
+        'SELECT o.*, l.user, l.outlet_name, l.lat, l.lng, l.owner, l.phone FROM sales o LEFT JOIN outlet l ON o.outlet_id = l.outlet_id WHERE date(o.created_at) >= date(?) AND date(o.created_at) <= date(?) AND o.po_user_id = ? AND l.outlet_name LIKE ? ORDER BY o.created_at DESC',
+        variables: [
+          Variable.withString(var1),
+          Variable.withString(var2),
+          Variable.withString(var3),
+          Variable.withString(var4)
+        ],
+        readsFrom: {
+          outlet,
+          sales
+        }).map((QueryRow row) {
+      return FetchOrderResult(
+        orderId: row.readString('order_id'),
+        outletId: row.readString('outlet_id'),
+        visitId: row.readString('visit_id'),
+        barcode: row.readString('barcode'),
+        kodeOrder: row.readString('kode_order'),
+        nomorPO: row.readString('nomor_p_o'),
+        nomorFaktur: row.readString('nomor_faktur'),
+        poUserId: row.readString('po_user_id'),
+        fakturUserId: row.readString('faktur_user_id'),
+        status: row.readString('status'),
+        totalBayar: row.readString('total_bayar'),
+        pembayaran: row.readString('pembayaran'),
+        createdAt: row.readString('created_at'),
+        updatedAt: row.readString('updated_at'),
+        user: row.readString('user'),
+        outletName: row.readString('outlet_name'),
+        lat: row.readString('lat'),
+        lng: row.readString('lng'),
+        owner: row.readString('owner'),
+        phone: row.readString('phone'),
+      );
+    });
+  }
 }
+
+class FetchOrderResult {
+  final String orderId;
+  final String outletId;
+  final String visitId;
+  final String barcode;
+  final String kodeOrder;
+  final String nomorPO;
+  final String nomorFaktur;
+  final String poUserId;
+  final String fakturUserId;
+  final String status;
+  final String totalBayar;
+  final String pembayaran;
+  final String createdAt;
+  final String updatedAt;
+  final String user;
+  final String outletName;
+  final String lat;
+  final String lng;
+  final String owner;
+  final String phone;
+  FetchOrderResult({
+    this.orderId,
+    this.outletId,
+    this.visitId,
+    this.barcode,
+    this.kodeOrder,
+    this.nomorPO,
+    this.nomorFaktur,
+    this.poUserId,
+    this.fakturUserId,
+    this.status,
+    this.totalBayar,
+    this.pembayaran,
+    this.createdAt,
+    this.updatedAt,
+    this.user,
+    this.outletName,
+    this.lat,
+    this.lng,
+    this.owner,
+    this.phone,
+  });
+}
+
 mixin _$OrderItemDaoMixin on DatabaseAccessor<NexDatabase> {
   $OrderItemTable get orderItem => attachedDatabase.orderItem;
+  $ProdukTable get produk => attachedDatabase.produk;
+  Selectable<FetchJoinedOrderItemResult> _fetchJoinedOrderItem(String var1) {
+    return customSelect(
+        'SELECT i.*, p.nama, p.harga, p.stok, p.kode, p.aktif FROM order_item i INNER JOIN produk p ON i.produk_id = p.produk_id WHERE i.order_id = ?',
+        variables: [Variable.withString(var1)],
+        readsFrom: {produk, orderItem}).map((QueryRow row) {
+      return FetchJoinedOrderItemResult(
+        orderItemId: row.readString('order_item_id'),
+        orderId: row.readString('order_id'),
+        produkId: row.readString('produk_id'),
+        kodeOrder: row.readString('kode_order'),
+        userId: row.readString('user_id'),
+        quantity: row.readInt('quantity'),
+        totalHarga: row.readString('total_harga'),
+        createdAt: row.readString('created_at'),
+        updatedAt: row.readString('updated_at'),
+        nama: row.readString('nama'),
+        harga: row.readString('harga'),
+        stok: row.readInt('stok'),
+        kode: row.readString('kode'),
+        aktif: row.readBool('aktif'),
+      );
+    });
+  }
 }
+
+class FetchJoinedOrderItemResult {
+  final String orderItemId;
+  final String orderId;
+  final String produkId;
+  final String kodeOrder;
+  final String userId;
+  final int quantity;
+  final String totalHarga;
+  final String createdAt;
+  final String updatedAt;
+  final String nama;
+  final String harga;
+  final int stok;
+  final String kode;
+  final bool aktif;
+  FetchJoinedOrderItemResult({
+    this.orderItemId,
+    this.orderId,
+    this.produkId,
+    this.kodeOrder,
+    this.userId,
+    this.quantity,
+    this.totalHarga,
+    this.createdAt,
+    this.updatedAt,
+    this.nama,
+    this.harga,
+    this.stok,
+    this.kode,
+    this.aktif,
+  });
+}
+
 mixin _$SyncRuleDaoMixin on DatabaseAccessor<NexDatabase> {
   $SyncRuleTableTable get syncRuleTable => attachedDatabase.syncRuleTable;
 }
@@ -6013,7 +6224,56 @@ mixin _$ProdukDaoMixin on DatabaseAccessor<NexDatabase> {
 }
 mixin _$StokDaoMixin on DatabaseAccessor<NexDatabase> {
   $StokTable get stok => attachedDatabase.stok;
+  $ProdukTable get produk => attachedDatabase.produk;
+  Selectable<StokWithProductResult> _stokWithProduct(String var1, String var2) {
+    return customSelect(
+        'SELECT s.*, p.kode, p.nama, p.harga, p.aktif, p.stok FROM stok s LEFT JOIN produk p ON s.produk_id = p.produk_id WHERE s.truk_id = ? AND p.nama LIKE ? ORDER BY p.nama ASC',
+        variables: [Variable.withString(var1), Variable.withString(var2)],
+        readsFrom: {produk, stok}).map((QueryRow row) {
+      return StokWithProductResult(
+        trukId: row.readString('truk_id'),
+        stokId: row.readString('stok_id'),
+        produkId: row.readString('produk_id'),
+        quantity: row.readInt('quantity'),
+        createdAt: row.readString('created_at'),
+        updatedAt: row.readString('updated_at'),
+        kode: row.readString('kode'),
+        nama: row.readString('nama'),
+        harga: row.readString('harga'),
+        aktif: row.readBool('aktif'),
+        stok: row.readInt('stok'),
+      );
+    });
+  }
 }
+
+class StokWithProductResult {
+  final String trukId;
+  final String stokId;
+  final String produkId;
+  final int quantity;
+  final String createdAt;
+  final String updatedAt;
+  final String kode;
+  final String nama;
+  final String harga;
+  final bool aktif;
+  final int stok;
+  StokWithProductResult({
+    this.trukId,
+    this.stokId,
+    this.produkId,
+    this.quantity,
+    this.createdAt,
+    this.updatedAt,
+    this.kode,
+    this.nama,
+    this.harga,
+    this.aktif,
+    this.stok,
+  });
+}
+
 mixin _$TrukDaoMixin on DatabaseAccessor<NexDatabase> {
   $TrukTable get truk => attachedDatabase.truk;
   $StokTable get stok => attachedDatabase.stok;

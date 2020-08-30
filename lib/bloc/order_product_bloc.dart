@@ -28,11 +28,31 @@ class OrderProductBloc extends Bloc<OrderProductEvent, OrderProductState> {
   }
 
   Stream<OrderProductState> _getOrderProduct(GetOrderProduct event) async* {
-    List<ProdukData> product = await repository.getProdukByKeyword(
-      event.keyword,
-      limit: event.limit,
-      offset: event.offset,
-    );
+    List<ProdukData> product = [];
+
+    if (event.user.type == 'Sales') {
+      product = await repository.getProdukByKeyword(
+        event.keyword,
+        limit: event.limit,
+        offset: event.offset,
+      );
+    } else {
+      var productWithStok = await repository.getStokWithProduct(
+          event.user.truckId, event.keyword);
+
+      for (var item in productWithStok) {
+        product.add(ProdukData(
+          produkId: item.produkData.produkId,
+          kode: item.produkData.kode,
+          nama: item.produkData.nama,
+          harga: item.produkData.harga,
+          stok: item.stokData.quantity,
+          aktif: item.produkData.aktif,
+          createdAt: item.stokData.createdAt,
+          updatedAt: item.stokData.updatedAt,
+        ));
+      }
+    }
 
     if (product.length > 0) {
       yield GetOrderProductComplete(product: product);

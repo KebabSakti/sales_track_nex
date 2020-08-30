@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
 import 'package:sales_track_nex/bloc/scanner_bloc.dart';
 import 'package:sales_track_nex/bloc/tambah_outlet_bloc.dart';
+import 'package:sales_track_nex/database/nex_database.dart';
 import 'package:toast/toast.dart';
 
 class TambahOutlet extends StatefulWidget {
@@ -383,8 +385,9 @@ class _TambahOutletState extends State<TambahOutlet> {
   _scannerBlocListener(BuildContext context, ScannerState state) {
     if (state is ScanQRCompleted) {
       //validate outlet
+      User user = BlocProvider.of<AuthenticateBloc>(context).state.user;
       BlocProvider.of<TambahOutletBloc>(context)
-          .add(ValidateOutlet(qr: state.scanResult.rawContent));
+          .add(ValidateOutlet(qr: state.scanResult.rawContent, user: user));
     }
   }
 

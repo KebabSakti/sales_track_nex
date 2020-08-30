@@ -25,17 +25,17 @@ class _ListVisitState extends State<ListVisit> {
   void _onSearchFieldChangedListener(value) {
     _searchKeyword = value;
 
-    fetchDataVisit();
+    _fetchDataVisit();
   }
 
   void _onPeriodeChangedListener(periode) {
     _periodeAwal = periode[0];
     _periodeAkhir = periode[1];
 
-    fetchDataVisit();
+    _fetchDataVisit();
   }
 
-  void fetchDataVisit() {
+  Future<void> _fetchDataVisit() async {
     listVisitBloc.add(GetDataVisit(
       userId: authenticateBloc.state.user.userId,
       keyword: _searchKeyword,
@@ -49,7 +49,7 @@ class _ListVisitState extends State<ListVisit> {
     authenticateBloc = BlocProvider.of<AuthenticateBloc>(context);
     listVisitBloc = BlocProvider.of<ListVisitBloc>(context);
 
-    fetchDataVisit();
+    _fetchDataVisit();
     super.initState();
   }
 
@@ -60,114 +60,120 @@ class _ListVisitState extends State<ListVisit> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        SearchPeriode(
-          onSearchFieldChanged: _onSearchFieldChangedListener,
-          onPeriodeChanged: _onPeriodeChangedListener,
-        ),
-        SizedBox(height: 10),
-        Expanded(
-          child: Container(
-            color: Colors.white,
-            child: BlocBuilder<ListVisitBloc, ListVisitState>(
-              builder: (context, state) {
-                if (state is GetDataVisitComplete) {
-                  return ListView.separated(
-                    itemBuilder: (context, index) {
-                      var visitWithOutlet = state.visitWithOutlet[index];
-                      var date = visitWithOutlet.outletData.createdAt;
+    return RefreshIndicator(
+      onRefresh: _fetchDataVisit,
+      child: Column(
+        children: <Widget>[
+          SearchPeriode(
+            onSearchFieldChanged: _onSearchFieldChangedListener,
+            onPeriodeChanged: _onPeriodeChangedListener,
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: Container(
+              child: BlocBuilder<ListVisitBloc, ListVisitState>(
+                builder: (context, state) {
+                  if (state is GetDataVisitComplete) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) {
+                        var visitWithOutlet = state.visitWithOutlet[index];
+                        var date = DateTime.parse(
+                            visitWithOutlet.outletData.createdAt);
 
-                      return Card(
-                        elevation: 0,
-                        color: index.isEven ? Colors.white : Colors.grey[50],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                        margin: EdgeInsets.zero,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 15, right: 15),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    'Nama Outlet',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                  Text(
-                                    '${visitWithOutlet.outletData.outletName}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    'Waktu Visit',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[400],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Text(
-                                        '${Helper().getFormattedDate(date, mDateFormat: DateFormat('d MMM'))}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[800],
-                                        ),
-                                      ),
-                                      SizedBox(width: 20),
-                                      Text(
-                                        '${Helper().getFormattedDate(date, mDateFormat: DateFormat('jm'))}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[800],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.grey[400],
-                                size: 20,
-                              ),
-                            ],
+                        return Card(
+                          elevation: 0,
+                          color: index.isEven ? Colors.white : Colors.grey[50],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0),
                           ),
-                          onTap: () {},
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(height: 1),
-                    itemCount: state.visitWithOutlet.length,
-                  );
-                } else if (state is GetDataVisitError) {
-                  return Center(
-                    child: Text(
-                      'Tidak ada data',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  );
-                }
+                          margin: EdgeInsets.zero,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.only(
+                                top: 10, bottom: 10, left: 15, right: 15),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'Nama Outlet',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                    Text(
+                                      '${visitWithOutlet.outletData.outletName}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[800],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'Waktu Visit',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          '${Helper().getFormattedDate(date, mDateFormat: DateFormat('d MMM'))}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[800],
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
+                                        Text(
+                                          '${Helper().getFormattedDate(date, mDateFormat: DateFormat('jm'))}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[800],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey[400],
+                                  size: 12,
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/detail_visit',
+                                  arguments: visitWithOutlet);
+                            },
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => Divider(height: 1),
+                      itemCount: state.visitWithOutlet.length,
+                    );
+                  } else if (state is GetDataVisitError) {
+                    return Center(
+                      child: Text(
+                        'Tidak ada data',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    );
+                  }
 
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

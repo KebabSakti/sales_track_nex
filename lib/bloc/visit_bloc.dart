@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:barcode_scan/model/scan_result.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,18 +34,20 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
   }
 
   Stream<VisitState> _validateOutlet(ValidateOutlet event) async* {
-    List<OutletData> outletData =
-        await repository.getOutletByKeyword(event.scanResult.rawContent);
+    List<OutletData> outletData = await repository.getOutletByKeyword(
+        event.scanResult, event.user.username);
     if (outletData.length > 0) {
       //cek apakah sudah visit hari ini
       VisitData visitData = await repository.getVisitToday(
-          DateTime.now().toIso8601String(),
-          event.userId,
-          outletData[0].outletId);
+        DateTime.now().toIso8601String(),
+        event.user.userId,
+        outletData[0].outletId,
+      );
 
       if (visitData == null) {
         print('no visit');
-        yield ValidateOutletComplete(outletData: outletData[0]);
+        yield ValidateOutletComplete(
+            outletData: outletData[0], locationData: event.locationData);
       } else {
         print('already visit');
         //sudah visit
@@ -60,16 +61,19 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
 
   Stream<VisitState> _submitVisit(SubmitVisit event) async* {
     var visitId = Helper().generateRandomId();
-    var orderId = Helper().generateRandomId();
+    var orderId =
+        event.keranjangDetail.sum > 0 ? Helper().generateRandomId() : null;
     var today = DateTime.now();
 
     //data visit
     await repository.insertVisit(VisitCompanion.insert(
       visitId: visitId,
+      orderId: Value(orderId),
       userId: event.user.userId,
       outletId: event.outletData.outletId,
-      lat: event.outletData.lat,
-      lng: event.outletData.lng,
+      lat: event.locationData.latitude.toString(),
+      lng: event.locationData.longitude.toString(),
+      tutup: Value(event.tutup),
       createdAt: today.toIso8601String(),
       updatedAt: today.toIso8601String(),
     ));
@@ -87,8 +91,9 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
 
     if (event.keranjangDetail.sum > 0) {
       //order data
-      await repository.insertOrder(OrderCompanion.insert(
+      await repository.insertOrder(SalesCompanion.insert(
         orderId: orderId,
+        visitId: Value(visitId),
         outletId: event.outletData.outletId,
         kodeOrder: Helper().generateRandomId(),
         nomorPO: event.keranjangDetail.nomorPo,
@@ -96,8 +101,8 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
         totalBayar: event.keranjangDetail.sum.toString(),
         pembayaran: Value(event.keranjangDetail.pembayaran) ?? Value('Cash'),
         barcode: Value(event.outletData.barcode),
-        createdAt: today,
-        updatedAt: today,
+        createdAt: today.toIso8601String(),
+        updatedAt: Value(today.toIso8601String()),
       ));
 
       //orderitem
@@ -109,8 +114,8 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
           userId: event.user.userId,
           quantity: value.qty,
           totalHarga: value.total.toString(),
-          createdAt: today,
-          updatedAt: today,
+          createdAt: today.toIso8601String(),
+          updatedAt: today.toIso8601String(),
         ));
       });
     }
@@ -119,8 +124,6 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
     var jadwal = await repository.getJadwalByDate(
         DateTime.now(), event.user.userId, event.outletData.outletId);
 
-    print(jadwal);
-
     if (jadwal != null) {
       await repository.updateJadwal(JadwalCompanion.insert(
         jadwalId: jadwal.jadwalId,
@@ -128,8 +131,6 @@ class VisitBloc extends Bloc<VisitEvent, VisitState> {
         outletId: jadwal.outletId,
         tanggal: Helper().getFormattedDate(DateTime.now()),
         visit: Value(1),
-        createdAt: today,
-        updatedAt: today,
       ));
     }
 

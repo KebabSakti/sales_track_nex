@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
+import 'package:sales_track_nex/pages/jadwal.dart';
+import 'package:sales_track_nex/pages/list_outlet.dart';
 import 'package:sales_track_nex/pages/list_visit.dart';
 
 class Outlet extends StatefulWidget {
@@ -124,70 +126,83 @@ class _OutletState extends State<Outlet> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Outlet'),
-          centerTitle: true,
-          actions: <Widget>[
-            BlocBuilder<AuthenticateBloc, AuthenticateState>(
-              builder: (context, state) {
-                return PopupMenuButton(
-                  icon: Icon(Icons.add),
-                  onSelected: (value) async {
-                    if (value == 1) {
-                      Navigator.of(context).pushNamed('/tambah_outlet');
-                    } else if (value == 2) {
-                      Navigator.of(context).pushNamed('/visit');
-                    }
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem(
-                      value: 1,
-                      height: 10,
-                      child: Text('Tambah Outlet'),
-                      enabled: state.user.type == 'Delivery' ? false : true,
-                    ),
-                    PopupMenuItem(
-                      value: 2,
-                      height: 10,
-                      child: Text('Visit Outlet'),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-          bottom: TabBar(
-            tabs: <Widget>[
-              Tab(
-                text: 'Jadwal',
+    return WillPopScope(
+      onWillPop: () {
+        return showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: Text('Keluar dari aplikasi?'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Tidak'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Ya'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
               ),
-              Tab(
-                text: 'Visit',
-              ),
-              Tab(
-                text: 'Outlet',
+            ) ??
+            false;
+      },
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Outlet'),
+            centerTitle: true,
+            actions: <Widget>[
+              BlocBuilder<AuthenticateBloc, AuthenticateState>(
+                builder: (context, state) {
+                  return PopupMenuButton(
+                    icon: Icon(Icons.add),
+                    onSelected: (value) async {
+                      if (value == 1) {
+                        Navigator.of(context).pushNamed('/tambah_outlet');
+                      } else if (value == 2) {
+                        Navigator.of(context).pushNamed('/visit');
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      PopupMenuItem(
+                        value: 1,
+                        height: 10,
+                        child: Text('Tambah Outlet'),
+                        enabled: state.user.type == 'Delivery' ? false : true,
+                      ),
+                      PopupMenuItem(
+                        value: 2,
+                        height: 10,
+                        child: Text('Visit Outlet'),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
+            bottom: TabBar(
+              tabs: <Widget>[
+                Tab(
+                  text: 'Jadwal',
+                ),
+                Tab(
+                  text: 'Visit',
+                ),
+                Tab(
+                  text: 'Outlet',
+                ),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            ListView.builder(
-              controller: _jadwalScrollControler,
-              itemCount: jadwal.length,
-              itemBuilder: (context, index) {
-                return jadwal[index];
-              },
-            ),
-            Container(
-              child: ListVisit(),
-            ),
-            Container()
-          ],
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: <Widget>[Jadwal(), ListVisit(), ListOutlet(),],
+          ),
         ),
       ),
     );

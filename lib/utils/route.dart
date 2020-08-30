@@ -5,9 +5,13 @@ import 'package:sales_track_nex/pages/app.dart';
 import 'package:sales_track_nex/pages/camera.dart';
 import 'package:sales_track_nex/pages/checkout.dart';
 import 'package:sales_track_nex/pages/debug.dart';
+import 'package:sales_track_nex/pages/detail_order.dart';
+import 'package:sales_track_nex/pages/detail_outlet.dart';
+import 'package:sales_track_nex/pages/detail_visit.dart';
 import 'package:sales_track_nex/pages/intro.dart';
 import 'package:sales_track_nex/pages/login.dart';
 import 'package:sales_track_nex/pages/order_product.dart';
+import 'package:sales_track_nex/pages/pilih_outlet.dart';
 import 'package:sales_track_nex/pages/preview_foto.dart';
 import 'package:sales_track_nex/pages/tambah_outlet.dart';
 import 'package:sales_track_nex/pages/truck.dart';
@@ -61,7 +65,9 @@ class RouteGenerator {
 
       case '/order_product':
         return PageTransition(
-            child: OrderProduct(),
+            child: OrderProduct(
+              noCheckout: settings.arguments,
+            ),
             type: PageTransitionType.leftToRight,
             settings: settings);
         break;
@@ -85,6 +91,40 @@ class RouteGenerator {
             child: PreviewFoto(foto: settings.arguments),
             type: PageTransitionType.fade,
             settings: settings);
+        break;
+
+      case '/detail_visit':
+        return PageTransition(
+            child: DetailVisit(visitWithOutlet: settings.arguments),
+            type: PageTransitionType.fade,
+            settings: settings);
+        break;
+
+      case '/pilih_outlet':
+        return PageTransition(
+            child: PilihOutlet(),
+            type: PageTransitionType.fade,
+            settings: settings);
+        break;
+
+      case '/detail_outlet':
+        return PageTransition(
+          child: DetailOutlet(
+            outletData: settings.arguments,
+          ),
+          type: PageTransitionType.fade,
+          settings: settings,
+        );
+        break;
+
+      case '/detail_order':
+        return PageTransition(
+          child: DetailOrder(
+            orderWithOutlet: settings.arguments,
+          ),
+          type: PageTransitionType.fade,
+          settings: settings,
+        );
         break;
 
       case '/debug':

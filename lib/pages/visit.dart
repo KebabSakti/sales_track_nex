@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location/location.dart';
 import 'package:sales_track_nex/bloc/authenticate_bloc.dart';
 import 'package:sales_track_nex/bloc/foto_bloc.dart';
 import 'package:sales_track_nex/bloc/keranjang_bloc.dart';
@@ -29,6 +30,9 @@ class _VisitState extends State<Visit> {
   final FocusNode _nodePemilik = FocusNode();
   final FocusNode _nodeTelp = FocusNode();
   final FocusNode _nodeAlamat = FocusNode();
+  LocationData mLocationData;
+  List<dynamic> outletTutupData;
+  int tutup = 0;
 
   VisitBloc visitBloc;
 
@@ -63,9 +67,13 @@ class _VisitState extends State<Visit> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     final KeranjangBloc keranjangBloc = BlocProvider.of<KeranjangBloc>(context);
+    // ignore: close_sinks
     final FotoBloc fotoBloc = BlocProvider.of<FotoBloc>(context);
+    // ignore: close_sinks
     final VisitBloc visitBloc = BlocProvider.of<VisitBloc>(context);
+    // ignore: close_sinks
     final AuthenticateBloc authenticateBloc =
         BlocProvider.of<AuthenticateBloc>(context);
 
@@ -134,8 +142,24 @@ class _VisitState extends State<Visit> {
                 pinned: true,
                 actions: <Widget>[
                   PopupMenuButton(
-                    onSelected: (value) {
+                    onSelected: (value) async {
                       //toko tutup
+                      final result = await Navigator.of(context)
+                          .pushNamed('/pilih_outlet');
+
+                      if (result != null) {
+                        outletTutupData = result;
+                        tutup = 1;
+                        User user = BlocProvider.of<AuthenticateBloc>(context)
+                            .state
+                            .user;
+                        //validate outlet
+                        BlocProvider.of<VisitBloc>(context).add(ValidateOutlet(
+                          scanResult: outletTutupData[0].barcode,
+                          locationData: outletTutupData[1],
+                          user: user,
+                        ));
+                      }
                     },
                     itemBuilder: (BuildContext context) => [
                       PopupMenuItem(
@@ -556,8 +580,9 @@ class _VisitState extends State<Visit> {
                                           color: Colors.blue, fontSize: 16),
                                     ),
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .pushNamed('/order_product');
+                                      Navigator.of(context).pushNamed(
+                                          '/order_product',
+                                          arguments: false);
                                     },
                                   ),
                                 ],
@@ -652,9 +677,16 @@ class _VisitState extends State<Visit> {
                             style: TextStyle(color: Colors.grey[100]),
                           ),
                           onPressed: () {
-                            if (_formKey.currentState.validate() &&
-                                fotoBloc.state.foto.length >= 3) {
-                              Navigator.of(context).pushNamed('/order_product');
+                            if (tutup == 0) {
+                              if (_formKey.currentState.validate() &&
+                                  fotoBloc.state.foto.length >= 3) {
+                                Navigator.of(context)
+                                    .pushNamed('/order_product');
+                              }
+                            } else {
+                              Toast.show(
+                                  'Toko tutup tidak bisa buat PO', context,
+                                  gravity: Toast.CENTER);
                             }
                           },
                         ),
@@ -679,12 +711,15 @@ class _VisitState extends State<Visit> {
                     ),
                     onPressed: () {
                       //validate all form
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState.validate() &&
+                          _foto.length == 3) {
                         visitBloc.add(SubmitVisit(
                           outletData: visitBloc.state.outletData,
+                          locationData: mLocationData,
                           foto: fotoBloc.state.foto,
                           user: authenticateBloc.state.user,
                           keranjangDetail: keranjangBloc.state.keranjangDetail,
+                          tutup: tutup,
                         ));
                       }
                     },
@@ -715,13 +750,15 @@ class _VisitState extends State<Visit> {
 
   _scannerBlocListener(BuildContext context, ScannerState state) {
     if (state is ScanQRCompleted) {
+      mLocationData = state.locationData;
+      tutup = 0;
       //get logged in user
       User user = BlocProvider.of<AuthenticateBloc>(context).state.user;
       //validate outlet
       BlocProvider.of<VisitBloc>(context).add(ValidateOutlet(
-        scanResult: state.scanResult,
+        scanResult: state.scanResult.rawContent,
         locationData: state.locationData,
-        userId: user?.userId,
+        user: user,
       ));
     }
   }
@@ -729,12 +766,7 @@ class _VisitState extends State<Visit> {
   _visitBlocListener(BuildContext context, VisitState state) {
     if (state is ValidateOutletComplete) {
       print('validate oke');
-
-      //set field
-      _barcode.text = state.outletData.barcode;
-      _latitude.text = state.outletData.lat;
-      _longitude.text = state.outletData.lng;
-      _namaOutlet.text = state.outletData.outletName;
+      _setDataOutletField(state.outletData, state.locationData);
     } else if (state is ValidateOutletError) {
       Toast.show(state.message, context, gravity: Toast.CENTER);
     } else if (state is SubmitVisitComplete) {
@@ -756,6 +788,16 @@ class _VisitState extends State<Visit> {
     BlocProvider.of<VisitBloc>(context).add(ResetVisitData());
     BlocProvider.of<FotoBloc>(context).add(SaveListFoto([]));
     BlocProvider.of<KeranjangBloc>(context).add(Resetkeranjang());
+  }
+
+  void _setDataOutletField(OutletData outletData, LocationData locationData) {
+    mLocationData = locationData;
+
+    //set field
+    _barcode.text = outletData.barcode;
+    _latitude.text = locationData.latitude.toString();
+    _longitude.text = locationData.longitude.toString();
+    _namaOutlet.text = outletData.outletName;
   }
 }
 

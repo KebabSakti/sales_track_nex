@@ -29,7 +29,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       yield* _syncJadwal(event);
       yield* _syncOrder(event);
       yield* _syncOrderItem(event);
-//      yield* _syncVisit(event);
+      yield* _syncVisit(event);
       yield* _syncInfo(event);
 
       yield SyncCompleted();
@@ -72,8 +72,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           picture: Value(item['picture']),
           lat: item['lat'],
           lng: item['lng'],
-          createdAt: DateTime.parse(item['created_at']),
-          updatedAt: DateTime.parse(item['updated_at']),
+          createdAt: item['created_at'],
+          updatedAt: item['updated_at'],
         );
 
         if (outlet == null) {
@@ -232,8 +232,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           userId: item['user_id'],
           outletId: item['outlet_id'],
           tanggal: item['tanggal'],
-          createdAt: DateTime.parse(item['created_at']),
-          updatedAt: DateTime.parse(item['updated_at']),
+          createdAt: item['created_at'],
+          updatedAt: item['updated_at'],
         );
 
         if (jadwal == null) {
@@ -267,7 +267,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       for (var item in downloadOrder['data']) {
         OrderData order = await repository.getOrderById(item['order_id']);
 
-        Insertable<OrderData> orderData = OrderCompanion.insert(
+        Insertable<OrderData> orderData = SalesCompanion.insert(
           orderId: item['order_id'],
           outletId: item['outlet_id'],
           kodeOrder: item['kode_order'],

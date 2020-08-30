@@ -22,9 +22,10 @@ class ProcessLoading extends TambahOutletEvent {
 }
 
 class ValidateOutlet extends TambahOutletEvent {
-  const ValidateOutlet({@required this.qr});
+  const ValidateOutlet({@required this.qr, @required this.user});
 
   final String qr;
+  final User user;
 
   @override
   // TODO: implement props

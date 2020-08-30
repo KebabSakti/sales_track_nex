@@ -1,2 +1,2 @@
-const baseUrl = 'http://192.168.3.249:8000/api';
+const baseUrl = 'https://686a3600d733.ngrok.io/api';
 const hereMap = 'https://router.hereapi.com/v8';

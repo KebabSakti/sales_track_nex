@@ -10,6 +10,7 @@ import 'package:sales_track_nex/utils/helper.dart';
 class Checkout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     KeranjangBloc keranjangBloc = BlocProvider.of<KeranjangBloc>(context);
 
     keranjangBloc.add(SetNomorPo());
@@ -287,7 +288,9 @@ class CheckoutHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     KeranjangBloc keranjangBloc = BlocProvider.of<KeranjangBloc>(context);
+    // ignore: close_sinks
     VisitBloc visitBloc = BlocProvider.of<VisitBloc>(context);
 
     return Container(
@@ -367,7 +370,10 @@ class CheckoutHeader extends StatelessWidget {
 class ToggleJenisPembayaran extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
     KeranjangBloc keranjangBloc = BlocProvider.of(context);
+
+    print('Jenis Pembayaran ${keranjangBloc.state.keranjangDetail.pembayaran}');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[

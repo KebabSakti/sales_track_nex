@@ -24,7 +24,7 @@ abstract class AppRepository {
   Stream<List<OutletData>> fetchOutlet(String keyword);
   Future<List<OutletData>> getOutlet();
   Future<OutletData> getOutletById(String outletId);
-  Future<List<OutletData>> getOutletByKeyword(String keyword);
+  Future<List<OutletData>> getOutletByKeyword(String keyword, String user);
   Future<int> insertOutlet(Insertable<OutletData> outletData);
   Future<int> updateOutlet(Insertable<OutletData> outletData);
   Future deleteOutlet(Insertable<OutletData> outletData);
@@ -48,6 +48,8 @@ abstract class AppRepository {
   Future updateStok(Insertable<StokData> stokData);
   Future<Map> downloadStok({String syncDate});
   Future deleteStok();
+  Future<List<StokWithProduct>> getStokWithProduct(
+      String trukId, String keyword);
 
   //produk repos
   Future<List<ProdukData>> getProduk();
@@ -67,7 +69,7 @@ abstract class AppRepository {
   Future updateJadwal(Insertable<JadwalData> jadwalData);
   Future deleteJadwal();
   Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
-      String userId, DateTime dateTime);
+      String userId, String date);
   Future<Map> getJadwalWithRange(String originLat, String originLng,
       String destinationLat, String destinationLng);
   Future<JadwalData> getJadwalByDate(
@@ -96,6 +98,8 @@ abstract class AppRepository {
   Future insertOrder(Insertable<OrderData> orderData);
   Future updateOrder(Insertable<OrderData> orderData);
   Future deleteOrder();
+  Future<List<OrderWithOutlet>> fetchOrder(
+      String periodeAwal, String periodeAkhir, String userId, String keyword);
 
   //order item repos
   Future<Map> downloadOrderItem({String syncDate});
@@ -104,6 +108,7 @@ abstract class AppRepository {
   Future insertOrderItem(Insertable<OrderItemData> orderItemData);
   Future updateOrderItem(Insertable<OrderItemData> orderItemData);
   Future deleteOrderItem();
+  Future<List<ItemWithProduk>> fetchOrderItem(String orderId);
 
   //foto visit
   Future<FotoVisitData> getFotoVisitById(String fotoVisitId);
@@ -122,6 +127,11 @@ abstract class AppRepository {
   Future insertSyncInfo(Insertable<SyncInfoData> syncInfoData);
   Future updateSyncInfo(Insertable<SyncInfoData> syncInfoData);
   Future deleteSyncInfo();
+
+  //inbox
+  Future sentToken(User user, String token);
+  Future readMessagge(String messageId);
+  Future<Map> fetchMessage(User user);
 
   //scanner
   Future<ScanResult> scanBarcode();
@@ -589,8 +599,8 @@ class Repository implements AppRepository {
 
   @override
   Future<List<JadwalWithOutlet>> getJadwalWithOutlet(
-      String userId, DateTime dateTime) async {
-    return await database.jadwalDao.getJadwalWithOutlet(userId, dateTime);
+      String userId, String date) async {
+    return await database.jadwalDao.getJadwalWithOutlet(userId, date);
   }
 
   @override
@@ -610,8 +620,9 @@ class Repository implements AppRepository {
   }
 
   @override
-  Future<List<OutletData>> getOutletByKeyword(String keyword) async {
-    return await database.outletDao.getOutletByKeyword(keyword);
+  Future<List<OutletData>> getOutletByKeyword(
+      String keyword, String user) async {
+    return await database.outletDao.getOutletByKeyword(keyword, user);
   }
 
   @override
@@ -680,5 +691,50 @@ class Repository implements AppRepository {
       periodeAwal,
       periodeAkhir,
     );
+  }
+
+  @override
+  Future<List<StokWithProduct>> getStokWithProduct(
+      String trukId, String keyword) async {
+    return await database.stokDao.getStokWithProduk(trukId, keyword);
+  }
+
+  @override
+  Future<List<OrderWithOutlet>> fetchOrder(String periodeAwal,
+      String periodeAkhir, String userId, String keyword) async {
+    return await database.orderDao
+        .fetchOrder(periodeAwal, periodeAkhir, userId, keyword);
+  }
+
+  @override
+  Future<List<ItemWithProduk>> fetchOrderItem(String orderId) async {
+    return await database.orderItemDao.fetchOrderItem(orderId);
+  }
+
+  @override
+  Future<Map> fetchMessage(User user) async {
+    Response response = await dio.post("/message/fetch",
+        options: Options(headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${user.token}",
+        }),
+        data: {
+          "user_id": user.userId,
+          "topic": user.type,
+        });
+
+    return jsonDecode(response.toString());
+  }
+
+  @override
+  Future readMessagge(String messageId) {
+    // TODO: implement readMessagge
+    throw UnimplementedError();
+  }
+
+  @override
+  Future sentToken(User user, String token) {
+    // TODO: implement sentToken
+    throw UnimplementedError();
   }
 }

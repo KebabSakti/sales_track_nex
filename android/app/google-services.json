@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "44958713674",
+    "firebase_url": "https://nex-sales-track.firebaseio.com",
+    "project_id": "nex-sales-track",
+    "storage_bucket": "nex-sales-track.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44958713674:android:16bfe0c18c8cd1492fe3b3",
+        "android_client_info": {
+          "package_name": "com.vjtechsolution.sales_track_nex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44958713674-hinmnq38qpf1appq7ja8ob7vthme6pna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vjtechsolution.sales_track_nex",
+            "certificate_hash": "aa4330f3d56a29d8b25c2ad86ea6ab5ec7ccde9a"
+          }
+        },
+        {
+          "client_id": "44958713674-babheqtl6954tlsbfsqjo1ll9cino3tb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtiX9I7NskKWkbbr3O7MGGgN67A7wCD8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "44958713674-babheqtl6954tlsbfsqjo1ll9cino3tb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
